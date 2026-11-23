@@ -69,10 +69,28 @@
   .reco .txt small{display:block;color:var(--dim);font-size:11.5px;margin-top:3px}
   .ico{width:22px;height:22px;flex:0 0 auto;color:var(--accent2)}
   .ico.big{width:38px;height:38px;color:var(--accent)}
-  .eqgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-  .eqi{background:#141922;border:1px solid var(--line);border-radius:12px;padding:10px}
-  .eqi b{display:block;font-size:12.5px;margin-top:6px;font-weight:600}
-  .eqi small{display:block;color:var(--dim);font-size:11px;line-height:1.45;margin-top:3px}
+  /* 실제 사진 썸네일 */
+  .thumb{width:46px;height:46px;flex:0 0 auto;border-radius:11px;object-fit:cover;background:#d9dadc;display:block}
+  .sec{margin-bottom:13px}
+  .sec:last-of-type{margin-bottom:8px}
+  .seclabel{font-size:11.5px;font-weight:700;color:var(--dim);letter-spacing:.1px;margin:0 0 7px 2px}
+  .minichips{display:flex;flex-wrap:wrap;gap:7px}
+  .mrow{display:flex;align-items:center;gap:7px;background:#141922;border:1px solid var(--line);
+    border-radius:999px;padding:5px 12px 5px 5px;font-size:13px;color:var(--text)}
+  .mrow img{width:28px;height:28px;border-radius:50%;object-fit:cover;background:#d9dadc;display:block}
+  .mrow:active{border-color:var(--accent);background:rgba(233,180,76,.12)}
+  .eqgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .eqi{background:#141922;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .eqi img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#d9dadc;filter:brightness(.96)}
+  .eqi .cap{padding:9px 10px 11px}
+  .eqi b{display:block;font-size:13px;font-weight:700}
+  .eqi small{display:block;color:var(--dim);font-size:10.5px;line-height:1.45;margin-top:3px}
+  .lb{position:fixed;inset:0;background:rgba(8,10,14,.9);z-index:50;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:13px;padding:24px}
+  .lb img{width:min(86vw,360px);height:min(86vw,360px);object-fit:cover;border-radius:20px;background:#d9dadc}
+  .lb b{font-size:16px}
+  .lb small{color:var(--dim);font-size:12.5px;text-align:center;max-width:300px;line-height:1.65}
+  .lb .close{color:#7b8598;font-size:12px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -113,16 +131,32 @@
 
     <div class="card">
       <div class="recohead"><b>추천 종목</b><span id="recoPart">가슴</span></div>
-      <div class="reco" id="recoBox"></div>
-      <div class="hint" style="margin-top:11px">종목을 누르면 위 칸에 채워집니다. 무게는 지난 기록 보시고 맞춰 올리세요.</div>
-    </div>
 
-    <div class="card">
-      <div class="recohead"><b>기구 사전</b><span>그림으로 보기</span></div>
-      <div class="eqgrid" id="eqGrid"></div>
+      <div class="sec hide" id="favWrap">
+        <div class="seclabel">내 운동</div>
+        <div class="reco" id="favBox"></div>
+      </div>
+
+      <div class="sec hide" id="mineWrap">
+        <div class="seclabel">내 기록에서</div>
+        <div class="minichips" id="mineBox"></div>
+      </div>
+
+      <div class="sec">
+        <div class="seclabel" id="recoLabel">가슴 추천</div>
+        <div class="reco" id="recoBox"></div>
+      </div>
+
+      <div class="hint" style="margin-top:4px">종목을 누르면 위 칸에 채워집니다. 무게는 지난 기록 보시고 맞춰 올리세요.</div>
     </div>
 
     <div id="list"></div>
+
+    <div class="card">
+      <div class="recohead"><b>기구 사전</b><span>사진으로 보기</span></div>
+      <div class="eqgrid" id="eqGrid"></div>
+      <div class="hint" style="margin-top:10px">사진을 누르면 크게 볼 수 있어요. 모르는 기구는 헬스장에서 이 사진과 맞춰 보세요.</div>
+    </div>
     <div class="footnote">기록은 이 폰에만 저장됩니다 · <a class="link" href="#" id="exportBtn">파일로 내보내기</a></div>
   </section>
 
@@ -245,6 +279,30 @@ const todayStr=()=>{const d=new Date();const p=n=>String(n).padStart(2,'0');retu
 const wd=['일','월','화','수','목','금','토'];
 const icon=(k,cls)=>'<svg class="ico'+(cls?' '+cls:'')+'" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">'+((EQUIP[k]||{}).s||'')+'</svg>';
 
+/* 기구 사진(240x240 실제 사진) 경로 */
+for(const k in EQUIP){EQUIP[k].img='images/'+k+'.png';}
+
+/* 내 운동 — 사용자가 직접 지정한 종목: [종목명, 기구key, 세트·횟수, (선택)기구 표기] */
+const MY_FAV=[
+  ['딥스','dip','3세트 8~10회'],
+  ['랫풀다운','latpull','3세트 10~12회'],
+  ['풀업','pullup','3세트 6~10회'],
+  ['바벨 오버헤드 프레스','barbell','3세트 8~10회'],
+  ['숄더프레스 머신','machine','3세트 10~12회'],
+  ['시티드 로우','row','3세트 10~12회'],
+  ['벤치프레스','bench','3세트 8~12회','바벨 + 플랫 벤치']
+];
+
+/* 종목명 → 기구key (기록에서 줄의 사진·기구명용) */
+const EX_EQ={};
+Object.keys(RECO).forEach(p=>RECO[p].forEach(([n,eq])=>EX_EQ[n]=eq));
+function eqOf(name){
+  if(EX_EQ[name])return EX_EQ[name];
+  for(const k in EQUIP){if(name.indexOf(EQUIP[k].n)>=0)return k;}
+  return null;
+}
+const firstSent=d=>{const t=d.indexOf('. ');return t>0?d.slice(0,t+1):d;};
+
 function save(){localStorage.setItem(KEY,JSON.stringify(data));}
 
 function initToday(){
@@ -263,20 +321,56 @@ function initChips(){
 }
 function renderReco(){
   $('recoPart').textContent=part;
+
+  /* 내 운동 — 부위와 상관없이 항상 */
+  $('favWrap').classList.toggle('hide',!MY_FAV.length);
+  const favBox=$('favBox');favBox.innerHTML='';
+  MY_FAV.forEach(([name,eq,sets,label])=>favBox.appendChild(recoRow(name,eq,sets,label)));
+
+  /* 내 기록에서 — 많이 한 순서 상위 5개 */
+  const mine=myTop(5);
+  $('mineWrap').classList.toggle('hide',!mine.length);
+  $('mineBox').innerHTML=mine.map(([name,eq])=>'<button class="mrow" data-ex="'+name.replace(/"/g,'')+'">'
+    +(eq?'<img src="'+EQUIP[eq].img+'" alt="">':'')+'<span>'+name+'</span></button>').join('');
+  $('mineBox').querySelectorAll('.mrow').forEach(b=>b.onclick=()=>{
+    const n=b.dataset.ex;fillExercise(n,eqOf(n));
+  });
+
+  /* 부위별 추천 */
+  $('recoLabel').textContent=part+' 추천';
   const box=$('recoBox');
   box.innerHTML='';
   const list=RECO[part]||[];
   if(!list.length){box.innerHTML='<div class="hint">이 부위 추천은 준비 중이에요.</div>';return;}
-  list.forEach(([name,eq,sets])=>{
-    const b=document.createElement('button');
-    b.innerHTML=icon(eq)+'<div class="txt"><b>'+name+'</b><small>'+EQUIP[eq].n+' · '+sets+'</small></div>';
-    b.onclick=()=>fillExercise(name,eq);
-    box.appendChild(b);
-  });
+  list.forEach(([name,eq,desc,sets])=>box.appendChild(recoRow(name,eq,sets)));
+}
+function recoRow(name,eq,sets,label){
+  const e=EQUIP[eq]||{};
+  const b=document.createElement('button');
+  b.innerHTML=(e.img?'<img class="thumb" src="'+e.img+'" alt="">':icon(eq))
+    +'<div class="txt"><b>'+name+'</b><small>'+(label||e.n||'')+' · '+sets+'</small></div>';
+  b.onclick=()=>fillExercise(name,eq);
+  return b;
+}
+function myTop(n){
+  const agg={};
+  data.forEach(x=>{const a=agg[x.ex]||(agg[x.ex]={c:0,last:''});a.c++;if(x.date>a.last)a.last=x.date;});
+  return Object.keys(agg).sort((a,b)=>agg[b].c-agg[a].c||(agg[a].last<agg[b].last?1:-1))
+    .slice(0,n).map(name=>[name,eqOf(name)]);
 }
 function renderEq(){
   $('eqGrid').innerHTML=Object.keys(EQUIP).map(k=>
-    '<div class="eqi">'+icon(k,'big')+'<b>'+EQUIP[k].n+'</b><small>'+EQUIP[k].d+'</small></div>').join('');
+    '<div class="eqi" data-k="'+k+'"><img src="'+EQUIP[k].img+'" alt="'+EQUIP[k].n+'" loading="lazy">'
+    +'<div class="cap"><b>'+EQUIP[k].n+'</b><small>'+firstSent(EQUIP[k].d)+'</small></div></div>').join('');
+  $('eqGrid').querySelectorAll('.eqi').forEach(el=>el.onclick=()=>openLightbox(el.dataset.k));
+}
+function openLightbox(k){
+  const e=EQUIP[k];if(!e)return;
+  const lb=document.createElement('div');
+  lb.className='lb';
+  lb.innerHTML='<img src="'+e.img+'" alt=""><b>'+e.n+'</b><small>'+e.d+'</small><div class="close">화면을 누르면 닫힙니다</div>';
+  lb.onclick=()=>lb.remove();
+  document.body.appendChild(lb);
 }
 function fillExercise(name,eq){
   $('ex').value=name;
@@ -299,7 +393,7 @@ function addItem(){
   if(!ex){alert('종목을 적어 주세요.');return;}
   if(!(w>=0)||!(r>0)){alert('무게와 횟수를 숫자로 적어 주세요.');return;}
   data.push({id:Date.now()+''+Math.floor(Math.random()*99),date:todayStr(),part,ex,w,r,s,m:$('m').value.trim()});
-  save();refreshExList();render();
+  save();refreshExList();render();renderReco();
   $('ex').value='';$('w').value='';$('r').value='';$('s').value='';$('m').value='';
   const l=lastOf(ex);
   $('lastHint').textContent=l?('「'+ex+'」 지난 기록: '+l.w+'kg × '+l.r+'회 × '+l.s+'세트 ('+l.date+')'):'';
@@ -326,7 +420,7 @@ function render(){
   box.innerHTML=html;
   box.querySelectorAll('.del').forEach(b=>b.onclick=()=>{
     if(!confirm('이 기록을 지울까요?'))return;
-    data=data.filter(x=>x.id!==b.dataset.id);save();render();
+    data=data.filter(x=>x.id!==b.dataset.id);save();render();renderReco();
   });
 }
 function weekStart(offset){

@@ -1,5 +1,6 @@
-const CACHE='workoutlog-v3';
-const FILES=['./','./index.html','./manifest.json','./icon.svg'];
+const CACHE='workoutlog-v4';
+const IMGS=['barbell','dumbbell','bench','incline','rack','cable','latpull','row','legpress','legcurl','dip','pullup','machine','treadmill','bike','rower','bodyweight'];
+const FILES=['./','./index.html','./manifest.json','./icon.svg'].concat(IMGS.map(k=>'./images/'+k+'.png'));
 
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()));
