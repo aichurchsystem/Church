@@ -5096,3 +5096,83 @@ a.topbar__label:hover { background-color: #f2f7ff; }
 /* 학력 4항목 — 번호 4개, 한 줄씩 균일 간격 */
 .ph-edu--four li { grid-template-columns: 40px minmax(0, 1fr); gap: 12px; padding: 12px 0; }
 .ph-edu--four li:last-child { border-bottom: none; }
+
+/* 정기예배 — 고동색 띠, 흰 글씨 */
+.worship-band {
+  margin: 0 0 26px;
+  padding: 26px 28px 24px;
+  border-radius: 18px;
+  background: radial-gradient(120% 140% at 12% 0%, #6b2f1c 0%, #4a2013 52%, #33150c 100%);
+  box-shadow: 0 14px 34px rgba(51, 21, 12, .22);
+  color: #fff;
+}
+.worship-band__eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #f0c9a8;
+}
+.worship-band h3 {
+  margin: 6px 0 0;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: #fff;
+}
+.worship-band__lede {
+  margin-top: 8px;
+  font-size: 13.4px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, .82);
+}
+.worship-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+.worship-card {
+  padding: 16px 18px 15px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, .09);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+}
+.worship-card__tag {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: rgba(240, 201, 168, .18);
+  color: #f6d9bf;
+  font-size: 11.6px;
+  font-weight: 800;
+  letter-spacing: .01em;
+}
+.worship-card h4 {
+  margin: 9px 0 0;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: #fff;
+}
+.worship-card__time {
+  margin-top: 5px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffe9d6;
+  font-variant-numeric: tabular-nums;
+}
+.worship-card__place {
+  margin-top: 3px;
+  font-size: 12.6px;
+  color: rgba(255, 255, 255, .72);
+}
+@media (max-width: 760px) {
+  .worship-band { padding: 22px 18px 20px; border-radius: 15px; }
+  .worship-band h3 { font-size: 21px; }
+  .worship-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 14px; }
+  .worship-card { padding: 14px 15px 13px; }
+  .worship-card h4 { font-size: 16px; }
+  .worship-card__time { font-size: 14.4px; }
+}
