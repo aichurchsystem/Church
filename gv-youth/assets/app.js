@@ -410,7 +410,6 @@
   });
 
   if (HUB) {
-    paintCounts();
     render();
 
     /* 다른 페이지의 메뉴에서 index.html?tab=news#info 로 들어오면 그 분류를 펼칩니다. */
@@ -421,6 +420,130 @@
     if (wantTab && (wantTab === 'all' || CATS[wantTab])) selectTab(wantTab);
   }
 
+  /* ----------------------------------------------------------------------
+     3-b. 메인 '오늘의 브리핑' — 정리된 소식 가운데 최근 3건만 카드로
+     (전체 목록·검색은 청소년 정보 아카이브 archive.html 이 맡는다)
+     ---------------------------------------------------------------------- */
+  var briefingGrid = byId('briefingGrid');
+  if (briefingGrid) {
+    briefingGrid.innerHTML = ARTICLES.slice(0, 3).map(cardHTML).join('');
+  }
+
+  /* ----------------------------------------------------------------------
+     3-c. 청소년 정보 아카이브(archive.html) — 분류 탭 + 키워드 검색 + 더 보기
+     ---------------------------------------------------------------------- */
+  var arcRoot = byId('archiveRoot');
+  var ARC = !!(arcRoot && grid && statusEl && emptyEl && loadMore && searchInput && searchWrap && searchClear);
+
+  if (ARC) {
+    var ARC_PAGE = 9;
+    var arcState = { tab: 'all', q: '', shown: ARC_PAGE };
+
+    function arcList() {
+      var q = arcState.q.trim().toLowerCase();
+      return ARTICLES.filter(function (a) {
+        var okTab = arcState.tab === 'all' || a.cat === arcState.tab;
+        var hay = (a.title + ' ' + a.desc + ' ' + a.source + ' ' + CATS[a.cat].label).toLowerCase();
+        return okTab && (!q || hay.indexOf(q) !== -1);
+      });
+    }
+
+    /* 고른 분류를 주소에 남겨 그대로 공유·즐겨찾기할 수 있게 한다 */
+    function syncArcUrl() {
+      if (!window.history || !window.history.replaceState) return;
+      var url = window.location.pathname +
+        (arcState.tab === 'all' ? '' : '?cat=' + encodeURIComponent(arcState.tab));
+      try { window.history.replaceState(null, '', url); } catch (e) {}
+    }
+
+    function paintArcTabs() {
+      tabs.forEach(function (t) {
+        t.setAttribute('aria-selected', t.getAttribute('data-tab') === arcState.tab ? 'true' : 'false');
+      });
+    }
+
+    function renderArchive() {
+      var list = arcList();
+      var q = arcState.q.trim();
+      var rest = Math.max(0, list.length - arcState.shown);
+
+      grid.innerHTML = list.slice(0, arcState.shown).map(cardHTML).join('');
+      emptyEl.hidden = list.length !== 0;
+      loadMore.hidden = rest === 0;
+      loadMore.textContent = '소식 더 보기 (' + rest + ')';
+
+      var where = arcState.tab === 'all' ? '전체' : CATS[arcState.tab].label;
+      statusEl.innerHTML = '<b>' + list.length + '</b>건 · ' + esc(where) +
+        (q ? ' · 검색어 “' + esc(q) + '”' : '');
+
+      requestAnimationFrame(function () {
+        Array.prototype.forEach.call(grid.querySelectorAll('.reveal'), function (el) {
+          el.classList.add('is-in');
+        });
+      });
+      syncArcUrl();
+    }
+
+    function selectArcTab(key, focusTab) {
+      arcState.tab = key;
+      arcState.shown = ARC_PAGE;
+      paintArcTabs();
+      tabs.forEach(function (t) {
+        if (focusTab && t.getAttribute('data-tab') === key) t.focus();
+        if (!focusTab && t.getAttribute('data-tab') === key && t.parentElement) {
+          var wrap = t.parentElement;
+          wrap.scrollTo({ left: t.offsetLeft - (wrap.clientWidth - t.clientWidth) / 2, behavior: 'smooth' });
+        }
+      });
+      renderArchive();
+    }
+
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () { selectArcTab(t.getAttribute('data-tab')); });
+      t.addEventListener('keydown', function (e) {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault();
+        var i = tabs.indexOf(t);
+        var next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        selectArcTab(next.getAttribute('data-tab'), true);
+      });
+    });
+
+    loadMore.addEventListener('click', function () {
+      arcState.shown += ARC_PAGE;
+      renderArchive();
+    });
+
+    searchInput.addEventListener('input', function () {
+      arcState.q = searchInput.value;
+      arcState.shown = ARC_PAGE;
+      searchWrap.classList.toggle('has-value', !!searchInput.value);
+      renderArchive();
+    });
+
+    searchClear.addEventListener('click', function () {
+      searchInput.value = '';
+      arcState.q = '';
+      arcState.shown = ARC_PAGE;
+      searchWrap.classList.remove('has-value');
+      renderArchive();
+      searchInput.focus();
+    });
+
+    /* 메인 주제 칸이 보내는 archive.html?cat=policy 같은 주소로 바로 열기 */
+    var wantCat = '';
+    try {
+      wantCat = new URLSearchParams(window.location.search).get('cat') || '';
+    } catch (e) { wantCat = ''; }
+    if (wantCat && CATS[wantCat]) arcState.tab = wantCat;
+
+    paintArcTabs();
+    renderArchive();
+  }
+
+  /* 분류별 개수를 화면의 [data-count] 자리에 채운다 (탭·메인 안내 문구 공통) */
+  paintCounts();
+
   /* 메뉴·푸터에서 특정 분류로 바로 가기 */
   if (HUB) Array.prototype.forEach.call(document.querySelectorAll('[data-goto-tab]'), function (el) {
     el.addEventListener('click', function () {
@@ -429,17 +552,7 @@
     });
   });
 
-  /* 헤더 검색 버튼 → 허브 검색으로 이동 */
-  var headerSearch = byId('headerSearch');
-  if (headerSearch && HUB) {
-    headerSearch.addEventListener('click', function () {
-      var target = byId('info');
-      var field = byId('infoSearch');
-      if (field) field.focus({ preventScroll: true });
-      window.scrollTo({ top: target ? target.offsetTop - 90 : 0, behavior: 'smooth' });
-      window.setTimeout(function () { if (field) field.focus({ preventScroll: true }); }, 420);
-    });
-  }
+  /* 헤더의 검색 아이콘은 청소년 정보 아카이브로 가는 링크입니다(HTML). */
 
   /* ----------------------------------------------------------------------
      4. 모달 공통
@@ -514,7 +627,7 @@
     openModal(newsModal);
   }
 
-  Array.prototype.forEach.call(document.querySelectorAll('#info, #newsModal'), function (root) {
+  Array.prototype.forEach.call(document.querySelectorAll('#info, #archiveRoot, #newsModal'), function (root) {
     root.addEventListener('click', function (e) {
       var el = e.target.closest('[data-article]');
       if (el) openNews(el.getAttribute('data-article'));
