@@ -4847,3 +4847,15 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   .contact__card { padding: 16px 16px 18px; }
   .contact__card li { font-size: 12.4px; }
 }
+
+/* --- 약력: 학력·경력 항목을 묶어 줄 수를 줄인다 --- */
+.cv-list--compact { margin-top: 8px; }
+.cv-list--compact li { padding: 3px 0 3px 12px; font-size: 13.2px; line-height: 1.62; }
+.cv-list--compact li::before { top: 9px; width: 4px; height: 4px; }
+.cv-list--compact b {
+  display: inline-block;
+  min-width: 34px;
+  margin-right: 6px;
+  color: var(--cobalt);
+  font-weight: 800;
+}
