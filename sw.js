@@ -1,4 +1,4 @@
-const CACHE='workoutlog-v4';
+const CACHE='workoutlog-v5';
 const IMGS=['barbell','dumbbell','bench','incline','rack','cable','latpull','row','legpress','legcurl','dip','pullup','machine','treadmill','bike','rower','bodyweight'];
 const FILES=['./','./index.html','./manifest.json','./icon.svg'].concat(IMGS.map(k=>'./images/'+k+'.png'));
 

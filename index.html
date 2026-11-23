@@ -4,94 +4,135 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>운동일지</title>
-<meta name="theme-color" content="#12151b">
+<meta name="theme-color" content="#ffffff">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
 <style>
   :root{
-    --bg:#12151b; --card:#1b202a; --line:#2a3140; --text:#eef1f6; --dim:#9aa4b5;
-    --accent:#e9b44c; --accent2:#5cc9a7; --danger:#e2667a;
+    --bg:#f4f6fb; --card:#ffffff; --line:#e5e9f2; --line2:#eef1f7;
+    --text:#141926; --dim:#69718a; --faint:#7b8396;
+    --brand:#5a45e8; --brand2:#8b6cf6; --danger:#d33b46;
+    --sh:0 1px 2px rgba(20,25,38,.05), 0 5px 16px rgba(20,25,38,.05);
+    --c:#f0564a; --cd:#c9342a; --cl:#ffedea;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{margin:0;background:var(--bg);color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
     padding-bottom:88px}
-  header{padding:18px 16px 10px;position:sticky;top:0;background:linear-gradient(180deg,#12151b 70%,rgba(18,21,27,.88));z-index:5}
+  header{padding:20px 16px 12px;position:sticky;top:0;z-index:5;background:#fff;box-shadow:0 1px 0 var(--line)}
+  header:before{content:'';position:absolute;left:0;right:0;top:0;height:3px;
+    background:linear-gradient(90deg,#f0564a,#f59b2e,#2fb45e,#0fb39c,#1fa9e0,#3b82f6,#7b5cf5)}
   h1{font-size:19px;margin:0;letter-spacing:-.3px}
   .sub{color:var(--dim);font-size:12.5px;margin-top:4px}
   .wrap{padding:0 16px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:var(--sh)}
+  .card.flash{animation:flash .9s ease}
+  @keyframes flash{0%{box-shadow:0 0 0 0 rgba(90,69,232,.45)}100%{box-shadow:0 0 0 14px rgba(90,69,232,0)}}
   .row{display:flex;gap:10px}
   .row > *{flex:1;min-width:0}
   label{display:block;font-size:12px;color:var(--dim);margin:0 0 6px 2px}
   input,select,textarea,button{font:inherit;color:var(--text)}
-  input,select,textarea{width:100%;background:#141922;border:1px solid var(--line);border-radius:11px;padding:12px;font-size:16px}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
-  .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;margin-bottom:10px;scrollbar-width:none;-ms-overflow-style:none}
-  .chips::-webkit-scrollbar{display:none}
-  .chip{flex:0 0 auto;background:#141922;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:13.5px;color:var(--dim)}
-  .chip.on{background:rgba(233,180,76,.15);border-color:var(--accent);color:var(--accent)}
-  .btn{width:100%;padding:15px;border:0;border-radius:13px;background:var(--accent);color:#1a1408;font-weight:700;font-size:16px}
-  .btn:active{opacity:.85}
-  .tabs{display:flex;background:#141922;border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:14px}
-  .tabs button{flex:1;background:none;border:0;padding:10px;border-radius:9px;color:var(--dim);font-size:14px}
-  .tabs button.on{background:#232a36;color:var(--text);font-weight:600}
+  input,select,textarea{width:100%;background:#f8f9fd;border:1.5px solid #e2e7f1;border-radius:12px;padding:12px;font-size:16px}
+  input::placeholder{color:#a7aec0}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand);background:#fff}
+
+  /* 부위 칩 */
+  .chiplabel{font-size:11.5px;font-weight:700;color:var(--dim);letter-spacing:.2px;margin:0 0 9px 2px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:#fff;
+    border:1.5px solid var(--line);border-radius:999px;padding:9px 15px 9px 12px;
+    font-size:13.5px;font-weight:600;color:#3b4357;line-height:1}
+  .chip i{width:8px;height:8px;border-radius:50%;background:var(--c);flex:0 0 auto}
+  .chip.on{background:var(--cd);border-color:var(--cd);color:#fff;box-shadow:0 5px 12px rgba(20,25,38,.16)}
+  .chip.on i{background:#fff}
+  .chip:active{transform:scale(.97)}
+
+  .btn{width:100%;padding:15px;border:0;border-radius:14px;color:#fff;font-weight:700;font-size:16px;
+    background:linear-gradient(135deg,#6f5bf7,#4a33d6);box-shadow:0 8px 18px rgba(90,69,232,.28)}
+  .btn:active{opacity:.9}
+
+  .tabs{display:flex;background:#e9ecf5;border-radius:14px;padding:4px;margin-bottom:14px}
+  .tabs button{flex:1;background:none;border:0;padding:10px;border-radius:11px;color:#5c6478;font-size:14px;font-weight:600}
+  .tabs button.on{background:#fff;color:var(--brand);box-shadow:0 2px 8px rgba(20,25,38,.09)}
+
   .stat{display:flex;gap:10px;margin-bottom:12px}
-  .stat > div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
-  .stat b{display:block;font-size:20px;margin-top:4px;letter-spacing:-.4px}
+  .stat > div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 14px;box-shadow:var(--sh)}
+  .stat b{display:block;font-size:21px;margin-top:5px;letter-spacing:-.5px;color:var(--brand)}
+  .stat .s2 b{color:#0b8b7a}
   .stat span{font-size:11.5px;color:var(--dim)}
-  .day{margin:16px 0 6px;font-size:13px;color:var(--dim);display:flex;justify-content:space-between}
-  .item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+
+  .day{margin:16px 0 7px;font-size:13px;color:#4d5568;font-weight:600;display:flex;justify-content:space-between;align-items:baseline}
+  .day span:last-child{color:var(--faint);font-weight:500;font-size:12px}
+  .item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line2)}
   .item:last-child{border-bottom:0}
   .item .name{flex:1;min-width:0}
   .item .name b{font-weight:600;font-size:15px}
-  .item .name small{display:block;color:var(--dim);font-size:12px;margin-top:3px}
-  .item .vol{color:var(--accent2);font-size:13px;white-space:nowrap}
-  .del{background:none;border:0;color:#586174;font-size:18px;padding:4px 2px}
+  .item .name small{display:block;color:var(--dim);font-size:12px;margin-top:4px}
+  .item .vol{color:#4a5568;font-size:13px;font-weight:600;white-space:nowrap}
+  .ptag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:6px;
+    background:var(--cl);color:var(--cd);margin-right:5px;vertical-align:1px}
+  .del{background:none;border:0;color:#98a0b3;font-size:19px;padding:4px 2px}
   .empty{color:var(--dim);font-size:13.5px;text-align:center;padding:26px 8px;line-height:1.7}
-  .bar{height:9px;background:#141922;border-radius:6px;overflow:hidden;margin-top:7px}
-  .bar i{display:block;height:100%;background:var(--accent);border-radius:6px}
+  .bar{height:9px;background:#eef1f7;border-radius:6px;overflow:hidden;margin-top:7px}
+  .bar i{display:block;height:100%;background:var(--brand);border-radius:6px}
   .part{margin-bottom:13px}
-  .part .top{display:flex;justify-content:space-between;font-size:13px}
-  .part .top span:last-child{color:var(--dim)}
+  .part:last-child{margin-bottom:2px}
+  .part .top{display:flex;justify-content:space-between;font-size:13px;font-weight:600}
+  .part .top span:last-child{color:var(--dim);font-weight:500;font-size:12.5px}
+  .dotr{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c);margin-right:7px;vertical-align:1px}
   .hint{font-size:12px;color:var(--dim);margin:8px 2px 0;line-height:1.6}
-  .footnote{font-size:11.5px;color:#586174;text-align:center;margin:20px 0 8px}
-  a.link{color:var(--accent2);text-decoration:none;font-size:13px}
+  .footnote{font-size:11.5px;color:var(--faint);text-align:center;margin:20px 0 8px}
+  a.link{color:var(--brand);text-decoration:none;font-size:12.5px;font-weight:600}
   .hide{display:none}
-  .recohead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
-  .recohead b{font-size:13.5px}
-  .recohead span{font-size:11.5px;color:var(--dim)}
-  .reco{display:flex;flex-direction:column;gap:8px}
-  .reco button{display:flex;gap:10px;align-items:center;width:100%;background:#141922;border:1px solid var(--line);
-    border-radius:12px;padding:10px 12px;font-size:13.5px;text-align:left;line-height:1.35}
-  .reco button:active{border-color:var(--accent);background:rgba(233,180,76,.12)}
-  .reco .txt{flex:1;min-width:0}
-  .reco .txt b{display:block;font-size:14px;font-weight:600}
-  .reco .txt small{display:block;color:var(--dim);font-size:11.5px;margin-top:3px}
-  .ico{width:22px;height:22px;flex:0 0 auto;color:var(--accent2)}
-  .ico.big{width:38px;height:38px;color:var(--accent)}
-  /* 실제 사진 썸네일 */
-  .thumb{width:46px;height:46px;flex:0 0 auto;border-radius:11px;object-fit:cover;background:#d9dadc;display:block}
-  .sec{margin-bottom:13px}
-  .sec:last-of-type{margin-bottom:8px}
-  .seclabel{font-size:11.5px;font-weight:700;color:var(--dim);letter-spacing:.1px;margin:0 0 7px 2px}
+
+  .cardhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:11px}
+  .cardhead b{font-size:15px;letter-spacing:-.2px}
+  .cardhead span{font-size:11.5px;color:var(--faint)}
+
+  .sec{margin-bottom:14px}
+  .seclabel{font-size:11.5px;font-weight:700;color:var(--dim);letter-spacing:.2px;margin:0 0 8px 2px}
+
+  /* 내 운동: 두 칸 압축 목록 */
+  .favgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .fav{display:flex;align-items:center;gap:8px;min-width:0;background:#fff;border:1.5px solid var(--line);
+    border-radius:13px;padding:6px 8px 6px 6px;text-align:left;position:relative;overflow:hidden}
+  .fav:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c)}
+  .fav img{width:36px;height:36px;border-radius:10px;object-fit:cover;background:#eceef3;flex:0 0 auto;display:block}
+  .fav .t{min-width:0;flex:1}
+  .fav b{display:block;font-size:12.5px;font-weight:700;line-height:1.25;letter-spacing:-.1px;
+    overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .fav small{display:block;font-size:10.5px;color:#6f7789;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fav:active{background:var(--cl);border-color:var(--c)}
+
+  /* 내 기록에서 */
   .minichips{display:flex;flex-wrap:wrap;gap:7px}
-  .mrow{display:flex;align-items:center;gap:7px;background:#141922;border:1px solid var(--line);
-    border-radius:999px;padding:5px 12px 5px 5px;font-size:13px;color:var(--text)}
-  .mrow img{width:28px;height:28px;border-radius:50%;object-fit:cover;background:#d9dadc;display:block}
-  .mrow:active{border-color:var(--accent);background:rgba(233,180,76,.12)}
-  .eqgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .eqi{background:#141922;border:1px solid var(--line);border-radius:14px;overflow:hidden}
-  .eqi img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#d9dadc;filter:brightness(.96)}
-  .eqi .cap{padding:9px 10px 11px}
-  .eqi b{display:block;font-size:13px;font-weight:700}
-  .eqi small{display:block;color:var(--dim);font-size:10.5px;line-height:1.45;margin-top:3px}
-  .lb{position:fixed;inset:0;background:rgba(8,10,14,.9);z-index:50;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:13px;padding:24px}
-  .lb img{width:min(86vw,360px);height:min(86vw,360px);object-fit:cover;border-radius:20px;background:#d9dadc}
-  .lb b{font-size:16px}
-  .lb small{color:var(--dim);font-size:12.5px;text-align:center;max-width:300px;line-height:1.65}
-  .lb .close{color:#7b8598;font-size:12px;margin-top:2px}
+  .mrow{display:flex;align-items:center;gap:7px;background:#f6f7fc;border:1.5px solid var(--line);
+    border-radius:999px;padding:4px 12px 4px 4px;font-size:12.5px;font-weight:600;color:#39405250}
+  .mrow{color:#394052}
+  .mrow img{width:26px;height:26px;border-radius:50%;object-fit:cover;background:#eceef3;display:block}
+  .mrow:active{border-color:var(--brand);background:#fff}
+
+  /* 부위 추천 헤더 밴드 */
+  .pband{display:flex;align-items:center;gap:8px;background:var(--cl);border-left:4px solid var(--c);
+    border-radius:10px;padding:9px 11px;margin:0 0 10px}
+  .pband b{font-size:14px;font-weight:800;color:var(--cd);letter-spacing:-.2px}
+  .pband span{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--cd);opacity:.75}
+
+  /* 추천 목록 */
+  .reco{display:flex;flex-direction:column;gap:9px}
+  .reco button{position:relative;display:flex;align-items:center;gap:12px;width:100%;background:#fff;
+    border:1.5px solid var(--line);border-radius:14px;padding:9px 11px 9px 9px;font-size:13.5px;
+    text-align:left;line-height:1.35;overflow:hidden}
+  .reco button:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+  .reco button:active{background:var(--cl);border-color:var(--c)}
+  .reco .txt{flex:1;min-width:0;padding-left:4px}
+  .reco .txt b{display:block;font-size:14.5px;font-weight:700;letter-spacing:-.2px}
+  .reco .txt small{display:block;color:var(--dim);font-size:11.5px;margin-top:3px}
+  .reco .plus{flex:0 0 auto;font-size:15px;font-weight:800;color:var(--cd);opacity:.55;padding-right:2px}
+  .thumb{width:52px;height:52px;flex:0 0 auto;border-radius:12px;object-fit:cover;background:#eceef3;display:block}
+  .ico{width:22px;height:22px;flex:0 0 auto;color:var(--c)}
+  .ico.big{width:38px;height:38px}
+
 </style>
 </head>
 <body>
@@ -109,7 +150,30 @@
   <!-- 기록 -->
   <section id="viewWrite">
     <div class="card">
+      <div class="chiplabel">부위</div>
       <div class="chips" id="partChips"></div>
+    </div>
+
+    <div class="card" id="recoCard">
+      <div class="cardhead"><b>추천 종목</b><span>눌러서 담기</span></div>
+
+      <div class="sec hide" id="favWrap">
+        <div class="seclabel">내 운동</div>
+        <div class="favgrid" id="favBox"></div>
+      </div>
+
+      <div class="sec hide" id="mineWrap">
+        <div class="seclabel">내 기록에서</div>
+        <div class="minichips" id="mineBox"></div>
+      </div>
+
+      <div class="pband" id="recoBand"><b id="recoLabel">가슴 추천</b><span id="recoCount">5종목</span></div>
+      <div class="reco" id="recoBox"></div>
+      <div class="hint" style="margin-top:11px">종목을 누르면 아래 기록 칸에 채워집니다. 무게는 지난 기록 보시고 맞춰 올리세요.</div>
+    </div>
+
+    <div class="card" id="formCard">
+      <div class="cardhead"><b>기록 입력</b><span id="formPart">가슴</span></div>
       <div class="row" style="margin-bottom:10px">
         <div>
           <label>종목</label>
@@ -130,34 +194,8 @@
       <div class="hint" id="lastHint"></div>
     </div>
 
-    <div class="card">
-      <div class="recohead"><b>추천 종목</b><span id="recoPart">가슴</span></div>
-
-      <div class="sec hide" id="favWrap">
-        <div class="seclabel">내 운동</div>
-        <div class="reco" id="favBox"></div>
-      </div>
-
-      <div class="sec hide" id="mineWrap">
-        <div class="seclabel">내 기록에서</div>
-        <div class="minichips" id="mineBox"></div>
-      </div>
-
-      <div class="sec">
-        <div class="seclabel" id="recoLabel">가슴 추천</div>
-        <div class="reco" id="recoBox"></div>
-      </div>
-
-      <div class="hint" style="margin-top:4px">종목을 누르면 위 칸에 채워집니다. 무게는 지난 기록 보시고 맞춰 올리세요.</div>
-    </div>
-
     <div id="list"></div>
 
-    <div class="card">
-      <div class="recohead"><b>기구 사전</b><span>사진으로 보기</span></div>
-      <div class="eqgrid" id="eqGrid"></div>
-      <div class="hint" style="margin-top:10px">사진을 누르면 크게 볼 수 있어요. 모르는 기구는 헬스장에서 이 사진과 맞춰 보세요.</div>
-    </div>
     <div class="footnote">기록은 이 폰에만 저장됩니다 · <a class="link" href="#" id="exportBtn">파일로 내보내기</a></div>
   </section>
 
@@ -165,18 +203,18 @@
   <section id="viewStat" class="hide">
     <div class="stat">
       <div><span>이번 주 볼륨</span><b id="sWeek">0</b></div>
-      <div><span>이번 주 운동일</span><b id="sDays">0</b></div>
+      <div class="s2"><span>이번 주 운동일</span><b id="sDays">0</b></div>
     </div>
     <div class="card">
-      <div style="font-size:13.5px;font-weight:600;margin-bottom:12px">부위별 볼륨 (최근 30일)</div>
+      <div class="cardhead"><b>부위별 볼륨</b><span>최근 30일</span></div>
       <div id="partStat"></div>
     </div>
     <div class="card">
-      <div style="font-size:13.5px;font-weight:600;margin-bottom:12px">최근 6주</div>
+      <div class="cardhead"><b>최근 6주</b><span>주간 볼륨</span></div>
       <div id="weekStat"></div>
     </div>
     <div class="card">
-      <div style="font-size:13.5px;font-weight:600;margin-bottom:12px">종목별 최고 무게</div>
+      <div class="cardhead"><b>종목별 최고 무게</b><span>상위 12개</span></div>
       <div id="prStat"></div>
     </div>
   </section>
@@ -185,6 +223,24 @@
 <script>
 const KEY='workoutlog.v1';
 const PARTS=['가슴','등','하체','어깨','팔','복부','유산소'];
+
+/* ── 부위별 색: c=기본, cd=진한색(흰 글씨용), cl=연한 배경 ── */
+const PART_COLOR={
+  '가슴':{c:'#f0564a',cd:'#c9342a',cl:'#ffedea'},
+  '등'  :{c:'#0fb39c',cd:'#067a6b',cl:'#e3f8f3'},
+  '하체':{c:'#7b5cf5',cd:'#573bd6',cl:'#eeebff'},
+  '어깨':{c:'#f59b2e',cd:'#a95f06',cl:'#fff3e0'},
+  '팔'  :{c:'#3b82f6',cd:'#1c5ccc',cl:'#e8f1ff'},
+  '복부':{c:'#2fb45e',cd:'#17793f',cl:'#e7f8ed'},
+  '유산소':{c:'#1fa9e0',cd:'#0b78a8',cl:'#e4f6fd'}
+};
+const PC=p=>PART_COLOR[p]||PART_COLOR['가슴'];
+function paintColor(el,p){
+  const k=PC(p);
+  el.style.setProperty('--c',k.c);
+  el.style.setProperty('--cd',k.cd);
+  el.style.setProperty('--cl',k.cl);
+}
 
 /* ── 기구 사전: 이름, 모양 설명, 그림(선 도해) ── */
 const EQUIP={
@@ -294,15 +350,20 @@ const MY_FAV=[
   ['벤치프레스','bench','3세트 8~12회','바벨 + 플랫 벤치']
 ];
 
-/* 종목명 → 기구key (기록에서 줄의 사진·기구명용) */
-const EX_EQ={};
-Object.keys(RECO).forEach(p=>RECO[p].forEach(([n,eq])=>EX_EQ[n]=eq));
+/* 종목명 → 기구key / 부위 (색상용) */
+const EX_EQ={},EX_PART={};
+Object.keys(RECO).forEach(p=>RECO[p].forEach(([n,eq])=>{EX_EQ[n]=eq;EX_PART[n]=p;}));
 function eqOf(name){
   if(EX_EQ[name])return EX_EQ[name];
   for(const k in EQUIP){if(name.indexOf(EQUIP[k].n)>=0)return k;}
   return null;
 }
-const firstSent=d=>{const t=d.indexOf('. ');return t>0?d.slice(0,t+1):d;};
+function partOf(name,fallback){
+  if(EX_PART[name])return EX_PART[name];
+  const eq=eqOf(name);
+  for(const p in RECO){if(RECO[p].some(r=>r[1]===eq&&r[0]===name))return p;}
+  return fallback||part;
+}
 
 function save(){localStorage.setItem(KEY,JSON.stringify(data));}
 
@@ -310,46 +371,67 @@ function initToday(){
   const d=new Date();
   $('today').textContent=d.getMonth()+1+'월 '+d.getDate()+'일 '+wd[d.getDay()]+'요일';
 }
+function markChips(){
+  [...$('partChips').children].forEach(c=>c.classList.toggle('on',c.dataset.p===part));
+  paintColor($('recoCard'),part);
+  $('recoLabel').textContent=part+' 추천';
+  $('recoLabel').parentElement.style.setProperty('--c',PC(part).c);
+  $('formPart').textContent=part;
+  $('formPart').style.color=PC(part).cd;
+}
 function initChips(){
   const box=$('partChips');
   PARTS.forEach(p=>{
     const b=document.createElement('button');
     b.className='chip'+(p===part?' on':'');
-    b.textContent=p;
-    b.onclick=()=>{part=p;[...box.children].forEach(c=>c.classList.toggle('on',c.textContent===p));renderReco();};
+    b.dataset.p=p;
+    paintColor(b,p);
+    b.innerHTML='<i></i>'+p;
+    b.onclick=()=>{part=p;markChips();renderReco();};
     box.appendChild(b);
   });
 }
 function renderReco(){
-  $('recoPart').textContent=part;
+  markChips();
 
   /* 내 운동 — 부위와 상관없이 항상 */
   $('favWrap').classList.toggle('hide',!MY_FAV.length);
   const favBox=$('favBox');favBox.innerHTML='';
-  MY_FAV.forEach(([name,eq,sets,label])=>favBox.appendChild(recoRow(name,eq,sets,label)));
+  MY_FAV.forEach(([name,eq,sets,label])=>favBox.appendChild(favRow(name,eq,sets,label)));
 
   /* 내 기록에서 — 많이 한 순서 상위 5개 */
   const mine=myTop(5);
   $('mineWrap').classList.toggle('hide',!mine.length);
-  $('mineBox').innerHTML=mine.map(([name,eq])=>'<button class="mrow" data-ex="'+name.replace(/"/g,'')+'">'
+  $('mineBox').innerHTML=mine.map(([name,eq])=>'<button class="mrow" data-ex="'+name.replace(/"/g,'')+'" style="--c:'+PC(partOf(name)).c+'">'
     +(eq?'<img src="'+EQUIP[eq].img+'" alt="">':'')+'<span>'+name+'</span></button>').join('');
   $('mineBox').querySelectorAll('.mrow').forEach(b=>b.onclick=()=>{
     const n=b.dataset.ex;fillExercise(n,eqOf(n));
   });
 
   /* 부위별 추천 */
-  $('recoLabel').textContent=part+' 추천';
   const box=$('recoBox');
   box.innerHTML='';
   const list=RECO[part]||[];
+  $('recoCount').textContent=list.length+'종목';
   if(!list.length){box.innerHTML='<div class="hint">이 부위 추천은 준비 중이에요.</div>';return;}
-  list.forEach(([name,eq,desc,sets])=>box.appendChild(recoRow(name,eq,sets)));
+  list.forEach(([name,eq,desc,sets])=>box.appendChild(recoRow(name,eq,sets,desc)));
 }
 function recoRow(name,eq,sets,label){
   const e=EQUIP[eq]||{};
   const b=document.createElement('button');
   b.innerHTML=(e.img?'<img class="thumb" src="'+e.img+'" alt="">':icon(eq))
-    +'<div class="txt"><b>'+name+'</b><small>'+(label||e.n||'')+' · '+sets+'</small></div>';
+    +'<div class="txt"><b>'+name+'</b><small>'+(label||e.n||'')+' · '+sets+'</small></div>'
+    +'<span class="plus">+</span>';
+  b.onclick=()=>fillExercise(name,eq);
+  return b;
+}
+function favRow(name,eq,sets,label){
+  const e=EQUIP[eq]||{};
+  const b=document.createElement('button');
+  b.className='fav';
+  b.style.setProperty('--c',PC(partOf(name)).c);
+  b.innerHTML=(e.img?'<img src="'+e.img+'" alt="">':icon(eq))
+    +'<div class="t"><b>'+name+'</b><small>'+sets+'</small></div>';
   b.onclick=()=>fillExercise(name,eq);
   return b;
 }
@@ -359,26 +441,20 @@ function myTop(n){
   return Object.keys(agg).sort((a,b)=>agg[b].c-agg[a].c||(agg[a].last<agg[b].last?1:-1))
     .slice(0,n).map(name=>[name,eqOf(name)]);
 }
-function renderEq(){
-  $('eqGrid').innerHTML=Object.keys(EQUIP).map(k=>
-    '<div class="eqi" data-k="'+k+'"><img src="'+EQUIP[k].img+'" alt="'+EQUIP[k].n+'" loading="lazy">'
-    +'<div class="cap"><b>'+EQUIP[k].n+'</b><small>'+firstSent(EQUIP[k].d)+'</small></div></div>').join('');
-  $('eqGrid').querySelectorAll('.eqi').forEach(el=>el.onclick=()=>openLightbox(el.dataset.k));
-}
-function openLightbox(k){
-  const e=EQUIP[k];if(!e)return;
-  const lb=document.createElement('div');
-  lb.className='lb';
-  lb.innerHTML='<img src="'+e.img+'" alt=""><b>'+e.n+'</b><small>'+e.d+'</small><div class="close">화면을 누르면 닫힙니다</div>';
-  lb.onclick=()=>lb.remove();
-  document.body.appendChild(lb);
-}
 function fillExercise(name,eq){
   $('ex').value=name;
+  if(EX_PART[name]){part=EX_PART[name];markChips();}
   const l=lastOf(name);
   const eqLine=eq&&EQUIP[eq]?('기구: '+EQUIP[eq].n+' — '+EQUIP[eq].d+' '):'';
   $('lastHint').textContent=eqLine+(l?('지난 기록: '+l.w+'kg × '+l.r+'회 × '+l.s+'세트 ('+l.date+')'):'처음이면 12회 가능한 무게부터.');
-  $('w').focus();
+  const card=$('formCard');
+  if(card){
+    card.classList.remove('flash');
+    void card.offsetWidth;
+    card.classList.add('flash');
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  $('w').focus({preventScroll:true});
 }
 function refreshExList(){
   const names=[...new Set(data.map(x=>x.ex))];
@@ -411,9 +487,11 @@ function render(){
     const rows=byDate[d];
     const vol=rows.reduce((a,x)=>a+x.w*x.r*x.s,0);
     const dd=new Date(d+'T00:00:00');
-    html+='<div class="day"><span>'+d+' '+wd[dd.getDay()]+'</span><span>'+won(vol)+'kg</span></div><div class="card" style="padding:4px 14px">';
+    html+='<div class="day"><span>'+d+' '+wd[dd.getDay()]+'</span><span>'+won(vol)+'kg</span></div><div class="card" style="padding:2px 14px">';
     rows.forEach(x=>{
-      html+='<div class="item"><div class="name"><b>'+x.ex+'</b><small>'+x.part+' · '+x.w+'kg × '+x.r+'회 × '+x.s+'세트'+(x.m?' · '+x.m:'')+'</small></div>'
+      const k=PC(x.part);
+      html+='<div class="item"><div class="name"><b>'+x.ex+'</b><small><span class="ptag" style="--cl:'+k.cl+';--cd:'+k.cd+'">'+x.part+'</span>'
+        +x.w+'kg × '+x.r+'회 × '+x.s+'세트'+(x.m?' · '+x.m:'')+'</small></div>'
         +'<div class="vol">'+won(x.w*x.r*x.s)+'</div><button class="del" data-id="'+x.id+'">×</button></div>';
     });
     html+='</div>';
@@ -438,19 +516,22 @@ function renderStat(){
   const pm={};recent.forEach(x=>{pm[x.part]=(pm[x.part]||0)+x.w*x.r*x.s;});
   const max=Math.max(1,...Object.values(pm));
   $('partStat').innerHTML=Object.keys(pm).length?Object.entries(pm).sort((a,b)=>b[1]-a[1]).map(([p,v])=>
-    '<div class="part"><div class="top"><span>'+p+'</span><span>'+won(v)+'kg</span></div><div class="bar"><i style="width:'+(v/max*100).toFixed(0)+'%"></i></div></div>').join(''):'<div class="empty">최근 30일 기록이 없어요.</div>';
+    '<div class="part" style="--c:'+PC(p).c+'"><div class="top"><span><i class="dotr"></i>'+p+'</span><span>'+won(v)+'kg</span></div>'
+    +'<div class="bar"><i style="width:'+(v/max*100).toFixed(0)+'%;background:'+PC(p).c+'"></i></div></div>').join(''):'<div class="empty">최근 30일 기록이 없어요.</div>';
 
   let wh='';
   for(let i=5;i>=0;i--){
     const st=weekStart(i).getTime(), en=st+7*864e5;
     const v=data.filter(x=>{const t=new Date(x.date+'T00:00:00').getTime();return t>=st&&t<en;}).reduce((a,x)=>a+x.w*x.r*x.s,0);
-    wh+='<div class="part"><div class="top"><span>'+(i===0?'이번 주':(i+'주 전'))+'</span><span>'+won(v)+'kg</span></div><div class="bar"><i style="width:'+Math.min(100,v/Math.max(1,20000)*100).toFixed(0)+'%"></i></div></div>';
+    wh+='<div class="part"><div class="top"><span>'+(i===0?'이번 주':(i+'주 전'))+'</span><span>'+won(v)+'kg</span></div>'
+      +'<div class="bar"><i style="width:'+Math.min(100,v/Math.max(1,20000)*100).toFixed(0)+'%;background:linear-gradient(90deg,#8b6cf6,#5a45e8)"></i></div></div>';
   }
   $('weekStat').innerHTML=wh;
 
-  const pr={};data.forEach(x=>{if(!pr[x.ex]||x.w>pr[x.ex])pr[x.ex]=x.w;});
+  const pr={},prp={};data.forEach(x=>{if(!pr[x.ex]||x.w>pr[x.ex]){pr[x.ex]=x.w;prp[x.ex]=x.part;}});
   $('prStat').innerHTML=Object.keys(pr).length?Object.entries(pr).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([e,v])=>
-    '<div class="item"><div class="name"><b>'+e+'</b></div><div class="vol">'+v+'kg</div></div>').join(''):'<div class="empty">기록이 쌓이면 최고 무게가 보여요.</div>';
+    '<div class="item"><div class="name"><b>'+e+'</b><small><span class="dotr" style="--c:'+PC(prp[e]).c+'"></span>'+prp[e]+'</small></div>'
+    +'<div class="vol">'+v+'kg</div></div>').join(''):'<div class="empty">기록이 쌓이면 최고 무게가 보여요.</div>';
 }
 function exportFile(){
   if(!data.length){alert('내보낼 기록이 없어요.');return;}
@@ -470,7 +551,7 @@ $('ex').addEventListener('input',()=>{
   const l=lastOf($('ex').value.trim());
   $('lastHint').textContent=l?('지난 기록: '+l.w+'kg × '+l.r+'회 × '+l.s+'세트 ('+l.date+')'):'';
 });
-initToday();initChips();renderReco();renderEq();refreshExList();render();
+initToday();initChips();renderReco();refreshExList();render();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
 </script>
 </body>
