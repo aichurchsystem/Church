@@ -103,7 +103,7 @@
     <div class="topbar__notice">
       <span class="topbar__label">기관 공지</span>
       <span class="topbar__text"><span class="topbar__full"><strong>제46차 청소년 바이블컨퍼런스</strong> 참가 안내 · 2027. 1. 14(목)–16(토) · 승동기도원</span><span class="topbar__mini">제46차 바이블컨퍼런스 · 2027.1.14–16</span></span>
-      <button class="topbar__link" type="button" data-open-modal>일정 보기 →</button>
+      <a class="topbar__link" href="bible-conference.html">일정 보기 →</a>
     </div>
     <div class="topbar__right">
       <a class="topbar__tel" href="tel:024291318"><span class="topbar__tel-label">대표전화 </span>02-429-1318</a>
@@ -162,6 +162,8 @@
             <a href="#ministry-4"><span class="num">4</span> 강의사역</a>
           </div>
         </li>
+        <li class="nav__item"><a class="nav__link" href="bible-conference.html">바이블컨퍼런스</a></li>
+        <li class="nav__item"><a class="nav__link" href="vision-conference.html">비전컨퍼런스</a></li>
         <li class="nav__item" data-dropdown>
           <button class="nav__link" type="button" aria-expanded="false" aria-haspopup="true">
             선교회 소개 <span class="caret" aria-hidden="true"></span>
@@ -224,6 +226,15 @@
   </div>
   <div class="mobile-group">
     <button class="mobile-group__title" type="button" aria-expanded="false">
+      컨퍼런스 <span class="caret" aria-hidden="true"></span>
+    </button>
+    <div class="mobile-group__body">
+      <a href="bible-conference.html">바이블컨퍼런스 <span class="dim">· 제46차 2027.1.14–16</span></a>
+      <a href="vision-conference.html">비전컨퍼런스 <span class="dim">· 일정 준비 중</span></a>
+    </div>
+  </div>
+  <div class="mobile-group">
+    <button class="mobile-group__title" type="button" aria-expanded="false">
       선교회 소개 <span class="caret" aria-hidden="true"></span>
     </button>
     <div class="mobile-group__body">
@@ -267,22 +278,22 @@
     <div class="hero__scrim" aria-hidden="true"></div>
 
     <div class="container hero__inner">
-      <p class="hero__eyebrow">GV청소년선교회 · SINCE 1997</p>
+      <p class="hero__eyebrow">GV YOUTH MISSION · EST. 1997</p>
       <h1 id="heroTitle">
-        1997년부터 청소년과 함께한
-        <span class="accent">청소년 전문 사역·정보 기관</span>
+        청소년의 삶 곁에 서서
+        <span class="accent">다음 세대를 세웁니다</span>
       </h1>
       <p class="hero__desc">
-        동아리·캠프·상담·강의로 학교와 교회, 그리고 가정 곁에 섭니다.
-        청소년에게 꼭 필요한 뉴스와 정책, 정부 지원 소식을 한곳에 모아
-        청소년과 학부모, 교사가 함께 읽는 정보의 자리를 만듭니다.
+        GV청소년선교회는 1997년부터 청소년 사역을 이어 온 전문 사역 기관입니다.
+        동아리·캠프·상담·강의로 가정과 학교, 교회 곁에서 청소년을 섬기고,
+        청소년과 학부모·교사에게 꼭 필요한 정책과 보도를 정리해 전합니다.
       </p>
       <div class="hero__actions">
         <a class="btn btn--lime" href="#info">
-          청소년 소식 보기
+          보도·정책 브리핑
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        <a class="btn btn--ghost" href="#ministry">사역·캠프 안내</a>
+        <a class="btn btn--ghost" href="#ministry">4대 사역 프로그램</a>
       </div>
     </div>
 
@@ -290,11 +301,39 @@
       <div class="container">
         <ul class="hero__stats">
           <li class="hero__stat"><b>1997</b><span>선교회 설립 · 청소년 사역 시작</span></li>
-          <li class="hero__stat"><b>4대 사역</b><span>동아리 · 캠프 · 상담 · 강의</span></li>
-          <li class="hero__stat"><b>13편</b><span>지포커스예배 설교 아카이브</span></li>
-          <li class="hero__stat"><b>제46차</b><span>청소년 바이블컨퍼런스</span></li>
+          <li class="hero__stat"><b>4</b><span>사역 프로그램 — 동아리·캠프·상담·강의</span></li>
+          <li class="hero__stat"><b>13</b><span>지포커스예배 설교 아카이브(편)</span></li>
+          <li class="hero__stat"><b>46</b><span>차 청소년 바이블컨퍼런스</span></li>
         </ul>
       </div>
+    </div>
+  </section>
+
+  <!-- ============================ 미션 선언 ============================ -->
+  <section class="mission-band" id="mission" aria-labelledby="missionTitle">
+    <div class="container">
+      <div class="mission-band__head">
+        <span class="eyebrow">Mission &amp; Vision</span>
+        <h2 id="missionTitle" class="visually-hidden">선교회 미션과 비전</h2>
+      </div>
+      <div class="mission-band__grid">
+        <div class="mission-band__item">
+          <b>미션</b>
+          <p>청소년이 복음 안에서 자기 삶의 자리를 찾도록, 가정·학교·교회와 함께 섬깁니다.</p>
+        </div>
+        <div class="mission-band__item">
+          <b>비전</b>
+          <p>다음 세대가 교회와 사회에서 신실한 그리스도인으로 서는 것.</p>
+        </div>
+        <div class="mission-band__item">
+          <b>일하는 방식</b>
+          <p>현장에서 만나고, 오래 기다리고, 상담의 비밀을 지킵니다.</p>
+        </div>
+      </div>
+      <p class="mission-band__foot">
+        1997년 3월 23일 설립 · 대표 박재용 목사 · 사단법인 GV청소년문화교육원
+        <a class="sec-link" href="#ceo">기관 소개 보기 <span aria-hidden="true">→</span></a>
+      </p>
     </div>
   </section>
 
@@ -303,11 +342,11 @@
     <div class="container">
       <div class="sec-head sec-head--row">
         <div class="sec-head__text">
-          <span class="eyebrow">Youth News &amp; Policy</span>
-          <h2 id="infoTitle">청소년 소식 · 정보 허브</h2>
+          <span class="eyebrow">Briefing</span>
+          <h2 id="infoTitle">보도·정책 브리핑</h2>
           <p>
-            국내·해외 청소년 뉴스와 신문기사, 청소년정책, 정부혜택, 교육부·수능 소식까지 —
-            청소년과 학부모, 교사가 함께 볼 소식을 분야별로 모았습니다.
+            청소년·교육 분야 언론 보도와 정책 자료, 정부 지원 소식을 분야별로 정리해 전합니다.
+            청소년과 학부모, 교사가 사실에 기대어 판단할 수 있도록 출처를 함께 밝힙니다.
           </p>
         </div>
         <div class="news-tools">
@@ -340,7 +379,7 @@
         <div id="leadSlot"><!-- 리드 카드 --></div>
         <aside class="headline-panel" aria-labelledby="headlineTitle">
           <div class="headline-panel__head">
-            <h3 id="headlineTitle">주요 소식</h3>
+            <h3 id="headlineTitle">주요 브리핑</h3>
             <span id="headlineCount">5</span>
           </div>
           <ol class="headline-list" id="headlineList"><!-- JS 렌더 --></ol>
@@ -350,7 +389,7 @@
       <!-- 최신 소식 -->
       <div class="latest" id="latestBlock">
         <div class="latest__head">
-          <h3 id="latestTitle">최신 소식</h3>
+          <h3 id="latestTitle">분야별 브리핑</h3>
           <p id="latestCount">22건</p>
           <a class="latest__jump" href="#info">분야별로 보기 <span aria-hidden="true">→</span></a>
         </div>
@@ -389,8 +428,8 @@
     <div class="container">
       <div class="sec-head sec-head--row">
         <div class="sec-head__text">
-          <span class="eyebrow">Ministry</span>
-          <h2 id="ministryTitle">GV청소년선교회 4대 사역</h2>
+          <span class="eyebrow">Programs</span>
+          <h2 id="ministryTitle">4대 사역 프로그램</h2>
           <p>동아리에서 만나고, 캠프에서 함께 부딪히고, 상담실에서 이야기를 듣고, 강단에서 알려 줍니다. 아이들이 스스로 서는 데 필요한 네 갈래 길입니다.</p>
         </div>
         <a class="sec-link" href="#contact">사역 문의 <span aria-hidden="true">→</span></a>
@@ -445,7 +484,7 @@
               <div>
                 <p class="t">제46차 청소년 바이블컨퍼런스</p>
                 <p class="d">2027. 1. 14(목)–16(토) · 승동기도원</p>
-                <button class="link-btn" type="button" data-open-modal>포스터·상세 보기 →</button>
+                <a class="link-btn" href="bible-conference.html">포스터·상세 보기 →</a>
               </div>
             </div>
             <p class="m-card__note">
@@ -511,6 +550,46 @@
           </div>
         </article>
       </div>
+    </div>
+  </section>
+
+  <!-- ============================ 협력·파트너 ============================ -->
+  <section class="section partners" id="partners" aria-labelledby="partnersTitle">
+    <div class="container">
+      <div class="sec-head sec-head--row">
+        <div class="sec-head__text">
+          <span class="eyebrow">Partners</span>
+          <h2 id="partnersTitle">협력·파트너</h2>
+          <p>
+            청소년 사역은 한 기관의 힘으로 되지 않습니다. 함께하는 교회와 학교·교육 기관,
+            후원·자원봉사자의 자리를 두고 있습니다.
+          </p>
+        </div>
+        <a class="sec-link" href="#contact">협력 문의 <span aria-hidden="true">→</span></a>
+      </div>
+      <ul class="partner-grid">
+        <li class="partner">
+          <b>01</b>
+          <h3>협력 교회</h3>
+          <p>청소년을 지역 교회로 연결하고, 교회학교 교사·지도자와 함께 사역합니다.</p>
+          <span class="partner__flag">명단 확인 중</span>
+        </li>
+        <li class="partner">
+          <b>02</b>
+          <h3>학교·교육 기관</h3>
+          <p>예방교육과 상담 연계로 학교 현장의 청소년을 만납니다.</p>
+          <span class="partner__flag">명단 확인 중</span>
+        </li>
+        <li class="partner">
+          <b>03</b>
+          <h3>후원·자원봉사</h3>
+          <p>캠프와 상담 사역을 함께 짊어질 후원자·자원봉사자를 기다립니다.</p>
+          <span class="partner__flag">모집 확인 중</span>
+        </li>
+      </ul>
+      <p class="partners__note">
+        ※ 협력 기관·후원자 명단은 확인되는 대로 이 자리에 게재합니다. 함께하실 기관·개인은 문의로 연락 주시면 안내드립니다.
+      </p>
     </div>
   </section>
 
@@ -908,6 +987,8 @@
         </div>
         <div class="footer__col">
           <h5>선교회</h5>
+          <a href="bible-conference.html">바이블컨퍼런스</a>
+          <a href="vision-conference.html">비전컨퍼런스</a>
           <a href="#ministry">4대 사역</a>
           <a href="#ceo">대표소개</a>
           <a href="#history">연혁</a>
@@ -940,59 +1021,13 @@
     <div class="footer__bottom">
       <p>© 2026 GV청소년선교회. All rights reserved.</p>
       <p>
-        본 페이지는 세 번째 시안(v3)입니다. 연혁·지포커스예배는 기존 사이트의 실제 자료를 옮겼고,
+        본 페이지는 네 번째 시안(v4 · 기관 톤)입니다. 연혁·지포커스예배는 기존 사이트의 실제 자료를 옮겼고,
         정기예배 시간·섬기는 사람 명단은 확인 후 채워집니다.<br />
         활동 사진은 사역 현장의 분위기를 전하기 위해 제작한 이미지이며, 소식 카드는 정보 구조를 보여 드리기 위한 시안 예시입니다.
       </p>
     </div>
   </div>
 </footer>
-
-<!-- ============================ 컨퍼런스 모달 ============================ -->
-<div class="modal" id="confModal" role="dialog" aria-modal="true" aria-labelledby="confModalTitle" hidden>
-  <div class="modal__panel" role="document">
-    <button class="modal__close" type="button" data-close-modal aria-label="닫기">✕</button>
-    <div class="modal__body">
-      <div class="modal__poster">
-        <img src="assets/bible-conf-46-web.jpg" alt="제46차 청소년 바이블컨퍼런스 포스터 — THE CHRISTIAN, More Like Jesus, 2027년 1월 14일부터 16일까지 승동기도원" width="1000" height="1409" />
-      </div>
-      <div class="modal__content">
-        <p class="modal__kicker">제46차 청소년 바이블컨퍼런스 · THE CHRISTIAN</p>
-        <h3 id="confModalTitle">More Like Jesus — 말씀으로 발견하는 정체성, 삶으로 이어지는 믿음</h3>
-        <p class="theme">갈라디아서 2:20</p>
-
-        <dl class="modal__facts">
-          <div class="fact"><dt>일정</dt><dd>2027년 1월 14일(목) ~ 16일(토)<small>2박 3일</small></dd></div>
-          <div class="fact"><dt>장소</dt><dd>승동기도원<small>경기도 가평군 가평읍 경반안로 261</small></dd></div>
-          <div class="fact"><dt>회비</dt><dd>90,000원</dd></div>
-          <div class="fact"><dt>전도강사</dt><dd>박재용 목사 외 6인<small>연사 명단은 포스터 하단 참조 · 사정에 따라 변경될 수 있습니다</small></dd></div>
-          <div class="fact"><dt>워십</dt><dd>A-MEN</dd></div>
-          <div class="fact"><dt>문의</dt><dd><a href="tel:024291318">02-429-1318</a><small>담당 전자옥 전도사 010-6491-3683</small></dd></div>
-        </dl>
-
-        <div class="modal__programs">
-          <span class="pill">지도자세미나</span>
-          <span class="pill">말씀 집회</span>
-          <span class="pill">팀미션</span>
-          <span class="pill">사역자 결의식</span>
-          <span class="pill">CELEBRATE</span>
-        </div>
-
-        <div class="modal__verse">
-          <b>갈라디아서 2:20</b>
-          내가 그리스도와 함께 십자가에 못 박혔나니 그런즉 이제는 내가 사는 것이 아니요 오직 내 안에 그리스도께서 사시는 것이라
-          이제 내가 육체 가운데 사는 것은 나를 사랑하사 나를 위하여 자기 자신을 버리신 하나님의 아들을 믿는 믿음 안에서 사는 것이라
-        </div>
-
-        <div class="modal__actions">
-          <a class="btn btn--primary btn--sm" href="tel:024291318">참가 문의 02-429-1318</a>
-          <a class="btn btn--outline btn--sm" href="mailto:aichurchsystem@gmail.com?subject=%5B%EC%A0%9C46%EC%B0%A8%20%EC%B2%AD%EC%86%8C%EB%85%84%20%EB%B0%94%EC%9D%B4%EB%B8%94%EC%BB%A8%ED%8D%BC%EB%9F%B0%EC%8A%A4%5D%20%EC%B0%B8%EA%B0%80%20%EB%AC%B8%EC%9D%98">이메일 문의</a>
-        </div>
-        <p class="modal__fine">※ 접수 기간·신청 방법은 포스터에 별도 표기되어 있지 않습니다. 전화로 확인해 주세요.</p>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- ============================ 소식 상세 모달 ============================ -->
 <div class="modal modal--news" id="newsModal" role="dialog" aria-modal="true" aria-labelledby="newsModalTitle" hidden>

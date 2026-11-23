@@ -237,6 +237,10 @@
   var PAGE = 6;
   var state = { tab: 'all', q: '', shown: PAGE };
 
+  /* 정보 허브가 있는 페이지(index)에서만 허브 스크립트를 켭니다. */
+  var HUB = !!(leadSlot && newsLead && headlineList && headlineCount && latestBlock &&
+    latestCount && grid && statusEl && emptyEl && loadMore && searchInput && searchWrap && searchClear);
+
   function leadHTML(a) {
     var c = CATS[a.cat];
     return '' +
@@ -366,7 +370,7 @@
     render();
   }
 
-  tabs.forEach(function (t) {
+  if (HUB) tabs.forEach(function (t) {
     t.addEventListener('click', function () { selectTab(t.getAttribute('data-tab')); });
     t.addEventListener('keydown', function (e) {
       var i = tabs.indexOf(t);
@@ -378,12 +382,12 @@
     });
   });
 
-  loadMore.addEventListener('click', function () {
+  if (HUB) loadMore.addEventListener('click', function () {
     state.shown += PAGE;
     render();
   });
 
-  searchInput.addEventListener('input', function () {
+  if (HUB) searchInput.addEventListener('input', function () {
     state.q = searchInput.value;
     state.shown = PAGE;
     searchWrap.classList.toggle('has-value', !!searchInput.value);
@@ -396,7 +400,7 @@
     render();
   });
 
-  searchClear.addEventListener('click', function () {
+  if (HUB) searchClear.addEventListener('click', function () {
     searchInput.value = '';
     state.q = '';
     state.shown = PAGE;
@@ -405,11 +409,20 @@
     searchInput.focus();
   });
 
-  paintCounts();
-  render();
+  if (HUB) {
+    paintCounts();
+    render();
+
+    /* 다른 페이지의 메뉴에서 index.html?tab=news#info 로 들어오면 그 분류를 펼칩니다. */
+    var wantTab = '';
+    try {
+      wantTab = new URLSearchParams(window.location.search).get('tab') || '';
+    } catch (e) { wantTab = ''; }
+    if (wantTab && (wantTab === 'all' || CATS[wantTab])) selectTab(wantTab);
+  }
 
   /* 메뉴·푸터에서 특정 분류로 바로 가기 */
-  Array.prototype.forEach.call(document.querySelectorAll('[data-goto-tab]'), function (el) {
+  if (HUB) Array.prototype.forEach.call(document.querySelectorAll('[data-goto-tab]'), function (el) {
     el.addEventListener('click', function () {
       selectTab(el.getAttribute('data-goto-tab'));
       closeMobileMenu();
@@ -418,12 +431,13 @@
 
   /* 헤더 검색 버튼 → 허브 검색으로 이동 */
   var headerSearch = byId('headerSearch');
-  if (headerSearch) {
+  if (headerSearch && HUB) {
     headerSearch.addEventListener('click', function () {
       var target = byId('info');
-      if (target) document.getElementById('infoSearch').focus({ preventScroll: true });
+      var field = byId('infoSearch');
+      if (field) field.focus({ preventScroll: true });
       window.scrollTo({ top: target ? target.offsetTop - 90 : 0, behavior: 'smooth' });
-      window.setTimeout(function () { searchInput.focus({ preventScroll: true }); }, 420);
+      window.setTimeout(function () { if (field) field.focus({ preventScroll: true }); }, 420);
     });
   }
 
@@ -436,7 +450,7 @@
   var newsModal = byId('newsModal');
 
   function trapFocus(e) {
-    var open = !confModal.hidden ? confModal : (!newsModal.hidden ? newsModal : null);
+    var open = (confModal && !confModal.hidden) ? confModal : ((newsModal && !newsModal.hidden) ? newsModal : null);
     if (!open) return;
     if (e.key === 'Tab') {
       var f = open.querySelectorAll('a[href], button:not([disabled])');
@@ -447,10 +461,12 @@
     }
   }
 
-  function anyOpen() { return !confModal.hidden || !newsModal.hidden; }
+  function anyOpen() {
+    return !!((confModal && !confModal.hidden) || (newsModal && !newsModal.hidden));
+  }
 
   function openModal(el) {
-    if (anyOpen()) return;
+    if (!el || anyOpen()) return;
     lastFocused = document.activeElement;
     el.hidden = false;
     document.body.style.overflow = 'hidden';
@@ -468,20 +484,20 @@
     btn.addEventListener('click', function (e) {
       e.preventDefault();
       closeMobileMenu();
-      openModal(confModal);
+      if (confModal) openModal(confModal);
     });
   });
 
   Array.prototype.forEach.call(document.querySelectorAll('[data-close-modal]'), function (btn) {
-    btn.addEventListener('click', function () { closeModal(confModal); });
+    btn.addEventListener('click', function () { if (confModal) closeModal(confModal); });
   });
 
   Array.prototype.forEach.call(document.querySelectorAll('[data-close-news]'), function (btn) {
-    btn.addEventListener('click', function () { closeModal(newsModal); });
+    btn.addEventListener('click', function () { if (newsModal) closeModal(newsModal); });
   });
 
-  confModal.addEventListener('click', function (e) { if (e.target === confModal) closeModal(confModal); });
-  newsModal.addEventListener('click', function (e) { if (e.target === newsModal) closeModal(newsModal); });
+  if (confModal) confModal.addEventListener('click', function (e) { if (e.target === confModal) closeModal(confModal); });
+  if (newsModal) newsModal.addEventListener('click', function (e) { if (e.target === newsModal) closeModal(newsModal); });
 
   /* 소식 상세 열기 */
   function openNews(id) {
@@ -514,8 +530,8 @@
 
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
-      if (!confModal.hidden) closeModal(confModal);
-      else if (!newsModal.hidden) closeModal(newsModal);
+      if (confModal && !confModal.hidden) closeModal(confModal);
+      else if (newsModal && !newsModal.hidden) closeModal(newsModal);
       else closeMobileMenu();
     }
     if (anyOpen()) trapFocus(e);
@@ -564,7 +580,7 @@
   });
 
   window.addEventListener('resize', function () {
-    if (window.innerWidth > 980) closeMobileMenu();
+    if (window.innerWidth > 1180) closeMobileMenu();
   });
 
   /* ----------------------------------------------------------------------
@@ -611,6 +627,47 @@
   });
 
   document.addEventListener('click', function () { closeDropdowns(null); });
+
+  /* ----------------------------------------------------------------------
+     8. 포스터 크게 보기 (컨퍼런스 페이지)
+     ---------------------------------------------------------------------- */
+  var posterModal = byId('posterModal');
+  var zoomTriggers = document.querySelectorAll('[data-poster-zoom]');
+  if (posterModal && zoomTriggers.length) {
+    var lastZoomFocus = null;
+    var zoomImg = posterModal.querySelector('img');
+
+    function openPoster(src) {
+      if (zoomImg && src) zoomImg.src = src;
+      lastZoomFocus = document.activeElement;
+      posterModal.hidden = false;
+      document.body.classList.add('zoom-open');
+      var closeBtn = posterModal.querySelector('[data-close-poster]');
+      if (closeBtn) closeBtn.focus();
+    }
+
+    function closePoster() {
+      posterModal.hidden = true;
+      document.body.classList.remove('zoom-open');
+      if (lastZoomFocus && lastZoomFocus.focus) lastZoomFocus.focus();
+    }
+
+    Array.prototype.forEach.call(zoomTriggers, function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        var inner = el.querySelector('img');
+        openPoster(el.getAttribute('data-zoom-src') || (inner ? inner.getAttribute('src') : ''));
+      });
+    });
+
+    posterModal.addEventListener('click', function (e) {
+      if (e.target === posterModal || (e.target.closest && e.target.closest('[data-close-poster]'))) closePoster();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !posterModal.hidden) closePoster();
+    });
+  }
 
   /* ----------------------------------------------------------------------
      7. 헤더 그림자 & 등장 애니메이션
