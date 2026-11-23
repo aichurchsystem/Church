@@ -5,70 +5,75 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>preview</title>
 <style>
-  html, body { margin: 0; padding: 0; background: #fff; }
-  iframe { border: 0; display: block; }
+  html, body { margin: 0; padding: 0; background: #eee; }
+  #host { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; }
+  iframe { border: 0; display: block; background: #fff; }
 </style>
 </head>
 <body>
 <div id="host"></div>
 <script>
-/* 임시 미리보기 틀 — 폭(w)·높이(h)를 정해 페이지를 iframe으로 띄우고,
-   그 안의 문서 폭·높이와 넘침 요소를 window.__metrics 로 남긴다.
-   다 쓰면 이 파일은 지운다. */
+/* 임시 미리보기 틀
+   ?f=index.html,390,844,0;archive.html,1280,460,0
+     (파일, 폭, 높이, 안에서 스크롤할 위치) 여러 개를 나란히·줄바꿈해 띄운다.
+   ?w=390&h=844&url=index.html&y=0  한 개만 띄운다(예전 방식).
+   &hide=1 화면에서 감춤(측정만) / &aria=1 접근성 트리에서 감춤
+   측정값은 window.__metrics 에 남는다. 다 쓰면 이 파일은 지운다. */
 (function () {
   var q = new URLSearchParams(location.search);
-  var w = parseInt(q.get('w') || '390', 10);
-  var h = parseInt(q.get('h') || '844', 10);
-  var url = q.get('url') || 'index.html';
-  var y = parseInt(q.get('y') || '0', 10);
+  var host = document.getElementById('host');
+  var spec = q.get('f');
+  var list = [];
+  if (spec) {
+    spec.split(';').forEach(function (part) {
+      var a = part.split(',');
+      list.push({ url: a[0], w: parseInt(a[1] || '390', 10), h: parseInt(a[2] || '844', 10), y: parseInt(a[3] || '0', 10) });
+    });
+  } else {
+    list.push({
+      url: q.get('url') || 'index.html',
+      w: parseInt(q.get('w') || '390', 10),
+      h: parseInt(q.get('h') || '844', 10),
+      y: parseInt(q.get('y') || '0', 10)
+    });
+  }
+  var metrics = [];
+  var pending = list.length;
 
-  var f = document.createElement('iframe');
-  f.width = w; f.height = h;
-  if (q.get('hide') === '1') f.style.visibility = 'hidden';
-  if (q.get('aria') === '1') f.setAttribute('aria-hidden', 'true');
-  /* 캐시에 남은 옛 문서를 피하려고 매번 다른 cb 값을 붙인다 */
-  f.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'cb=' + Date.now();
-  document.getElementById('host').appendChild(f);
+  list.forEach(function (item) {
+    var f = document.createElement('iframe');
+    f.width = item.w;
+    f.height = item.h;
+    if (q.get('hide') === '1') f.style.visibility = 'hidden';
+    if (q.get('aria') === '1') f.setAttribute('aria-hidden', 'true');
+    f.src = item.url + (item.url.indexOf('?') < 0 ? '?' : '&') + 'cb=' + Date.now();
+    host.appendChild(f);
 
-  f.addEventListener('load', function () {
-    setTimeout(function () {
-      var d = f.contentDocument, win = f.contentWindow;
-      try { win.scrollTo(0, y); } catch (e) {}
+    f.addEventListener('load', function () {
       setTimeout(function () {
-        var docEl = d.documentElement;
-        var over = [];
-        var all = d.querySelectorAll('body *');
-        for (var i = 0; i < all.length; i++) {
-          var el = all[i], r = el.getBoundingClientRect();
-          if (r.width > 0 && r.right > docEl.clientWidth + 0.5) {
-            over.push({
-              tag: el.tagName.toLowerCase(),
-              cls: (el.className && el.className.toString()) || '',
-              right: Math.round(r.right),
-              w: Math.round(r.width)
-            });
+        var d = f.contentDocument, win = f.contentWindow;
+        try { win.scrollTo(0, item.y); } catch (e) {}
+        setTimeout(function () {
+          var docEl = d.documentElement;
+          var over = [];
+          var all = d.querySelectorAll('body *');
+          for (var i = 0; i < all.length; i++) {
+            var el = all[i], r = el.getBoundingClientRect();
+            if (r.width > 0 && r.right > docEl.clientWidth + 0.5) {
+              over.push(el.tagName.toLowerCase() + '.' + ((el.className || '').toString()) + '@' + Math.round(r.right));
+            }
           }
-        }
-        function hOf(id) {
-          var el = d.getElementById(id);
-          return el ? Math.round(el.getBoundingClientRect().height) : null;
-        }
-        window.__metrics = {
-          url: url,
-          viewport: win.innerWidth,
-          iframeHeight: h,
-          clientWidth: docEl.clientWidth,
-          scrollWidth: docEl.scrollWidth,
-          docHeight: docEl.scrollHeight,
-          infoHeight: hOf('info'),
-          heroHeight: hOf('heroTitle') ? Math.round(d.querySelector('.hero').getBoundingClientRect().height) : null,
-          missionHeight: hOf('mission'),
-          overflowCount: over.length,
-          overflow: over.slice(0, 10)
-        };
-        document.title = 'w' + win.innerWidth + ' scroll' + docEl.scrollWidth + ' doc' + docEl.scrollHeight;
+          metrics.push({
+            url: item.url, w: item.w, y: item.y,
+            clientWidth: docEl.clientWidth, scrollWidth: docEl.scrollWidth,
+            docHeight: docEl.scrollHeight, overflow: over.slice(0, 6), overflowCount: over.length
+          });
+          window.__metrics = metrics;
+          pending -= 1;
+          if (!pending) document.title = 'ready ' + metrics.length;
+        }, 500);
       }, 500);
-    }, 600);
+    });
   });
 })();
 </script>
