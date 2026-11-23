@@ -4048,3 +4048,17 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   .footer__addr { line-height: 1.65; }
   .footer__sns { margin-top: 12px; padding-top: 12px; }
 }
+
+/* v7d — 모바일 마지막 미세 조임(문단 행간·작은 여백) */
+@media (max-width: 760px) {
+  .section { padding: 20px 0; }
+  .sec-head { margin-bottom: 16px; }
+  .timeline__item { padding: 4px 0; }
+  .panel p, .panel li, .panel__text { line-height: 1.62; }
+  .contact__card li { line-height: 1.65; }
+  .partner p { line-height: 1.6; }
+  .m-card__note { font-size: 13.2px; }
+  .briefing__note { margin-top: 10px; }
+  .footer__top { gap: 20px; }
+  .footer__col h5 { margin-bottom: 6px; }
+}
