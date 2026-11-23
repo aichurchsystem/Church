@@ -5092,3 +5092,7 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   .brief-row { max-width: 100%; }
   html, body { overflow-x: hidden; }
 }
+
+/* 학력 4항목 — 번호 4개, 한 줄씩 균일 간격 */
+.ph-edu--four li { grid-template-columns: 40px minmax(0, 1fr); gap: 12px; padding: 12px 0; }
+.ph-edu--four li:last-child { border-bottom: none; }
