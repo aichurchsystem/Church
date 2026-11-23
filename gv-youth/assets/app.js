@@ -23,12 +23,53 @@
 
   var ARTICLES = [
     {
+      id: 'benefit-sanitary-voucher-2026',
+      cat: 'benefit',
+      title: '여성청소년 생리용품 이용권, 12월 24일 신청·연말 사용 마감',
+      desc: '만 9~24세 취약계층 여성청소년에게 월 1만 4천 원(연 최대 16만 8천 원)을 지원하는 이용권의 올해 잔액이 12월 31일 이후 자동 소멸합니다. 아직 신청하지 않은 대상자는 12월 24일까지 행정복지센터나 복지로에서 신청할 수 있으며, 사용처도 다이소·올리브영 등 104곳으로 확대되었습니다. 카드사별로 이용 가능한 온라인·오프라인 가맹점이 다르므로 결제 전 사용처를 확인하는 것이 좋습니다.',
+      source: '성평등가족부·한겨레 (2026-11-22)',
+      url: 'https://www.hani.co.kr/arti/society/society_general/1288472.html'
+    },
+    {
+      id: 'policy-goe-youth-council-2026',
+      cat: 'policy',
+      title: '경기도교육청, ‘2026 지역청소년교육의회 정책 공유 온’ 개최',
+      desc: '경기도 내 26개 지역청소년교육의회 학생의원과 교원·학부모 등 200여 명이 모여 1년간의 정책 제안과 사회참여 성과를 나눴습니다. 학생들은 교육격차 해소 배움다리, 학생참여단 확대, 지역 연계 청소년 문화공간 조성 등 현장에서 발굴한 정책을 직접 발표했습니다. 경기도교육청은 이번 제안들을 자료집으로 엮어 실제 경기교육 정책으로 이어지도록 지원할 계획입니다.',
+      source: '경기도교육청 (2026-11-22)',
+      url: 'https://www.goe.go.kr/goe/na/ntt/selectNttInfo.do?bbsId=1922&mi=10102&nttSn=2382412'
+    },
+    {
+      id: 'paper-post-csat-depression-2026',
+      cat: 'paper',
+      title: '수능 이후 수험생 ‘시험 후유증’…2주 이상 우울감 지속 시 상담 필요',
+      desc: '수능이 끝난 뒤 오랜 긴장이 풀리면서 허탈감이나 무기력, 우울감을 호소하는 수험생이 많아 가정의 세심한 관심이 필요한 시기입니다. 전문가는 성적 비교나 진학 재촉을 피하고 일정한 수면·일상 리듬을 유지하며 그동안의 노력을 충분히 인정해 줄 것을 권했습니다. 우울감이 2주 이상 이어지거나 일상생활이 어렵다면 전문의 상담이나 도움을 받는 것이 좋습니다.',
+      source: '헬스조선 (2026-11-22)',
+      url: 'https://health.chosun.com/site/data/html_dir/2026/11/20/2026112003054.html'
+    },
+    {
+      id: 'edu-ulsan-wee-recovery-2026',
+      cat: 'edu',
+      title: '울산교육청, 수능 마친 고3 대상 찾아가는 마음 회복 지원',
+      desc: '울산교육청 힐링 위(Wee) 센터가 11월 23일부터 12월 9일까지 지역 고3 27개 학급을 대상으로 맞춤형 체험 집단 상담을 운영합니다. 전문 강사가 학교를 찾아가 맞춤 색상 진단과 나만의 향수 만들기 활동을 진행하며 수험 생활 스트레스를 덜어 줍니다. 성인기로 넘어가는 시기에 자신을 돌아보고 정서적 안정을 찾도록 돕는 취지입니다.',
+      source: '울산매일·울산교육청 (2026-11-22)',
+      url: 'https://www.iusm.co.kr/news/articleView.html?idxno=1070844'
+    },
+    {
+      id: 'news-unfpa-swp-2026',
+      cat: 'news',
+      title: '유엔인구기금(UNFPA), 아태지역 청년·청소년 기회 확대 촉구',
+      desc: '유엔인구기금이 2026 세계인구현황 보고서 발표를 통해 아시아·태평양 지역 약 10억 명의 청년·청소년이 경제적 불안과 불평등에 놓여 있다고 밝혔습니다. 전 세계 청년 5명 중 1명이 교육·고용·훈련 밖에 있으며, 특히 여성 청년의 비중이 남성보다 두 배 이상 높은 것으로 나타났습니다. 보고서는 교육과 양질의 일자리 투자, 정책 결정 과정에서의 실질적인 청소년·청년 참여를 각국 정부에 요청했습니다.',
+      source: '유엔인구기금 아시아태평양지역사무소 (2026-11-23)',
+      url: 'https://asro.unfpa.org/en/news/unfpa-calls-urgent-action-protect-young-peoples-futures-asia-pacific'
+    },
+    {
       id: 'edu-2028-admission',
       cat: 'edu',
       title: '2028학년도 대입 개편 — 통합형 수능과 심화수학 선택',
       desc: '수능·내신 체제 변화와 선택과목 구조가 발표되면서, 고교 교육과정과 진로 설계가 함께 조정되고 있습니다. 학생과 학부모가 확인해야 할 핵심 변화를 정리했습니다.',
       source: '교육부',
-      url: 'https://www.moe.go.kr'
+      url: 'https://www.moe.go.kr',
+      sample: true
     },
     {
       id: 'news-media-literacy',
@@ -36,7 +77,8 @@
       title: '숏폼·AI 콘텐츠 시대, 청소년 미디어 리터러시 교육 확대',
       desc: '짧은 영상과 생성형 AI가 일상이 되면서, 비판적으로 읽고 책임 있게 쓰는 힘을 기르는 교육이 학교와 가정에서 함께 논의되고 있습니다.',
       source: '한국청소년정책연구원',
-      url: 'https://www.nypi.re.kr'
+      url: 'https://www.nypi.re.kr',
+      sample: true
     },
     {
       id: 'paper-career-experience',
@@ -44,7 +86,8 @@
       title: '고교생 진로·진학, ‘학과 선택’보다 ‘경험 설계’가 관건',
       desc: '학생부 중심의 대입 변화 속에 청소년이 스스로 경험을 쌓고 기록하는 활동의 중요성이 커지고 있습니다.',
       source: '에듀동아',
-      url: 'https://edu.donga.com'
+      url: 'https://edu.donga.com',
+      sample: true
     },
     {
       id: 'policy-7th-plan',
@@ -52,7 +95,8 @@
       title: '제7차 청소년정책기본계획, 청소년 참여와 권리 보장 중심',
       desc: '정책 결정 과정에 청소년이 직접 참여하는 구조와 청소년의 권리 보장이 정책의 중심 과제로 다뤄지고 있습니다.',
       source: '여성가족부',
-      url: 'https://www.mogef.go.kr'
+      url: 'https://www.mogef.go.kr',
+      sample: true
     },
     {
       id: 'benefit-1388',
@@ -60,7 +104,8 @@
       title: '청소년상담 1388 — 24시간 전화·문자·카톡 상담',
       desc: '고민이 있거나 위기 상황일 때 청소년과 보호자가 무료로 상담받을 수 있는 채널입니다. 급하면 먼저 1388로 연락하세요.',
       source: '청소년상담복지 1388',
-      url: 'https://www.1388.go.kr'
+      url: 'https://www.1388.go.kr',
+      sample: true
     },
     {
       id: 'edu-credit-system',
@@ -68,7 +113,8 @@
       title: '고교학점제 안착 지원 — 선택과목·진로 설계 자료',
       desc: '학생이 자신의 진로에 맞춰 과목을 고르는 고교학점제의 운영 지원과 진로·학업 설계 자료가 이어지고 있습니다.',
       source: '교육부',
-      url: 'https://www.moe.go.kr'
+      url: 'https://www.moe.go.kr',
+      sample: true
     },
     {
       id: 'news-school-age',
@@ -76,7 +122,8 @@
       title: '학령인구 감소, 지역 청소년 사역의 새로운 과제로',
       desc: '청소년 인구가 줄면서 지역 교회와 청소년 기관이 소수 정예 사역과 지역 연합 사역을 모색하고 있습니다.',
       source: '국가통계포털(KOSIS)·언론 보도',
-      url: 'https://kosis.kr'
+      url: 'https://kosis.kr',
+      sample: true
     },
     {
       id: 'paper-student-mind',
@@ -84,7 +131,8 @@
       title: '학생 기자가 본 교실 안 마음 건강 — 또래 상담의 문턱',
       desc: '학생 기자들이 또래의 스트레스와 상담 접근성 문제를 취재한 기획 기사가 이어지고 있습니다.',
       source: '소년한국일보',
-      url: 'https://kids.hankooki.com'
+      url: 'https://kids.hankooki.com',
+      sample: true
     },
     {
       id: 'policy-dream',
@@ -92,7 +140,8 @@
       title: '학교 밖 청소년 지원 — 꿈드림 센터의 검정고시·자립 지원',
       desc: '검정고시, 진로 탐색, 자립 지원을 학교 밖 청소년에게 연결하는 지역 꿈드림 센터의 역할이 커지고 있습니다.',
       source: '여성가족부 꿈드림',
-      url: 'https://www.mogef.go.kr'
+      url: 'https://www.mogef.go.kr',
+      sample: true
     },
     {
       id: 'benefit-out-of-school',
@@ -100,7 +149,8 @@
       title: '학교 밖·취약계층 청소년 — 검정고시·자립·건강검진 지원',
       desc: '꿈드림 센터를 통해 검정고시 지원, 자립 지원, 건강검진 등 본인에게 맞는 지원을 안내받을 수 있습니다.',
       source: '여성가족부',
-      url: 'https://www.mogef.go.kr'
+      url: 'https://www.mogef.go.kr',
+      sample: true
     },
     {
       id: 'edu-csat-after',
@@ -108,7 +158,8 @@
       title: '수능 이후 진학 일정 — 정시·수시 지원 전략 점검',
       desc: '수험생과 학부모가 놓치기 쉬운 원서 접수 일정과 지원 전략을 교육청·학교 진학 자료에서 확인할 수 있습니다.',
       source: '교육부·한국교육과정평가원',
-      url: 'https://www.moe.go.kr'
+      url: 'https://www.moe.go.kr',
+      sample: true
     },
     {
       id: 'news-overseas-relation',
@@ -116,7 +167,8 @@
       title: '해외 청소년 사역, 행사 중심에서 ‘관계 중심’으로',
       desc: '대규모 집회에서 소그룹·멘토링으로 사역 구조를 바꾸는 해외 교회 사례가 늘고 있습니다. 국내 다음 세대 사역에도 시사점이 큽니다.',
       source: '해외 교회·선교 동향',
-      url: 'https://www.korea.kr'
+      url: 'https://www.korea.kr',
+      sample: true
     },
     {
       id: 'paper-culture-space',
@@ -124,7 +176,8 @@
       title: '지역 청소년 문화 공간, ‘방과 후 거실’로 다시 주목',
       desc: '청소년 문화의 집과 자유공간이 방과 후 돌봄과 활동의 거점으로 다시 조명받고 있습니다.',
       source: '한국일보',
-      url: 'https://www.hankookilbo.com'
+      url: 'https://www.hankookilbo.com',
+      sample: true
     },
     {
       id: 'policy-echung',
@@ -132,7 +185,8 @@
       title: '청소년 활동 정보, e청소년에서 지역별로 한눈에',
       desc: '지역별 청소년 활동 프로그램과 동아리, 수련시설 정보를 한곳에서 확인할 수 있습니다.',
       source: 'e청소년 (청소년활동정보서비스)',
-      url: 'https://www.youth.go.kr'
+      url: 'https://www.youth.go.kr',
+      sample: true
     },
     {
       id: 'benefit-culture-card',
@@ -140,7 +194,8 @@
       title: '문화누리카드 — 청소년 문화·체험비 지원 신청 안내',
       desc: '공연·전시·도서·여행 할인과 청소년 대상 문화 지원 제도를 신청 자격과 함께 확인할 수 있습니다.',
       source: '문화체육관광부·한국문화예술위원회',
-      url: 'https://www.mcst.go.kr'
+      url: 'https://www.mcst.go.kr',
+      sample: true
     },
     {
       id: 'edu-mind-health',
@@ -148,7 +203,8 @@
       title: '학생 마음건강 — 위기학생 지원·상담 연계 강화',
       desc: '학교 상담 인력 확대와 지역 상담기관 연계, 마음건강 검사 등 학생 정서 지원 정책 소식입니다.',
       source: '교육부',
-      url: 'https://www.moe.go.kr'
+      url: 'https://www.moe.go.kr',
+      sample: true
     },
     {
       id: 'news-counseling-access',
@@ -156,7 +212,8 @@
       title: '청소년 마음건강, 학교 밖 상담 접근성 높이는 지역 협력',
       desc: '학교 상담과 지역 청소년상담복지센터를 잇는 협력이 늘면서, 위기 신호를 일찍 발견하려는 시도가 이어지고 있습니다.',
       source: '청소년상담복지 1388·지자체',
-      url: 'https://www.1388.go.kr'
+      url: 'https://www.1388.go.kr',
+      sample: true
     },
     {
       id: 'paper-exam-season',
@@ -164,7 +221,8 @@
       title: '입시 앞둔 고3, 수면·식사 무너지면 먼저 몸을 챙기세요',
       desc: '수험 생활이 길어지면서 수면과 식사를 지키는 기본 관리가 학습 효율과 컨디션을 좌우한다는 조언이 이어집니다.',
       source: '소년한국일보',
-      url: 'https://kids.hankooki.com'
+      url: 'https://kids.hankooki.com',
+      sample: true
     },
     {
       id: 'policy-digital-safety',
@@ -172,7 +230,8 @@
       title: '청소년 유해환경 개선 — 디지털 성범죄·불법촬영물 대응 강화',
       desc: '청소년이 온라인에서 안전하도록 불법촬영물 삭제 지원과 예방 교육, 신고 체계가 함께 강화되고 있습니다.',
       source: '여성가족부·디지털성범죄피해자지원센터',
-      url: 'https://www.mogef.go.kr'
+      url: 'https://www.mogef.go.kr',
+      sample: true
     },
     {
       id: 'benefit-scholarship',
@@ -180,7 +239,8 @@
       title: '국가장학금·교육비 지원 — 신청 시기와 자격 확인',
       desc: '대학 진학을 앞둔 청소년과 학부모가 놓치기 쉬운 장학금과 교육비 지원 제도를 한곳에서 확인할 수 있습니다.',
       source: '교육부·한국장학재단',
-      url: 'https://www.kosaf.go.kr'
+      url: 'https://www.kosaf.go.kr',
+      sample: true
     },
     {
       id: 'edu-neulbom',
@@ -188,7 +248,8 @@
       title: '늘봄학교·방과후 프로그램 운영 확대',
       desc: '초등 돌봄과 방과후 프로그램을 지역과 연계해 넓히는 운영 사례와 지원 계획이 안내되고 있습니다.',
       source: '교육부',
-      url: 'https://www.moe.go.kr'
+      url: 'https://www.moe.go.kr',
+      sample: true
     },
     {
       id: 'edu-school-violence',
@@ -196,7 +257,8 @@
       title: '학교폭력 예방 — 관계 중심 생활교육과 회복 지원',
       desc: '사후 처벌 중심에서 벗어나 관계 회복과 예방 교육을 함께 다루는 학교 현장의 시도가 이어지고 있습니다.',
       source: '교육부',
-      url: 'https://www.moe.go.kr'
+      url: 'https://www.moe.go.kr',
+      sample: true
     }
   ];
 
@@ -248,7 +310,7 @@
         '<div>' +
           '<div class="lead-card__top">' +
             '<span class="chip ' + c.chip + '">' + esc(c.label) + '</span>' +
-            '<span class="chip chip--sample">시안 예시</span>' +
+            (a.sample ? '<span class="chip chip--sample">시안 예시</span>' : '') +
           '</div>' +
           '<h3>' + esc(a.title) + '</h3>' +
           '<p class="lead-card__desc">' + esc(a.desc) + '</p>' +
@@ -281,7 +343,7 @@
       '<article class="info-card reveal" data-article="' + esc(a.id) + '" tabindex="0" role="button" aria-label="' + esc(a.title) + ' — 소식 요약 보기">' +
         '<div class="info-card__top">' +
           '<span class="chip ' + c.chip + '">' + esc(c.label) + '</span>' +
-          '<span class="chip chip--sample">시안 예시</span>' +
+          (a.sample ? '<span class="chip chip--sample">시안 예시</span>' : '') +
         '</div>' +
         '<h4>' + esc(a.title) + '</h4>' +
         '<p class="info-card__desc">' + esc(a.desc) + '</p>' +
@@ -427,8 +489,13 @@
   var briefLead = byId('briefLead');
   var briefCats = byId('briefCats');
 
-  /* 주요 브리핑으로 세울 대표 소식 — 지금은 청소년 정책과 대입 제도 두 건 */
-  var BRIEF_LEAD_IDS = ['policy-7th-plan', 'edu-2028-admission'];
+  /* 대표 브리핑으로 세울 소식 — 실제 수집·게시된 소식 중 최신 두 건을 세우고,
+     실제 소식이 모자라면 시안 예시로 채웁니다. */
+  var BRIEF_LEAD_IDS = (function () {
+    var live = [], sample = [];
+    ARTICLES.forEach(function (a) { (a.sample ? sample : live).push(a.id); });
+    return live.concat(sample).slice(0, 2);
+  })();
   var BRIEF_CAT_ORDER = ['news', 'paper', 'policy', 'benefit', 'edu'];
 
   function briefCardHTML(a) {
@@ -437,7 +504,7 @@
       '<article class="brief-card" data-article="' + esc(a.id) + '" tabindex="0" role="button" aria-label="' + esc(a.title) + ' — 소식 요약 보기">' +
         '<div class="brief-card__top">' +
           '<span class="chip ' + c.chip + '">' + esc(c.label) + '</span>' +
-          '<span class="chip chip--sample">시안 예시</span>' +
+          (a.sample ? '<span class="chip chip--sample">시안 예시</span>' : '') +
         '</div>' +
         '<h4>' + esc(a.title) + '</h4>' +
         '<p class="brief-card__desc">' + esc(a.desc) + '</p>' +
@@ -686,6 +753,10 @@
   if (newsModal) newsModal.addEventListener('click', function (e) { if (e.target === newsModal) closeModal(newsModal); });
 
   /* 소식 상세 열기 */
+  var LIVE_NOTE = '※ 위 ‘원문 기사 바로가기’에서 원문과 게시 일자를 확인하실 수 있습니다.';
+  var SAMPLE_NOTE = '※ 이 카드는 정보 구조를 보여 드리기 위한 시안 예시입니다. 자동 수집 에이전트가 연결되면 ' +
+    '실제 기사 원문과 게시 일자가 이 자리에 표시됩니다. 기관의 최신 소식은 위 ‘출처 기관 바로가기’에서 확인하실 수 있습니다.';
+
   function openNews(id) {
     var a = articleById(id);
     if (!a) return;
@@ -696,7 +767,15 @@
     byId('newsModalTitle').textContent = a.title;
     byId('newsModalDesc').textContent = a.desc;
     byId('newsModalSource').textContent = '출처 · ' + a.source;
-    byId('newsModalLink').href = a.url;
+    var link = byId('newsModalLink');
+    link.href = a.url;
+    link.textContent = a.sample ? '출처 기관 바로가기' : '원문 기사 바로가기';
+    if (newsModal) {
+      var badge = newsModal.querySelector('.chip--sample');
+      if (badge) badge.hidden = !a.sample;
+      var note = newsModal.querySelector('.news-modal__note');
+      if (note) note.textContent = a.sample ? SAMPLE_NOTE : LIVE_NOTE;
+    }
     openModal(newsModal);
   }
 
