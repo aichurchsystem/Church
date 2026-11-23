@@ -544,6 +544,12 @@
   var mobileMenu = byId('mobileMenu');
 
   function openMobileMenu() {
+    /* 헤더가 sticky라서 스크롤 위치에 따라 헤더 아래 끝이 달라진다. 드로어를 그 바로 아래에 붙여
+       상단 로고가 헤더에 가리지 않게 한다. */
+    var header = document.querySelector('.site-header');
+    if (header) {
+      mobileMenu.style.top = Math.round(header.getBoundingClientRect().bottom) + 'px';
+    }
     mobileMenu.hidden = false;
     requestAnimationFrame(function () { mobileMenu.classList.add('is-open'); });
     burger.setAttribute('aria-expanded', 'true');
