@@ -4832,3 +4832,18 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   .location__row .v { font-size: 12.8px; }
   .location__row .v small { display: none; }
 }
+
+/* --- 문의: 카드 안 여백을 줄이고 항목을 붙여 세로 길이를 줄인다 --- */
+.contact { padding-top: clamp(30px, 4vw, 52px); padding-bottom: clamp(30px, 4vw, 52px); }
+.contact__grid { gap: clamp(18px, 2.5vw, 34px); align-items: start; }
+.contact__card { padding: clamp(18px, 2vw, 26px); }
+.contact__card h4 { margin-bottom: 8px; }
+.contact__card ul { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.contact__card li { position: relative; padding-left: 12px; font-size: 12.8px; line-height: 1.55; margin: 0; }
+.contact__card li::before { content: ""; position: absolute; left: 2px; top: 7px; width: 4px; height: 4px; border-radius: 50%; background: var(--mint); }
+.contact__card .foot { margin-top: 10px; font-size: 11.6px; line-height: 1.5; }
+.contact__lead { margin-bottom: 12px; }
+@media (max-width: 760px) {
+  .contact__card { padding: 16px 16px 18px; }
+  .contact__card li { font-size: 12.4px; }
+}
