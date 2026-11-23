@@ -1,0 +1,163 @@
+/* ==========================================================================
+   제46차 청소년 바이블컨퍼런스 — 안내 페이지 전용 스타일
+   브로셔·포스터와 같은 시각 언어(네이비 · 라임 · Pretendard/Anton)를 씁니다.
+   기존 사이트의 헤더·푸터·타이포는 styles.css를 그대로 두고, 이 파일은
+   페이지 본문 블록(.bc-*)에만 적용됩니다.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Anton';
+  src: url('fonts/Anton-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+
+.bc {
+  --bc-navy: #0e1d3a;
+  --bc-navy-2: #172a4c;
+  --bc-lime: #c9f13a;
+  --bc-paper: #faf8f1;
+  --bc-line: #e3dfd2;
+  --bc-muted: #69748a;
+  --bc-ink: #1d2a42;
+}
+
+.bc-section { padding: 84px 0; }
+.bc-section--paper { background: var(--bc-paper); }
+.bc-section--navy { background: var(--bc-navy); color: #fff; }
+.bc-section--tight { padding: 64px 0; }
+
+.bc-head { max-width: 720px; }
+.bc-eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--bc-muted);
+}
+.bc-eyebrow b { font-family: 'Anton', sans-serif; font-weight: 400; letter-spacing: .1em; margin-right: 8px; color: var(--bc-navy); }
+.bc-section--navy .bc-eyebrow { color: #93a3c0; }
+.bc-section--navy .bc-eyebrow b { color: var(--bc-lime); }
+
+.bc-title {
+  margin: 12px 0 0; font-size: clamp(26px, 3.4vw, 40px); font-weight: 900;
+  letter-spacing: -.035em; line-height: 1.16; color: var(--bc-navy);
+}
+.bc-section--navy .bc-title { color: #fff; }
+.bc-lead { margin: 16px 0 0; font-size: 16px; line-height: 1.75; color: var(--bc-muted); }
+.bc-section--navy .bc-lead { color: #a9b8d2; }
+
+/* ---------- 소개 ---------- */
+.bc-about { display: grid; grid-template-columns: 1.15fr .85fr; gap: 56px; align-items: start; }
+.bc-about__quote {
+  border-left: 4px solid var(--bc-lime); padding-left: 22px; margin: 34px 0 0;
+  font-size: 17px; line-height: 1.85; font-weight: 600; color: #33405a;
+}
+.bc-about__quote b { display: block; font-size: 11px; letter-spacing: .18em; color: var(--bc-muted); margin-bottom: 10px; }
+.bc-about__body p { margin: 0 0 16px; font-size: 15.5px; line-height: 1.85; color: var(--bc-ink); }
+.bc-about__body p:last-child { margin-bottom: 0; }
+.bc-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 2px solid var(--bc-navy); }
+.bc-facts div { padding: 18px 0; border-bottom: 1px solid var(--bc-line); }
+.bc-facts dt { font-size: 11px; font-weight: 700; letter-spacing: .14em; color: var(--bc-muted); }
+.bc-facts dd { margin: 8px 0 0; font-size: 19px; font-weight: 700; letter-spacing: -.02em; color: var(--bc-navy); }
+.bc-facts dd small { display: block; margin-top: 6px; font-size: 12px; font-weight: 600; color: var(--bc-muted); letter-spacing: 0; }
+
+/* ---------- 프로그램 ---------- */
+.bc-prog { list-style: none; margin: 48px 0 0; padding: 0; display: grid; gap: 0; }
+.bc-prog li {
+  display: grid; grid-template-columns: 76px 1fr; gap: 24px;
+  padding: 26px 0; border-top: 1px solid var(--bc-line);
+}
+.bc-prog .no {
+  font-family: 'Anton', sans-serif; font-size: 34px; line-height: 1; color: #c6ccd7;
+}
+.bc-prog .nm { font-size: 21px; font-weight: 800; letter-spacing: -.02em; color: var(--bc-navy); }
+.bc-prog .en { margin-top: 6px; font-size: 10.5px; font-weight: 700; letter-spacing: .16em; color: #9aa3b4; }
+.bc-prog .ds { margin: 10px 0 0; font-size: 15px; line-height: 1.7; color: #4c5872; }
+
+.bc-days { margin-top: 48px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.bc-day { background: #f1eee3; padding: 24px 22px 26px; }
+.bc-day .d { font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: .06em; color: var(--bc-navy); }
+.bc-day .dt { margin-top: 4px; font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--bc-muted); }
+.bc-day ul { margin: 14px 0 0; padding: 0; list-style: none; }
+.bc-day li { font-size: 14px; line-height: 1.9; color: #3d4964; }
+.bc-note { margin-top: 22px; font-size: 12.5px; line-height: 1.7; color: #8b93a3; }
+
+/* ---------- 강사 ---------- */
+.bc-spk { margin-top: 48px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 24px; }
+.bc-spk__item img {
+  width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 50%;
+  background: var(--bc-navy-2); display: block;
+}
+.bc-spk__item .nm { margin-top: 16px; font-size: 17px; font-weight: 800; letter-spacing: -.02em; color: #fff; }
+.bc-spk__item .nm small { margin-left: 6px; font-size: 11px; font-weight: 700; color: var(--bc-lime); }
+.bc-spk__item .cr { margin-top: 6px; font-size: 12.5px; line-height: 1.6; color: #a6b5cf; }
+.bc-worship {
+  margin-top: 48px; display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; border-top: 1px solid #2b3d61; padding-top: 26px;
+}
+.bc-worship .k { font-size: 11px; letter-spacing: .2em; color: #93a3c0; }
+.bc-worship .v { font-family: 'Anton', sans-serif; font-size: 34px; line-height: 1; color: var(--bc-lime); margin-top: 8px; }
+.bc-worship p.s { margin: 0; font-size: 13px; line-height: 1.6; color: #a6b5cf; text-align: right; }
+
+/* ---------- 참가 안내 ---------- */
+.bc-guide { margin-top: 44px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.bc-guide h3 { font-size: 13px; font-weight: 800; letter-spacing: .14em; color: var(--bc-navy); margin: 0 0 14px; }
+.bc-guide p, .bc-guide li { font-size: 15px; line-height: 1.75; color: #45516b; }
+.bc-steps { list-style: none; margin: 0 0 22px; padding: 0; }
+.bc-steps li { display: flex; gap: 12px; padding: 9px 0; }
+.bc-steps .n {
+  flex: none; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--bc-navy); color: #fff; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; margin-top: 2px;
+}
+.bc-steps b { color: var(--bc-navy); }
+.bc-bank { background: var(--bc-navy); color: #fff; padding: 20px 22px 22px; margin-top: 8px; }
+.bc-bank .k { font-size: 11px; letter-spacing: .18em; color: #93a3c0; }
+.bc-bank .v { margin-top: 8px; font-size: 21px; font-weight: 800; letter-spacing: .01em; }
+.bc-bank .v em { font-style: normal; color: var(--bc-lime); margin-right: 8px; }
+.bc-bank .s { margin-top: 8px; font-size: 12.5px; color: #a6b5cf; }
+.bc-caution { list-style: none; margin: 0; padding: 0; }
+.bc-caution li { position: relative; padding-left: 14px; font-size: 13.5px; line-height: 1.8; color: #6c7688; }
+.bc-caution li::before { content: '·'; position: absolute; left: 2px; }
+
+/* ---------- 오시는 길 ---------- */
+.bc-map { margin-top: 36px; border: 1px solid var(--bc-line); background: var(--bc-paper); }
+.bc-map svg { display: block; width: 100%; height: auto; }
+.bc-map__cap { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; color: #99a0ae; }
+.bc-way { margin-top: 36px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.bc-way h3 { margin: 0; font-size: 15px; font-weight: 800; letter-spacing: .02em; color: var(--bc-navy); }
+.bc-way p { margin: 10px 0 0; font-size: 14px; line-height: 1.7; color: #45516b; }
+.bc-way b { color: var(--bc-navy); }
+.bc-addr {
+  margin-top: 40px; padding: 22px 0; border-top: 2px solid var(--bc-navy);
+  display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+}
+.bc-addr .k { font-size: 11px; letter-spacing: .16em; color: var(--bc-muted); }
+.bc-addr .v { margin-top: 8px; font-size: 20px; font-weight: 800; letter-spacing: -.02em; color: var(--bc-navy); }
+.bc-addr .s { margin-top: 6px; font-size: 13px; color: #55617a; }
+.bc-qr { display: flex; align-items: center; gap: 16px; }
+.bc-qr img, .bc-qr svg { width: 116px; height: 116px; display: block; background: #fff; padding: 8px; box-sizing: content-box; }
+.bc-qr p { margin: 0; font-size: 12.5px; line-height: 1.6; color: #55617a; }
+
+/* ---------- 반응형 ---------- */
+@media (max-width: 1024px) {
+  .bc-spk { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 860px) {
+  .bc-section { padding: 60px 0; }
+  .bc-about, .bc-guide { grid-template-columns: 1fr; gap: 34px; }
+  .bc-days, .bc-way { grid-template-columns: 1fr; }
+  .bc-spk { grid-template-columns: repeat(2, 1fr); gap: 24px 18px; }
+  .bc-prog li { grid-template-columns: 52px 1fr; gap: 16px; }
+  .bc-prog .no { font-size: 26px; }
+  .bc-worship { flex-direction: column; align-items: flex-start; }
+  .bc-worship p.s { text-align: left; }
+  .bc-addr { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 600px) {
+  .bc-map { overflow-x: auto; }
+  .bc-map svg { min-width: 560px; }
+}
+@media (max-width: 480px) {
+  .bc-facts { grid-template-columns: 1fr; }
+  .bc-title { font-size: 27px; }
+  .bc-qr img, .bc-qr svg { width: 96px; height: 96px; }
+}
