@@ -96,7 +96,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/logo/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="192x192" href="assets/logo/favicon-192.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="assets/logo/apple-touch-icon-180.png" />
-<link rel="stylesheet" href="assets/styles.css?v=20261123e" />
+<link rel="stylesheet" href="assets/styles.css?v=20261123f" />
 </head>
 <body>
 <a class="skip-link" href="#main">본문으로 바로 가기</a>
@@ -436,6 +436,8 @@
   </section>
 
   <!-- ============================ 오늘의 청소년 브리핑 ============================ -->
+  <!-- 한 줄에 두 칸: 왼쪽 = 주요 브리핑(대표 소식 2건), 오른쪽 = 분야별 브리핑(분류별 1건).
+       전체 목록·분류 탭·검색은 청소년 정보 아카이브(archive.html)가 맡습니다. -->
   <section class="section briefing" id="info" aria-labelledby="infoTitle">
     <div class="container">
       <div class="sec-head sec-head--row">
@@ -443,14 +445,31 @@
           <span class="eyebrow">Youth Briefing</span>
           <h2 id="infoTitle">오늘의 청소년 브리핑</h2>
           <p>
-            정책·보도·지원 소식 가운데 최근에 정리한 세 건입니다.
+            대표 소식 두 건과 분야별 최신 소식을 한 줄로 모았습니다.
             분류별 전체 목록과 키워드 검색은 청소년 정보 아카이브에서 보실 수 있습니다.
           </p>
         </div>
         <a class="btn btn--navy btn--sm" href="archive.html">청소년 정보 아카이브 전체 보기 <span aria-hidden="true">→</span></a>
       </div>
 
-      <div class="card-grid" id="briefingGrid"><!-- assets/app.js 가 소식 데이터로 채웁니다 --></div>
+      <div class="brief-split">
+        <div class="brief-col brief-col--lead">
+          <div class="brief-col__head">
+            <h3>주요 브리핑</h3>
+            <span class="brief-col__meta">대표 소식 2건</span>
+          </div>
+          <div class="brief-lead-list" id="briefLead"><!-- assets/app.js 가 채웁니다 --></div>
+        </div>
+
+        <div class="brief-col brief-col--cats">
+          <div class="brief-col__head">
+            <h3>분야별 브리핑</h3>
+            <a class="brief-col__more" href="archive.html">전체 <span data-count="all">22</span>건 →</a>
+          </div>
+          <ul class="brief-rows" id="briefCats"><!-- assets/app.js 가 채웁니다 --></ul>
+          <a class="brief-col__foot" href="archive.html">청소년 정보 아카이브에서 전체 보기 <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
 
       <noscript>
         <p class="briefing__note">이 브라우저에서는 스크립트가 꺼져 있어 소식 카드가 표시되지 않습니다. <a href="archive.html">청소년 정보 아카이브</a>에서 분류별 소식을 보실 수 있습니다.</p>
@@ -458,7 +477,7 @@
 
       <p class="briefing__note">
         현재 정리된 소식 <b data-count="all">22</b>건 · 자동 수집 연동 준비 중 · 카드를 누르면 소식 요약이 열립니다.
-        카드 내용은 정보 구조를 보여 드리기 위한 시안 예시이며, 각 카드의 ‘자세히 보기’에서 출처 기관으로 이동합니다.
+        소식 내용은 정보 구조를 보여 드리기 위한 시안 예시이며, 각 카드의 ‘자세히 보기’에서 출처 기관으로 이동합니다.
       </p>
     </div>
   </section>
@@ -1126,6 +1145,6 @@
   </div>
 </div>
 
-<script src="assets/app.js?v=20261123e"></script>
+<script src="assets/app.js?v=20261123f"></script>
 </body>
 </html>

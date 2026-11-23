@@ -3737,3 +3737,133 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   color: var(--cobalt);
 }
 .notice-card__go:hover { color: var(--cobalt-dark); }
+
+/* --- 메인 오늘의 브리핑: 왼쪽 주요(2건) + 오른쪽 분야별(1건씩) 2단 --- */
+.brief-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+.brief-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+.brief-col__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line-2);
+}
+.brief-col__head h3 {
+  font-size: 15.5px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.brief-col__meta,
+.brief-col__more {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted-2);
+  white-space: nowrap;
+}
+.brief-col__more:hover { color: var(--cobalt); }
+.brief-lead-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+.brief-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 16px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fbfcfe;
+  cursor: pointer;
+  transition: border-color .16s ease, background-color .16s ease;
+}
+.brief-card:hover,
+.brief-card:focus-visible { border-color: #cfdaea; background: #fff; }
+.brief-card:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+.brief-card__top { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.brief-card h4 {
+  font-size: 16.4px;
+  font-weight: 800;
+  line-height: 1.45;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.brief-card__desc {
+  font-size: 13.2px;
+  line-height: 1.68;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.brief-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+  font-size: 11.8px;
+  color: var(--muted-2);
+}
+.brief-card__more { font-weight: 800; color: var(--cobalt); white-space: nowrap; }
+.brief-rows {
+  display: grid;
+  gap: 2px;
+  margin-top: 8px;
+}
+.brief-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 8px 6px;
+  border-radius: 8px;
+  transition: background-color .16s ease;
+}
+.brief-row:hover { background: #f6f9fe; }
+.brief-row .chip { flex: 0 0 auto; margin-top: 1px; }
+.brief-row__title {
+  font-size: 13.3px;
+  font-weight: 650;
+  line-height: 1.5;
+  color: #33415c;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.brief-row:hover .brief-row__title { color: var(--cobalt); }
+.brief-col__foot {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-2);
+  font-size: 12.4px;
+  font-weight: 800;
+  color: var(--cobalt);
+}
+.brief-col__foot:hover { color: var(--cobalt-dark); }
+@media (max-width: 980px) {
+  .brief-split { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .brief-col { padding: 18px 18px 16px; }
+}

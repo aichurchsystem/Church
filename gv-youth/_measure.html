@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>preview</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #fff; }
+  iframe { border: 0; display: block; }
+</style>
+</head>
+<body>
+<div id="host"></div>
+<script>
+/* 임시 미리보기 틀 — 폭(w)·높이(h)를 정해 페이지를 iframe으로 띄우고,
+   그 안의 문서 폭·높이와 넘침 요소를 window.__metrics 로 남긴다.
+   다 쓰면 이 파일은 지운다. */
+(function () {
+  var q = new URLSearchParams(location.search);
+  var w = parseInt(q.get('w') || '390', 10);
+  var h = parseInt(q.get('h') || '844', 10);
+  var url = q.get('url') || 'index.html';
+  var y = parseInt(q.get('y') || '0', 10);
+
+  var f = document.createElement('iframe');
+  f.width = w; f.height = h; f.src = url;
+  document.getElementById('host').appendChild(f);
+
+  f.addEventListener('load', function () {
+    setTimeout(function () {
+      var d = f.contentDocument, win = f.contentWindow;
+      try { win.scrollTo(0, y); } catch (e) {}
+      setTimeout(function () {
+        var docEl = d.documentElement;
+        var over = [];
+        var all = d.querySelectorAll('body *');
+        for (var i = 0; i < all.length; i++) {
+          var el = all[i], r = el.getBoundingClientRect();
+          if (r.width > 0 && r.right > docEl.clientWidth + 0.5) {
+            over.push({
+              tag: el.tagName.toLowerCase(),
+              cls: (el.className && el.className.toString()) || '',
+              right: Math.round(r.right),
+              w: Math.round(r.width)
+            });
+          }
+        }
+        function hOf(id) {
+          var el = d.getElementById(id);
+          return el ? Math.round(el.getBoundingClientRect().height) : null;
+        }
+        window.__metrics = {
+          url: url,
+          viewport: win.innerWidth,
+          iframeHeight: h,
+          clientWidth: docEl.clientWidth,
+          scrollWidth: docEl.scrollWidth,
+          docHeight: docEl.scrollHeight,
+          infoHeight: hOf('info'),
+          heroHeight: hOf('heroTitle') ? Math.round(d.querySelector('.hero').getBoundingClientRect().height) : null,
+          missionHeight: hOf('mission'),
+          overflowCount: over.length,
+          overflow: over.slice(0, 10)
+        };
+        document.title = 'w' + win.innerWidth + ' scroll' + docEl.scrollWidth + ' doc' + docEl.scrollHeight;
+      }, 500);
+    }, 600);
+  });
+})();
+</script>
+</body>
+</html>

@@ -421,12 +421,52 @@
   }
 
   /* ----------------------------------------------------------------------
-     3-b. 메인 '오늘의 브리핑' — 정리된 소식 가운데 최근 3건만 카드로
-     (전체 목록·검색은 청소년 정보 아카이브 archive.html 이 맡는다)
+     3-b. 메인 '오늘의 브리핑' — 왼쪽 주요 브리핑 2건 + 오른쪽 분야별 1건씩
+     (전체 목록·분류 탭·검색은 청소년 정보 아카이브 archive.html 이 맡는다)
      ---------------------------------------------------------------------- */
-  var briefingGrid = byId('briefingGrid');
-  if (briefingGrid) {
-    briefingGrid.innerHTML = ARTICLES.slice(0, 3).map(cardHTML).join('');
+  var briefLead = byId('briefLead');
+  var briefCats = byId('briefCats');
+
+  /* 주요 브리핑으로 세울 대표 소식 — 지금은 청소년 정책과 대입 제도 두 건 */
+  var BRIEF_LEAD_IDS = ['policy-7th-plan', 'edu-2028-admission'];
+  var BRIEF_CAT_ORDER = ['news', 'paper', 'policy', 'benefit', 'edu'];
+
+  function briefCardHTML(a) {
+    var c = CATS[a.cat];
+    return '' +
+      '<article class="brief-card" data-article="' + esc(a.id) + '" tabindex="0" role="button" aria-label="' + esc(a.title) + ' — 소식 요약 보기">' +
+        '<div class="brief-card__top">' +
+          '<span class="chip ' + c.chip + '">' + esc(c.label) + '</span>' +
+          '<span class="chip chip--sample">시안 예시</span>' +
+        '</div>' +
+        '<h4>' + esc(a.title) + '</h4>' +
+        '<p class="brief-card__desc">' + esc(a.desc) + '</p>' +
+        '<div class="brief-card__foot">' +
+          '<span>' + esc(a.source) + '</span>' +
+          '<span class="brief-card__more">자세히 보기 <span aria-hidden="true">→</span></span>' +
+        '</div>' +
+      '</article>';
+  }
+
+  function briefRowHTML(a) {
+    var c = CATS[a.cat];
+    return '' +
+      '<li>' +
+        '<a class="brief-row" href="archive.html?cat=' + encodeURIComponent(a.cat) + '">' +
+          '<span class="chip ' + c.chip + '">' + esc(c.label) + '</span>' +
+          '<span class="brief-row__title">' + esc(a.title) + '</span>' +
+        '</a>' +
+      '</li>';
+  }
+
+  if (briefLead) {
+    briefLead.innerHTML = BRIEF_LEAD_IDS.map(articleById).filter(Boolean).map(briefCardHTML).join('');
+  }
+  if (briefCats) {
+    briefCats.innerHTML = BRIEF_CAT_ORDER.map(function (k) {
+      for (var i = 0; i < ARTICLES.length; i++) if (ARTICLES[i].cat === k) return briefRowHTML(ARTICLES[i]);
+      return '';
+    }).join('');
   }
 
   /* ----------------------------------------------------------------------
