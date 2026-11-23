@@ -25,6 +25,7 @@
   var f = document.createElement('iframe');
   f.width = w; f.height = h;
   if (q.get('hide') === '1') f.style.visibility = 'hidden';
+  if (q.get('aria') === '1') f.setAttribute('aria-hidden', 'true');
   /* 캐시에 남은 옛 문서를 피하려고 매번 다른 cb 값을 붙인다 */
   f.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'cb=' + Date.now();
   document.getElementById('host').appendChild(f);
