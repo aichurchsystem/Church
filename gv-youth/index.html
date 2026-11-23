@@ -92,7 +92,7 @@
 <!-- 스크립트가 없을 때도 본문이 보이도록 -->
 <noscript><style>.reveal{opacity:1 !important;transform:none !important}.news-tools,.tabs,.news-status,.news-lead,.latest,.headline-panel{display:none !important}</style></noscript>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-<link rel="preload" as="image" href="assets/images/hero-youth-camp.jpg" imagesrcset="assets/images/hero-youth-camp-960.jpg 960w, assets/images/hero-youth-camp.jpg 1672w" imagesizes="(max-width: 900px) 50vw, 34vw" />
+<link rel="preload" as="image" href="assets/images/gallery/gfocus-stand-group.jpg" imagesrcset="assets/images/gallery/gfocus-stand-group-400.jpg 400w, assets/images/gallery/gfocus-stand-group-800.jpg 800w, assets/images/gallery/gfocus-stand-group.jpg 1600w" imagesizes="(max-width: 900px) 100vw, 20vw" />
 <link rel="icon" type="image/png" sizes="32x32" href="assets/logo/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="192x192" href="assets/logo/favicon-192.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="assets/logo/apple-touch-icon-180.png" />
@@ -277,33 +277,88 @@
 
   <!-- ============================ 히어로 ============================ -->
   <section class="hero" aria-labelledby="heroTitle">
-    <!-- 사진 모자이크: 칸마다 다른 사진이 뜨고, 칸별 시차를 두고 크로스페이드로 바뀐다.
+    <!-- 사진 모자이크: 지포커스 사역 현장 사진 21장 중 칸마다 다른 사진이 뜨고,
+         칸별 시차를 두고 크로스페이드로 바뀐다. (PC 13칸 · 모바일 5칸)
          사진 목록·간격은 assets/app.js 맨 아래 HERO_PHOTOS / INTERVAL_MS 에서 고친다.
-         (JS가 없으면 아래 4장이 그대로 보이는 정적 모자이크) -->
+         JS가 없으면 아래 사진들이 그대로 보이는 정적 모자이크) -->
     <div class="hero__media hero__mosaic" aria-hidden="true" data-hero-mosaic>
-      <div class="mosaic__cell mosaic__cell--lead">
-        <img class="is-active" src="assets/images/hero-youth-camp.jpg"
-             srcset="assets/images/hero-youth-camp-960.jpg 960w, assets/images/hero-youth-camp.jpg 1672w"
-             sizes="(max-width: 900px) 50vw, 34vw" width="1672" height="941" alt=""
-             fetchpriority="high" decoding="async" />
+      <div class="mosaic__cell" data-pos="c3r1">
+        <img class="is-active" data-photo="0" alt="STAND 비전 수련회 단체사진"
+             src="assets/images/gallery/gfocus-stand-group.jpg"
+             srcset="assets/images/gallery/gfocus-stand-group-400.jpg 400w, assets/images/gallery/gfocus-stand-group-800.jpg 800w, assets/images/gallery/gfocus-stand-group.jpg 1600w"
+             sizes="(max-width: 900px) 100vw, 20vw" width="1600" height="1070" decoding="async" fetchpriority="high" />
       </div>
-      <div class="mosaic__cell">
-        <img class="is-active" src="assets/images/youth-worship-band.jpg"
-             srcset="assets/images/youth-worship-band-680.jpg 680w, assets/images/youth-worship-band.jpg 1200w"
-             sizes="(max-width: 900px) 50vw, 34vw" width="1200" height="751" alt=""
-             fetchpriority="high" decoding="async" />
+      <div class="mosaic__cell" data-pos="c4r1">
+        <img class="is-active" data-photo="1" alt="안수 기도"
+             src="assets/images/gallery/gfocus-prayer-1.jpg"
+             srcset="assets/images/gallery/gfocus-prayer-1-400.jpg 400w, assets/images/gallery/gfocus-prayer-1-800.jpg 800w, assets/images/gallery/gfocus-prayer-1.jpg 1600w"
+             sizes="(max-width: 900px) 50vw, 20vw" width="1600" height="1200" decoding="async" loading="lazy" />
       </div>
-      <div class="mosaic__cell">
-        <img class="is-active" src="assets/images/youth-mentoring.jpg"
-             srcset="assets/images/youth-mentoring-680.jpg 680w, assets/images/youth-mentoring.jpg 1200w"
-             sizes="(max-width: 900px) 50vw, 34vw" width="1200" height="751" alt=""
-             decoding="async" />
+      <div class="mosaic__cell" data-pos="c5r12">
+        <img class="is-active" data-photo="2" alt="찬양하는 집회 전경"
+             src="assets/images/gallery/gfocus-worship-panorama.jpg"
+             srcset="assets/images/gallery/gfocus-worship-panorama-400.jpg 359w, assets/images/gallery/gfocus-worship-panorama-800.jpg 718w, assets/images/gallery/gfocus-worship-panorama.jpg 1435w"
+             sizes="(max-width: 900px) 50vw, 20vw" width="1435" height="1600" decoding="async" loading="lazy" />
       </div>
-      <div class="mosaic__cell">
-        <img class="is-active" src="assets/images/youth-lecture.jpg"
-             srcset="assets/images/youth-lecture-680.jpg 680w, assets/images/youth-lecture.jpg 1200w"
-             sizes="(max-width: 900px) 50vw, 34vw" width="1200" height="751" alt=""
-             decoding="async" />
+      <div class="mosaic__cell" data-pos="c3r2">
+        <img class="is-active" data-photo="3" alt="강당 강의"
+             src="assets/images/gallery/gfocus-lecture-banner.jpg"
+             srcset="assets/images/gallery/gfocus-lecture-banner-400.jpg 400w, assets/images/gallery/gfocus-lecture-banner-800.jpg 800w, assets/images/gallery/gfocus-lecture-banner.jpg 1600w"
+             sizes="(max-width: 900px) 50vw, 20vw" width="1600" height="1435" decoding="async" loading="lazy" />
+      </div>
+      <div class="mosaic__cell" data-pos="c4r2">
+        <img class="is-active" data-photo="5" alt="청소년을 위한 무료 상담소 운영"
+             src="assets/images/gallery/gfocus-counsel-group.jpg"
+             srcset="assets/images/gallery/gfocus-counsel-group-400.jpg 400w, assets/images/gallery/gfocus-counsel-group-800.jpg 800w, assets/images/gallery/gfocus-counsel-group.jpg 1600w"
+             sizes="(max-width: 900px) 50vw, 20vw" width="1600" height="757" decoding="async" loading="lazy" />
+      </div>
+      <div class="mosaic__cell" data-pos="c45r3">
+        <img class="is-active" data-photo="4" alt="미디어 중계팀"
+             src="assets/images/gallery/gfocus-media-team.jpg"
+             srcset="assets/images/gallery/gfocus-media-team-400.jpg 359w, assets/images/gallery/gfocus-media-team-800.jpg 718w, assets/images/gallery/gfocus-media-team.jpg 1435w"
+             sizes="(max-width: 900px) 50vw, 40vw" width="1435" height="1600" decoding="async" loading="lazy" />
+      </div>
+      <div class="mosaic__cell" data-pos="c3r3">
+        <img class="is-active" data-photo="6" alt="무료 상담소 상담 장면"
+             src="assets/images/gallery/gfocus-counsel-indoor.jpg"
+             srcset="assets/images/gallery/gfocus-counsel-indoor-400.jpg 400w, assets/images/gallery/gfocus-counsel-indoor-800.jpg 800w, assets/images/gallery/gfocus-counsel-indoor.jpg 1600w"
+             sizes="(max-width: 900px) 50vw, 20vw" width="1600" height="757" decoding="async" loading="lazy" />
+      </div>
+      <div class="mosaic__cell" data-pos="c2r1">
+        <img class="is-active" data-photo="8" alt="숲속 단체사진"
+             src="assets/images/gallery/gfocus-forest-group.jpg"
+             srcset="assets/images/gallery/gfocus-forest-group-400.jpg 400w, assets/images/gallery/gfocus-forest-group-800.jpg 800w, assets/images/gallery/gfocus-forest-group.jpg 1120w"
+             sizes="(max-width: 900px) 50vw, 20vw" width="1120" height="934" decoding="async" loading="lazy" />
+      </div>
+      <div class="mosaic__cell" data-pos="c2r2">
+        <img class="is-active" data-photo="11" alt="친교 시간"
+             src="assets/images/gallery/gfocus-party.jpg"
+             srcset="assets/images/gallery/gfocus-party-400.jpg 359w, assets/images/gallery/gfocus-party-800.jpg 718w, assets/images/gallery/gfocus-party.jpg 1435w"
+             sizes="(max-width: 900px) 50vw, 20vw" width="1435" height="1600" decoding="async" loading="lazy" />
+      </div>
+      <div class="mosaic__cell" data-pos="c1r1">
+        <img class="is-active" data-photo="10" alt="눈썰매장"
+             src="assets/images/gallery/gfocus-sled-tube.jpg"
+             srcset="assets/images/gallery/gfocus-sled-tube-400.jpg 359w, assets/images/gallery/gfocus-sled-tube-800.jpg 718w, assets/images/gallery/gfocus-sled-tube.jpg 1435w"
+             sizes="(max-width: 900px) 50vw, 20vw" width="1435" height="1600" decoding="async" loading="lazy" />
+      </div>
+      <div class="mosaic__cell" data-pos="c1r2">
+        <img class="is-active" data-photo="13" alt="밴드 보컬 연습"
+             src="assets/images/gallery/gfocus-band-vocal-1.jpg"
+             srcset="assets/images/gallery/gfocus-band-vocal-1-400.jpg 400w, assets/images/gallery/gfocus-band-vocal-1-800.jpg 800w, assets/images/gallery/gfocus-band-vocal-1.jpg 1600w"
+             sizes="(max-width: 900px) 50vw, 20vw" width="1600" height="1334" decoding="async" loading="lazy" />
+      </div>
+      <div class="mosaic__cell" data-pos="c1r3">
+        <img class="is-active" data-photo="14" alt="드럼 연습"
+             src="assets/images/gallery/gfocus-band-drum.jpg"
+             srcset="assets/images/gallery/gfocus-band-drum-400.jpg 400w, assets/images/gallery/gfocus-band-drum-800.jpg 800w, assets/images/gallery/gfocus-band-drum.jpg 1600w"
+             sizes="(max-width: 900px) 50vw, 20vw" width="1600" height="1334" decoding="async" loading="lazy" />
+      </div>
+      <div class="mosaic__cell" data-pos="c2r3">
+        <img class="is-active" data-photo="17" alt="눈썰매장 단체사진"
+             src="assets/images/gallery/gfocus-sled-group-1.jpg"
+             srcset="assets/images/gallery/gfocus-sled-group-1-400.jpg 400w, assets/images/gallery/gfocus-sled-group-1-800.jpg 800w, assets/images/gallery/gfocus-sled-group-1.jpg 1600w"
+             sizes="(max-width: 900px) 50vw, 20vw" width="1600" height="1435" decoding="async" loading="lazy" />
       </div>
     </div>
     <div class="hero__scrim" aria-hidden="true"></div>
@@ -1058,7 +1113,7 @@
       <p>
         본 페이지는 네 번째 시안(v4 · 기관 톤)입니다. 연혁·지포커스예배는 기존 사이트의 실제 자료를 옮겼고,
         정기예배 시간·섬기는 사람 명단은 확인 후 채워집니다.<br />
-        활동 사진은 사역 현장의 분위기를 전하기 위해 제작한 이미지이며, 소식 카드는 정보 구조를 보여 드리기 위한 시안 예시입니다.
+        활동 사진은 지포커스 사역 현장에서 찍은 실제 사진이며, 소식 카드는 정보 구조를 보여 드리기 위한 시안 예시입니다.
       </p>
     </div>
   </div>

@@ -710,3 +710,222 @@
   }
   observeReveals(document);
 })();
+
+/* ==========================================================================
+   히어로 사진 모자이크 — 지포커스 사역 현장 사진
+   · 사진을 바꾸려면 아래 HERO_PHOTOS 목록만 고치면 됩니다.
+     (assets/images/gallery/ 에 {이름}.jpg(1600) · {이름}-800.jpg · {이름}-400.jpg 세 판본)
+   · scene 이 같은 사진은 한 칸에서 연달아 나오지 않습니다(같은 장면 연속 컷 방지).
+   · needsLarge: true 인 사진(글자가 들어간 사진)은 큰 칸에만 나옵니다.
+   · 칸 하나가 사진을 바꾸는 간격 = INTERVAL_MS, 겹쳐 바뀌는 시간 = FADE_MS
+     (FADE_MS는 styles.css 의 --mosaic-fade 와 같게 맞춥니다)
+   ========================================================================== */
+(function () {
+  'use strict';
+
+
+  var HERO_PHOTOS = [
+    { src: 'assets/images/gallery/gfocus-stand-group.jpg', srcset: 'assets/images/gallery/gfocus-stand-group-400.jpg 400w, assets/images/gallery/gfocus-stand-group-800.jpg 800w, assets/images/gallery/gfocus-stand-group.jpg 1600w', w: 1600, scene: 'stand', caption: 'STAND 비전 수련회 단체사진', priority: true },
+    { src: 'assets/images/gallery/gfocus-prayer-1.jpg', srcset: 'assets/images/gallery/gfocus-prayer-1-400.jpg 400w, assets/images/gallery/gfocus-prayer-1-800.jpg 800w, assets/images/gallery/gfocus-prayer-1.jpg 1600w', w: 1600, scene: 'prayer', caption: '안수 기도', priority: true },
+    { src: 'assets/images/gallery/gfocus-worship-panorama.jpg', srcset: 'assets/images/gallery/gfocus-worship-panorama-400.jpg 359w, assets/images/gallery/gfocus-worship-panorama-800.jpg 718w, assets/images/gallery/gfocus-worship-panorama.jpg 1435w', w: 1435, scene: 'worship', caption: '찬양하는 집회 전경', priority: true },
+    { src: 'assets/images/gallery/gfocus-lecture-banner.jpg', srcset: 'assets/images/gallery/gfocus-lecture-banner-400.jpg 400w, assets/images/gallery/gfocus-lecture-banner-800.jpg 800w, assets/images/gallery/gfocus-lecture-banner.jpg 1600w', w: 1600, scene: 'lecture', caption: '강당 강의', priority: true },
+    { src: 'assets/images/gallery/gfocus-media-team.jpg', srcset: 'assets/images/gallery/gfocus-media-team-400.jpg 359w, assets/images/gallery/gfocus-media-team-800.jpg 718w, assets/images/gallery/gfocus-media-team.jpg 1435w', w: 1435, scene: 'media', caption: '미디어 중계팀', priority: true },
+    { src: 'assets/images/gallery/gfocus-counsel-group.jpg', srcset: 'assets/images/gallery/gfocus-counsel-group-400.jpg 400w, assets/images/gallery/gfocus-counsel-group-800.jpg 800w, assets/images/gallery/gfocus-counsel-group.jpg 1600w', w: 1600, scene: 'counsel', caption: '청소년을 위한 무료 상담소 운영', priority: true },
+    { src: 'assets/images/gallery/gfocus-counsel-indoor.jpg', srcset: 'assets/images/gallery/gfocus-counsel-indoor-400.jpg 400w, assets/images/gallery/gfocus-counsel-indoor-800.jpg 800w, assets/images/gallery/gfocus-counsel-indoor.jpg 1600w', w: 1600, scene: 'counsel', caption: '무료 상담소 상담 장면', priority: true },
+    { src: 'assets/images/gallery/gfocus-counsel-booth.jpg', srcset: 'assets/images/gallery/gfocus-counsel-booth-400.jpg 400w, assets/images/gallery/gfocus-counsel-booth-800.jpg 800w, assets/images/gallery/gfocus-counsel-booth.jpg 1600w', w: 1600, scene: 'counsel', caption: '야외 무료 상담 부스', priority: true },
+    { src: 'assets/images/gallery/gfocus-forest-group.jpg', srcset: 'assets/images/gallery/gfocus-forest-group-400.jpg 400w, assets/images/gallery/gfocus-forest-group-800.jpg 800w, assets/images/gallery/gfocus-forest-group.jpg 1120w', w: 1120, scene: 'forest', caption: '숲속 단체사진' },
+    { src: 'assets/images/gallery/gfocus-stage-band.jpg', srcset: 'assets/images/gallery/gfocus-stage-band-400.jpg 400w, assets/images/gallery/gfocus-stage-band-800.jpg 800w, assets/images/gallery/gfocus-stage-band.jpg 1600w', w: 1600, scene: 'worship', caption: '무대 밴드 찬양', priority: true },
+    { src: 'assets/images/gallery/gfocus-sled-tube.jpg', srcset: 'assets/images/gallery/gfocus-sled-tube-400.jpg 359w, assets/images/gallery/gfocus-sled-tube-800.jpg 718w, assets/images/gallery/gfocus-sled-tube.jpg 1435w', w: 1435, scene: 'sled', caption: '눈썰매장' },
+    { src: 'assets/images/gallery/gfocus-party.jpg', srcset: 'assets/images/gallery/gfocus-party-400.jpg 359w, assets/images/gallery/gfocus-party-800.jpg 718w, assets/images/gallery/gfocus-party.jpg 1435w', w: 1435, scene: 'party', caption: '친교 시간' },
+    { src: 'assets/images/gallery/gfocus-lecture-christian.jpg', srcset: 'assets/images/gallery/gfocus-lecture-christian-400.jpg 400w, assets/images/gallery/gfocus-lecture-christian-800.jpg 800w, assets/images/gallery/gfocus-lecture-christian.jpg 1600w', w: 1600, scene: 'lecture', caption: '강당 강의', priority: true },
+    { src: 'assets/images/gallery/gfocus-band-vocal-1.jpg', srcset: 'assets/images/gallery/gfocus-band-vocal-1-400.jpg 400w, assets/images/gallery/gfocus-band-vocal-1-800.jpg 800w, assets/images/gallery/gfocus-band-vocal-1.jpg 1600w', w: 1600, scene: 'band', caption: '밴드 보컬 연습' },
+    { src: 'assets/images/gallery/gfocus-band-drum.jpg', srcset: 'assets/images/gallery/gfocus-band-drum-400.jpg 400w, assets/images/gallery/gfocus-band-drum-800.jpg 800w, assets/images/gallery/gfocus-band-drum.jpg 1600w', w: 1600, scene: 'band', caption: '드럼 연습' },
+    { src: 'assets/images/gallery/gfocus-prayer-2.jpg', srcset: 'assets/images/gallery/gfocus-prayer-2-400.jpg 400w, assets/images/gallery/gfocus-prayer-2-800.jpg 800w, assets/images/gallery/gfocus-prayer-2.jpg 1600w', w: 1600, scene: 'prayer', caption: '안수 기도', priority: true },
+    { src: 'assets/images/gallery/gfocus-prayer-3.jpg', srcset: 'assets/images/gallery/gfocus-prayer-3-400.jpg 400w, assets/images/gallery/gfocus-prayer-3-800.jpg 800w, assets/images/gallery/gfocus-prayer-3.jpg 1600w', w: 1600, scene: 'prayer', caption: '안수 기도', priority: true },
+    { src: 'assets/images/gallery/gfocus-sled-group-1.jpg', srcset: 'assets/images/gallery/gfocus-sled-group-1-400.jpg 400w, assets/images/gallery/gfocus-sled-group-1-800.jpg 800w, assets/images/gallery/gfocus-sled-group-1.jpg 1600w', w: 1600, scene: 'sled', caption: '눈썰매장 단체사진' },
+    { src: 'assets/images/gallery/gfocus-sled-group-2.jpg', srcset: 'assets/images/gallery/gfocus-sled-group-2-400.jpg 400w, assets/images/gallery/gfocus-sled-group-2-800.jpg 800w, assets/images/gallery/gfocus-sled-group-2.jpg 1600w', w: 1600, scene: 'sled', caption: '눈썰매장 단체사진' },
+    { src: 'assets/images/gallery/gfocus-conference-stand.jpg', srcset: 'assets/images/gallery/gfocus-conference-stand-400.jpg 359w, assets/images/gallery/gfocus-conference-stand-800.jpg 718w, assets/images/gallery/gfocus-conference-stand.jpg 1435w', w: 1435, scene: 'conference', caption: 'STAND 비전컨퍼런스 강의', needsLarge: true },
+    { src: 'assets/images/gallery/gfocus-conference-wide.jpg', srcset: 'assets/images/gallery/gfocus-conference-wide-400.jpg 400w, assets/images/gallery/gfocus-conference-wide-800.jpg 800w, assets/images/gallery/gfocus-conference-wide.jpg 1600w', w: 1600, scene: 'conference', caption: '강당 강의 전경', needsLarge: true }
+  ];
+
+  var INTERVAL_MS = 6000;   /* 칸 하나가 다음 사진으로 바뀌는 간격 (칸이 많아 길게) */
+  var FADE_MS = 900;        /* 크로스페이드 길이 */
+
+  var root = document.querySelector('[data-hero-mosaic]');
+  if (!root || !HERO_PHOTOS.length) return;
+
+  /* 움직임 줄이기를 켠 분에게는 정지된 모자이크(HTML에 있는 사진) 그대로 둔다. */
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  /* 화면에서 감춘 칸(모바일 5칸 배치 등)은 빼고 돌린다 */
+  var cellEls = Array.prototype.slice.call(root.querySelectorAll('.mosaic__cell')).filter(function (el) {
+    return el.getClientRects().length > 0;
+  });
+  if (!cellEls.length) return;
+
+  var rootRect = root.getBoundingClientRect();
+  var rects = cellEls.map(function (el) { return el.getBoundingClientRect(); });
+  var areas = rects.map(function (r) { return r.width * r.height; });
+  var maxArea = Math.max.apply(null, areas);
+
+  var cells = cellEls.map(function (el, ci) {
+    var base = el.querySelector('img');
+    var baseId = base && base.getAttribute('data-photo') !== null ? parseInt(base.getAttribute('data-photo'), 10) : 0;
+    var isLarge = areas[ci] >= maxArea * 0.5;   /* 큰 칸에만 글자 들어간 사진 */
+    /* 왼쪽(글자 뒤) 칸은 어두워서 사진이 거의 안 보인다 → 사역 장면 사진은 피한다 */
+    var centerX = (rects[ci].left + rects[ci].width / 2 - rootRect.left) / (rootRect.width || 1);
+    var isDim = window.innerWidth > 900 && centerX < 0.42;
+    var pool = [];
+    HERO_PHOTOS.forEach(function (p, i) {
+      if (i === baseId) { pool.push(i); return; }
+      if (p.needsLarge && !isLarge) return;
+      if (isDim && p.priority) return;
+      pool.push(i);
+    });
+    var layers = {};
+    if (base) {
+      base.classList.remove('is-top');
+      base.classList.add('is-active');
+      layers[baseId] = base;
+    }
+    return { el: el, pool: pool, layers: layers, cur: baseId, timer: null };
+  });
+
+  /* 사진 한 장을 그 칸에 올린다 (이미 있으면 그대로) — 처음 쓰일 때 받아 온다 */
+  function layerFor(cell, id) {
+    if (cell.layers[id]) return cell.layers[id];
+    var p = HERO_PHOTOS[id];
+    var img = document.createElement('img');
+    img.decoding = 'async';
+    img.alt = p.caption || '';
+    img.setAttribute('data-photo', String(id));
+    img.sizes = Math.round(cell.el.getBoundingClientRect().width) + 'px';
+    img.srcset = p.srcset;
+    img.src = p.src;
+    cell.el.appendChild(img);
+    cell.layers[id] = img;
+    return img;
+  }
+
+  /* 다음 사진 고르기 — 다른 칸이 보여 주는 사진과 같은 장면의 사진은 피한다 */
+  function nextId(cell) {
+    var used = {};
+    cells.forEach(function (c) {
+      if (c !== cell) used[c.cur] = true;
+    });
+    var pool = cell.pool;
+    var n = pool.length;
+    var start = pool.indexOf(cell.cur);
+    var curScene = HERO_PHOTOS[cell.cur].scene;
+    var k, id;
+
+    for (k = 1; k <= n; k++) {
+      id = pool[(start + k) % n];
+      if (!used[id] && HERO_PHOTOS[id].scene !== curScene) return id;
+    }
+    for (k = 1; k <= n; k++) {
+      id = pool[(start + k) % n];
+      if (!used[id]) return id;
+    }
+    return pool[(start + 1) % n];
+  }
+
+  function advance(cell) {
+    var id = nextId(cell);
+    var cur = cell.layers[cell.cur];
+    var nxt = layerFor(cell, id);
+    cell.cur = id;
+
+    var started = false;
+    function go() {
+      if (started) return;
+      started = true;
+      nxt.classList.add('is-top');
+      window.setTimeout(function () {
+        if (cur && cur !== nxt) {
+          cur.classList.remove('is-active');
+          cur.classList.remove('is-top');
+        }
+        nxt.classList.remove('is-top');
+        nxt.classList.add('is-active');
+      }, FADE_MS + 60);
+    }
+    if (nxt.complete && nxt.naturalWidth) go();
+    else {
+      nxt.addEventListener('load', go);
+      nxt.addEventListener('error', go);
+      window.setTimeout(go, 1800);
+    }
+
+    /* 다음 차례 사진을 미리 받아 둔다 (바뀔 때 기다리지 않게) */
+    window.setTimeout(function () { layerFor(cell, nextId(cell)); }, FADE_MS + 100);
+  }
+
+  var running = false;
+
+  function runCell(cell, delay) {
+    window.clearTimeout(cell.timer);
+    cell.timer = window.setTimeout(function loop() {
+      advance(cell);
+      cell.timer = window.setTimeout(loop, INTERVAL_MS);
+    }, delay);
+  }
+
+  function start() {
+    if (running) return;
+    running = true;
+    var stagger = Math.round(INTERVAL_MS / cells.length);   /* 칸마다 시차 */
+    /* 첫 화면은 잠깐 그대로 두고(3초), 그 뒤부터 한 칸뿐씩 바뀐다 */
+    var first = 3000;
+    cells.forEach(function (cell, i) { runCell(cell, first + i * stagger); });
+  }
+
+  function stop() {
+    running = false;
+    cells.forEach(function (cell) {
+      window.clearTimeout(cell.timer);
+      cell.timer = null;
+    });
+  }
+
+  /* 화면 밖으로 나가거나 탭이 가려지면 멈춰서 배터리·CPU를 아낀다 */
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) stop();
+    else start();
+  });
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) start();
+        else stop();
+      });
+    }, { threshold: 0 }).observe(root.closest('.hero') || root);
+  }
+
+  /* 첫 사진이 다 받아진 뒤에 시작 (늦어도 2초 뒤) */
+  var began = false;
+  function begin() {
+    if (began) return;
+    began = true;
+    if (!document.hidden) start();
+  }
+
+  var bases = cells.map(function (c) { return c.layers[c.cur]; }).filter(Boolean);
+  var pending = bases.length;
+  if (!pending) begin();
+  else {
+    bases.forEach(function (img) {
+      function one() {
+        pending -= 1;
+        if (pending <= 0) begin();
+      }
+      if (img.complete && img.naturalWidth > 0) one();
+      else {
+        img.addEventListener('load', one);
+        img.addEventListener('error', one);
+      }
+    });
+    window.setTimeout(begin, 2000);
+  }
+})();

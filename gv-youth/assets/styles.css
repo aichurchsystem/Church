@@ -3334,3 +3334,76 @@ body.zoom-open { overflow: hidden; }
 .conf-verse { border-left-color: rgba(205, 223, 251, .45); }
 .hint { background: rgba(205, 223, 251, .12); color: #cddffb; }
 .conf-hero__kicker { background: rgba(255, 255, 255, .04); color: #cddffb; }
+
+/* ==========================================================================
+   히어로 사진 모자이크 (2026-11-23)
+   단일 배경 사진 → 지포커스 사역 현장 사진이 칸마다 다른 장면으로 뜨는 콜라주.
+   PC 13칸(5열×3행, 큰 칸 2개) · 모바일 5칸. 칸별 크로스페이드는 assets/app.js.
+   ========================================================================== */
+.hero__mosaic {
+  --mosaic-fade: .9s;          /* app.js FADE_MS(900)와 같게 */
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  background: #050f22;
+}
+.hero__mosaic .mosaic__cell {
+  position: relative;
+  overflow: hidden;
+  background: #0a1a33;
+  grid-area: auto;
+}
+/* 칸 배치: 5열 × 3행 — 오른쪽 위 세로 2칸(큰 칸) · 아래 오른쪽 가로 2칸(큰 칸) */
+.hero__mosaic .mosaic__cell[data-pos="c1r1"] { grid-area: 1 / 1 / 2 / 2; }
+.hero__mosaic .mosaic__cell[data-pos="c2r1"] { grid-area: 1 / 2 / 2 / 3; }
+.hero__mosaic .mosaic__cell[data-pos="c3r1"] { grid-area: 1 / 3 / 2 / 4; }
+.hero__mosaic .mosaic__cell[data-pos="c4r1"] { grid-area: 1 / 4 / 2 / 5; }
+.hero__mosaic .mosaic__cell[data-pos="c5r12"] { grid-area: 1 / 5 / 3 / 6; }
+.hero__mosaic .mosaic__cell[data-pos="c1r2"] { grid-area: 2 / 1 / 3 / 2; }
+.hero__mosaic .mosaic__cell[data-pos="c2r2"] { grid-area: 2 / 2 / 3 / 3; }
+.hero__mosaic .mosaic__cell[data-pos="c3r2"] { grid-area: 2 / 3 / 3 / 4; }
+.hero__mosaic .mosaic__cell[data-pos="c4r2"] { grid-area: 2 / 4 / 3 / 5; }
+.hero__mosaic .mosaic__cell[data-pos="c1r3"] { grid-area: 3 / 1 / 4 / 2; }
+.hero__mosaic .mosaic__cell[data-pos="c2r3"] { grid-area: 3 / 2 / 4 / 3; }
+.hero__mosaic .mosaic__cell[data-pos="c3r3"] { grid-area: 3 / 3 / 4 / 4; }
+.hero__mosaic .mosaic__cell[data-pos="c45r3"] { grid-area: 3 / 4 / 4 / 6; }
+
+.hero__mosaic .mosaic__cell img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0;
+  z-index: 1;
+  transition: opacity var(--mosaic-fade) ease-in-out;
+}
+/* 사진마다 잘리는 위치를 조금씩 달리해 같은 사진이 겹쳐도 다른 컷처럼 보이게 */
+.hero__mosaic .mosaic__cell:nth-child(3n) img { object-position: center 36%; }
+.hero__mosaic .mosaic__cell:nth-child(3n + 2) img { object-position: center 58%; }
+
+/* 지금 보이는 칸 / 위에서 겹쳐 들어오는 칸 */
+.hero__mosaic .mosaic__cell img.is-active { opacity: 1; z-index: 1; }
+.hero__mosaic .mosaic__cell img.is-top { opacity: 1; z-index: 2; }
+
+/* 모바일: 큰 칸 1 + 작은 칸 4 = 5칸 (나머지 칸은 감춘다) */
+@media (max-width: 900px) {
+  .hero__mosaic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: 1.6fr 1fr 1fr;
+    gap: 3px;
+  }
+  .hero__mosaic .mosaic__cell[data-pos] { grid-area: auto; }
+  .hero__mosaic .mosaic__cell:nth-child(1) { grid-area: 1 / 1 / 2 / 3; }
+  .hero__mosaic .mosaic__cell:nth-child(2) { grid-area: 2 / 1 / 3 / 2; }
+  .hero__mosaic .mosaic__cell:nth-child(3) { grid-area: 2 / 2 / 3 / 3; }
+  .hero__mosaic .mosaic__cell:nth-child(4) { grid-area: 3 / 1 / 4 / 2; }
+  .hero__mosaic .mosaic__cell:nth-child(5) { grid-area: 3 / 2 / 4 / 3; }
+  .hero__mosaic .mosaic__cell:nth-child(n + 6) { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__mosaic .mosaic__cell img { transition: none; }
+}
