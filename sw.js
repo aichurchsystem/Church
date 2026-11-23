@@ -1,4 +1,4 @@
-const CACHE='workoutlog-v8';
+const CACHE='workoutlog-v9';
 const IMGS=['barbell','dumbbell','bench','incline','rack','cable','latpull','row','legpress','legcurl','dip','pullup','machine','treadmill','bike','rower','bodyweight'];
 const FILES=['./','./index.html','./manifest.json','./icon.svg'].concat(IMGS.map(k=>'./images/'+k+'.png'));
 
@@ -11,10 +11,10 @@ self.addEventListener('activate',e=>{
 self.addEventListener('fetch',e=>{
   if(e.request.method!=='GET')return;
   e.respondWith(
-    caches.match(e.request).then(hit=>hit||fetch(e.request).then(res=>{
+    fetch(e.request).then(res=>{
       const copy=res.clone();
       caches.open(CACHE).then(c=>c.put(e.request,copy)).catch(()=>{});
       return res;
-    }).catch(()=>caches.match('./index.html')))
+    }).catch(()=>caches.match(e.request).then(hit=>hit||caches.match('./index.html')))
   );
 });
