@@ -23,7 +23,9 @@
   var y = parseInt(q.get('y') || '0', 10);
 
   var f = document.createElement('iframe');
-  f.width = w; f.height = h; f.src = url;
+  f.width = w; f.height = h;
+  /* 캐시에 남은 옛 문서를 피하려고 매번 다른 cb 값을 붙인다 */
+  f.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'cb=' + Date.now();
   document.getElementById('host').appendChild(f);
 
   f.addEventListener('load', function () {
