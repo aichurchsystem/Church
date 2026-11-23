@@ -77,6 +77,26 @@
 }
 .bc-section--navy .bc-lead { color: #a9b8d2; }
 
+/* ---------- 버튼: 이 페이지 안에서는 라임을 진하게, 밝은 바탕 위 고스트를 읽히게 ---------- */
+.bc .btn--lime { background: var(--bc-lime); color: var(--bc-navy); box-shadow: none; }
+.bc .btn--lime:hover { background: var(--bc-lime-deep); color: var(--bc-navy); }
+.bc .btn--navy { background: var(--bc-navy); color: #fff; }
+.bc .btn--navy:hover { background: var(--bc-navy-2); }
+.bc-hero__actions .btn--ghost,
+.bc-apply .btn--ghost {
+  background: #fff;
+  border-color: var(--bc-line);
+  color: var(--bc-navy);
+}
+.bc-hero__actions .btn--ghost:hover,
+.bc-apply .btn--ghost:hover { background: #f5f8fc; border-color: #c3d3ea; color: var(--bc-navy); }
+.bc-contact .btn--ghost {
+  background: rgba(255, 255, 255, .08);
+  border-color: rgba(255, 255, 255, .34);
+  color: #fff;
+}
+.bc-contact .btn--ghost:hover { background: rgba(255, 255, 255, .16); color: #fff; }
+
 /* ==========================================================================
    히어로
    ========================================================================== */
@@ -147,7 +167,9 @@
   color: var(--bc-navy);
 }
 .bc-hero h1 em span {
-  background: linear-gradient(transparent 62%, var(--bc-lime) 62%, var(--bc-lime) 92%, transparent 92%);
+  background: linear-gradient(transparent 58%, var(--bc-lime) 58%, var(--bc-lime) 90%, transparent 90%);
+  padding: 0 4px;
+  margin: 0 -4px;
 }
 .bc-hero__lead {
   margin: 22px 0 0;
@@ -234,6 +256,7 @@
   position: absolute;
   left: -14px;
   top: 18px;
+  z-index: 3;
   display: grid;
   place-items: center;
   width: 66px;
@@ -348,7 +371,7 @@
   font-family: var(--bc-anton);
   font-weight: 400;
   font-size: 19px;
-  color: var(--bc-lime-deep);
+  color: #5f7a10;
   letter-spacing: .02em;
 }
 .bc-words span { font-size: 13.4px; line-height: 1.7; color: var(--bc-muted); }
@@ -780,6 +803,7 @@
   border: 1px solid var(--bc-line);
 }
 .bc-apply__card--primary { border-color: #c9d7ef; box-shadow: 0 10px 24px -18px rgba(10, 31, 68, .55); }
+.bc-apply__card[aria-disabled="true"] { pointer-events: none; }
 .bc-apply__ico {
   display: grid;
   place-items: center;
