@@ -303,7 +303,7 @@
 
     <div class="card" id="formCard">
       <div class="wprog" id="wProg">
-        <div class="wprow"><span>오늘 <b id="wProgPart">가슴</b></span><span><em id="wProgNum">0</em> / <span id="wProgGoal">12</span>세트</span></div>
+        <div class="wprow"><span>오늘 <b id="wProgPart">가슴</b></span><span><em id="wProgNum">0</em> / <span id="wProgGoal">12</span><span id="wProgUnit">세트</span></span></div>
         <div class="wbar"><i id="wProgBar"></i></div>
       </div>
       <div class="cardhead"><b>기록 입력</b><span id="formPart">가슴</span></div>
@@ -617,8 +617,7 @@ function addItem(){
   if(sb){sb.classList.remove('onsave');void sb.offsetWidth;if(!reduced())sb.classList.add('onsave');}
   const row=document.querySelector('#list .item[data-id="'+id+'"]');
   if(row&&!reduced()){row.classList.add('newrow');setTimeout(()=>row.classList.remove('newrow'),900);}
-  showToast('<b>'+ex+'</b> 저장 · '+w+'kg × '+r+'회 × '+s+'세트<small>오늘 '+part+' '+(pr?pr.done+' / '+pr.goal+'세트':'')+' · 이번 기록 '+won(w*r*s)+'kg</small>');
-  $('ex').value='';$('w').value='';$('r').value='';$('s').value='';$('m').value='';
+  showToast('<b>'+ex+'</b> 저장 · '+w+'kg × '+r+'회 × '+s+'세트<small>오늘 '+part+' '+(pr?pr.done+' / '+pr.goal+'세트':'')+' · 이번 기록 '+won(w*r*s)+'kg</small>');  $('ex').value='';$('w').value='';$('r').value='';$('s').value='';$('m').value='';
   const l=lastOf(ex);
   $('lastHint').textContent=l?('「'+ex+'」 지난 기록: '+l.w+'kg × '+l.r+'회 × '+l.s+'세트 ('+l.date+')'):'';
   $('ex').focus();
@@ -781,8 +780,9 @@ function renderHome(){
   const doneSets=mine.reduce((a,x)=>a+(x.s||1),0);
   const mineVol=mine.reduce((a,x)=>a+x.w*x.r*x.s,0);
   const mineExs=[];mine.forEach(x=>{if(mineExs.indexOf(x.ex)<0)mineExs.push(x.ex);});
-  const pct=goal?Math.min(1,doneSets/goal):0;
-  const complete=mine.length>0&&doneSets>=goal;
+  const doneNum=hasSets?doneSets:mineExs.length;
+  const pct=goal?Math.min(1,doneNum/goal):0;
+  const complete=mine.length>0&&doneNum>=goal;
   const doing=mine.length>0&&!complete;
   paintColor(card,p);
 
@@ -804,7 +804,7 @@ function renderHome(){
   const C=2*Math.PI*34;
   const center=complete
     ?'<svg class="chkpop" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l4.8 4.8L19.5 7"/></svg>'
-    :'<b>'+doneSets+'</b><span>/'+goal+(hasSets?'세트':'개')+'</span>';
+    :'<b>'+doneNum+'</b><span>/'+goal+(hasSets?'세트':'개')+'</span>';
   const startOff=reduced()?C*(1-pct):C;
   const ringHTML=restDay?'':'<div class="hring"><svg class="rsvg" viewBox="0 0 86 86">'
     +'<circle class="rtrack" cx="43" cy="43" r="34" stroke-width="7"/>'
@@ -822,7 +822,7 @@ function renderHome(){
       +(mine.length>3?'<div class="tmore">기록 '+(mine.length-3)+'건 더 있어요</div>':'')+'</div>';
   }else{
     const doneNames={};mine.forEach(x=>{doneNames[x.ex]=1;});
-    if(doing)html+='<div class="tcnote">오늘 '+doneSets+' / '+goal+'세트 하셨어요. 남은 종목을 마저 해 보세요.</div>';
+    if(doing)html+='<div class="tcnote">오늘 '+doneNum+' / '+goal+(hasSets?'세트':'개')+' 하셨어요. 남은 종목을 마저 해 보세요.</div>';
     else if(t.length)html+='<div class="tcnote">오늘 「'+modePart(t)+'」 기록이 이미 있어요. 부위를 바꿔 보는 중입니다.</div>';
     else if(sug.movedFrom&&!ov)html+='<div class="tcnote">이번 주에 「'+sug.movedFrom+'」 기록이 있어 오늘은 「'+p+'」로 당겼어요.</div>';
     html+='<div class="tlist">'+plan.map(r=>homeRowHTML(r.n,r.eq,r.sets,r.label,null,!!doneNames[r.n])).join('')+'</div>';
@@ -879,12 +879,17 @@ function renderRecent(){
 }
 function renderWriteProg(){
   const list=todayList(part),goal=planGoal(list);
-  const done=data.filter(x=>x.date===todayStr()&&x.part===part).reduce((a,x)=>a+(x.s||1),0);
+  const hasSets=list.some(r=>setsNum(r.sets)>0);
+  const mine=data.filter(x=>x.date===todayStr()&&x.part===part);
+  const doneSets=mine.reduce((a,x)=>a+(x.s||1),0);
+  const exs=[];mine.forEach(x=>{if(exs.indexOf(x.ex)<0)exs.push(x.ex);});
+  const done=hasSets?doneSets:exs.length;
   const pp=$('wProgPart');
   if(!pp)return;
   pp.textContent=part;pp.style.color=PC(part).cd;
   $('wProgNum').textContent=done;$('wProgNum').style.color=PC(part).cd;
   $('wProgGoal').textContent=goal;
+  if($('wProgUnit'))$('wProgUnit').textContent=hasSets?'세트':'개';
   const bar=$('wProgBar');
   bar.style.background=PC(part).c;
   bar.style.width=Math.min(100,goal?done/goal*100:0)+'%';
