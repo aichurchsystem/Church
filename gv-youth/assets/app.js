@@ -862,6 +862,19 @@
   }
 
   /* ----------------------------------------------------------------------
+     모바일: 설교 아카이브 표 접기/펼치기 (데스크톱에서는 버튼이 숨겨져 표가 다 보입니다)
+     ---------------------------------------------------------------------- */
+  var gfocusMore = byId('gfocusMore');
+  var gfocusTable = byId('gfocusTable');
+  if (gfocusMore && gfocusTable) {
+    gfocusMore.addEventListener('click', function () {
+      var open = gfocusTable.classList.toggle('is-expanded');
+      gfocusMore.setAttribute('aria-expanded', open ? 'true' : 'false');
+      gfocusMore.textContent = open ? '설교 목록 접기' : '설교 13편 모두 보기';
+    });
+  }
+
+  /* ----------------------------------------------------------------------
      7. 헤더 그림자 & 등장 애니메이션
      ---------------------------------------------------------------------- */
   var header = byId('siteHeader');

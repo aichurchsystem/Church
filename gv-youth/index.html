@@ -96,7 +96,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/logo/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="192x192" href="assets/logo/favicon-192.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="assets/logo/apple-touch-icon-180.png" />
-<link rel="stylesheet" href="assets/styles.css?v=20261123h" />
+<link rel="stylesheet" href="assets/styles.css?v=20261123i" />
 </head>
 <body>
 <a class="skip-link" href="#main">본문으로 바로 가기</a>
@@ -696,7 +696,7 @@
         </div>
       </div>
 
-      <div class="archive reveal">
+      <div class="archive reveal" id="gfocusTable">
         <table class="archive-table">
           <caption>지포커스예배 설교 목록 — 2025년 3월 8일부터 11월 8일까지 13편, 최근 순</caption>
           <thead>
@@ -788,6 +788,12 @@
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- 모바일에서만 보이는 접기 버튼(설교 13편 표가 길어 세로 스크롤이 길어지는 것을 줄입니다).
+           데스크톱에서는 표가 그대로 다 보이고 버튼은 숨습니다. -->
+      <div class="gfocus__more-wrap">
+        <button class="btn btn--outline btn--sm gfocus__more" type="button" id="gfocusMore" aria-expanded="false" aria-controls="gfocusTable">설교 13편 모두 보기</button>
       </div>
 
       <div class="gfocus__foot">
@@ -1145,6 +1151,6 @@
   </div>
 </div>
 
-<script src="assets/app.js?v=20261123h"></script>
+<script src="assets/app.js?v=20261123i"></script>
 </body>
 </html>

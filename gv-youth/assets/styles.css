@@ -4011,3 +4011,40 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   .site-footer { padding: 26px 0 16px; }
   .footer__col a { padding: 3px 0; }
 }
+
+/* v7c — 모바일 세로 길이 3차 조임 + 설교 표 접기(모바일 전용) */
+.gfocus__more-wrap { display: none; }
+@media (max-width: 760px) {
+  .section { padding: 22px 0; }
+  .gfocus__more-wrap { display: flex; justify-content: center; margin-top: 10px; }
+  .gfocus__more { display: inline-flex; }
+  .archive:not(.is-expanded) .archive-table tbody tr:nth-child(n+6) { display: none; }
+
+  .archive-table tbody tr { padding: 9px 0; gap: 1px 8px; }
+  .archive-table td.title { font-size: 14.4px; line-height: 1.45; }
+  .hero__stats--topics .hero__topic { padding-top: 12px; padding-bottom: 12px; }
+  .hero__desc { font-size: 14.2px; line-height: 1.7; }
+  .m-card__media { aspect-ratio: 16 / 7; }
+  .m-card__body { padding: 12px 14px 12px; }
+  .m-card__note { line-height: 1.6; }
+  .mission-band__item { padding: 10px 0; }
+  .partner { padding: 12px 0 10px; }
+  .partner + .partner { padding-left: 0; }
+  .about-grid { gap: 12px; }
+  .ceo-card { padding: 14px 14px 12px; }
+  .panel { padding: 12px 14px; }
+  .history { padding: 14px 14px 10px; }
+  .timeline__item { padding: 6px 0; }
+  .placeholder { padding: 12px 14px; }
+  .location__info, .location__side { padding: 14px 14px; }
+  .brief-col { padding: 14px 14px 12px; }
+  .brief-card { padding: 12px 12px 10px; }
+  .contact { padding: 26px 0; }
+  .contact__card { padding: 14px 16px; }
+  .contact__grid { gap: 16px; }
+  .footer__top { gap: 24px; }
+  .footer__cols { gap: 12px; }
+  .footer__col a { padding: 2px 0; }
+  .footer__addr { line-height: 1.65; }
+  .footer__sns { margin-top: 12px; padding-top: 12px; }
+}
