@@ -1126,11 +1126,12 @@
   position: relative;
   max-width: min(92vw, 620px);
   max-height: 92vh;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   border-radius: 12px;
   background: #0b1a33;
 }
-.poster-zoom__panel img { width: 100%; height: auto; display: block; }
+.poster-zoom__panel img { width: auto; max-width: 100%; height: auto; display: block; margin: 0 auto; }
 .poster-zoom__cap {
   padding: 10px 14px 14px;
   font-size: 12px;
