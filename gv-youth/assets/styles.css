@@ -1527,13 +1527,13 @@ section[id], div[id], article[id] { scroll-margin-top: calc(var(--header-h) + 20
 .book-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 7px 6px;
+  gap: 6px;
   margin-top: 10px;
 }
 .book {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   min-width: 0;
   font-size: 11px;
   font-weight: 700;
@@ -1544,7 +1544,8 @@ section[id], div[id], article[id] { scroll-margin-top: calc(var(--header-h) + 20
 .book__cover {
   position: relative;
   height: 78px;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
+  align-self: flex-start;
   border-radius: 3px;
   background: transparent;
   box-shadow: 0 2px 5px rgba(12, 30, 60, .24), 0 0 0 1px rgba(12, 30, 60, .06);
