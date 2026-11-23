@@ -4795,3 +4795,40 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   .timeline { columns: 1; }
   .timeline__item { grid-template-columns: 74px minmax(0, 1fr); gap: 8px; padding: 7px 0; }
 }
+
+/* --- 첫 화면 8칸: 칸 안 왼쪽에 작은 대표 그림(칸 높이는 그대로) --- */
+.hero__group-list .hero__topic {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 10px;
+}
+.hero__group-list .hero__topic-row { grid-column: 2; grid-row: 1; }
+.hero__group-list .hero__topic-desc { grid-column: 2; grid-row: 2; }
+.hero__group-list .hero__topic-icon {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  display: block;
+  background: #0B1B34;
+}
+@media (max-width: 760px) {
+  .hero__group-list .hero__topic-icon { width: 26px; height: 26px; border-radius: 6px; }
+  .hero__group-list .hero__topic { column-gap: 8px; }
+}
+
+/* --- 찾아오는길: 주소·대표전화·이메일을 한 줄로 압축 --- */
+.location__rows { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; }
+.location__row { display: flex; align-items: center; gap: 6px; padding: 0; border: 0; }
+.location__row .k { display: none; }
+.location__row .v { margin: 0; font-size: 13.2px; line-height: 1.5; }
+.location__row .v small { display: inline; margin-left: 6px; font-size: 11.8px; color: var(--muted-2); }
+.location__info h3 { margin-bottom: 6px; }
+@media (max-width: 760px) {
+  .location__rows { gap: 2px 14px; }
+  .location__row .v { font-size: 12.8px; }
+  .location__row .v small { display: none; }
+}
