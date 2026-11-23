@@ -96,7 +96,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/logo/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="192x192" href="assets/logo/favicon-192.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="assets/logo/apple-touch-icon-180.png" />
-<link rel="stylesheet" href="assets/styles.css?v=20261123l" />
+<link rel="stylesheet" href="assets/styles.css?v=20261124a" />
 </head>
 <body>
 <a class="skip-link" href="#main">본문으로 바로 가기</a>
@@ -393,86 +393,97 @@
       </div>
     </div>
 
-    <!-- 한눈에 보는 8칸 — 2열 × 4행.
-         왼쪽 열: 청소년 정보 주제 4칸(archive.html 분류로 이동).
-         오른쪽 열: 4대 사역 4칸(동아리·캠프·상담·강의, #ministry-1~4 앵커 유지).
-         칸은 제목 1줄 + 설명 1~2줄로 짧게 유지해 첫 화면에서 스크롤 없이 다 보이게 합니다. -->
+    <!-- 한눈에 보는 8칸 — 두 묶음으로 나눠 4칸 + 4칸.
+         왼쪽 묶음: 청소년 관련 보도·정책 브리핑 4칸(archive.html 분류로 이동).
+         오른쪽 묶음: GV청소년 사역 4칸(동아리·캠프·상담·강의, #ministry-1~4 앵커 유지).
+         두 묶음 제목을 같은 모양의 머리글로 얹고 가운데 여백을 넓혀 어느 쪽인지 바로 보이게 합니다. -->
     <div class="hero__stats-wrap" id="ministry">
       <div class="container">
-        <ul class="hero__stats hero__stats--topics hero__stats--eight">
-          <li class="hero__stat">
-            <a class="hero__topic" href="archive.html?cat=policy">
-              <span class="hero__topic-row">
-                <b class="hero__topic-title">청소년 보도·정책 브리핑</b>
-                <span class="hero__topic-arrow" aria-hidden="true">→</span>
-              </span>
-              <span class="hero__topic-desc">정부·국회 정책 변화와 언론 보도를 출처와 함께 정리</span>
-            </a>
-          </li>
-          <li class="hero__stat">
-            <a class="hero__topic" href="archive.html?cat=news">
-              <span class="hero__topic-row">
-                <b class="hero__topic-title">국내·해외 뉴스</b>
-                <span class="hero__topic-arrow" aria-hidden="true">→</span>
-              </span>
-              <span class="hero__topic-desc">국내 언론과 해외 교회·기관의 청소년 소식</span>
-            </a>
-          </li>
-          <li class="hero__stat">
-            <a class="hero__topic" href="archive.html?cat=benefit">
-              <span class="hero__topic-row">
-                <b class="hero__topic-title">정부혜택·지원</b>
-                <span class="hero__topic-arrow" aria-hidden="true">→</span>
-              </span>
-              <span class="hero__topic-desc">1388·꿈드림·문화누리·국가장학금 신청 안내</span>
-            </a>
-          </li>
-          <li class="hero__stat">
-            <a class="hero__topic" href="archive.html?cat=edu">
-              <span class="hero__topic-row">
-                <b class="hero__topic-title">교육부·수능</b>
-                <span class="hero__topic-arrow" aria-hidden="true">→</span>
-              </span>
-              <span class="hero__topic-desc">교육부 보도자료와 대입·수능 변화, 학년·일정 중심</span>
-            </a>
-          </li>
-          <li class="hero__stat" id="ministry-1">
-            <a class="hero__topic" href="#contact">
-              <span class="hero__topic-row">
-                <b class="hero__topic-title">동아리사역</b>
-                <span class="hero__topic-arrow" aria-hidden="true">→</span>
-              </span>
-              <span class="hero__topic-desc">예배팀·워십팀·드라마팀, 주중 모임</span>
-            </a>
-          </li>
-          <li class="hero__stat" id="ministry-2">
-            <a class="hero__topic" href="bible-conference.html">
-              <span class="hero__topic-row">
-                <b class="hero__topic-title">캠프사역</b>
-                <span class="hero__topic-arrow" aria-hidden="true">→</span>
-              </span>
-              <span class="hero__topic-desc">바이블·비전컨퍼런스, 겨울 집회와 진로 캠프</span>
-            </a>
-          </li>
-          <li class="hero__stat" id="ministry-3">
-            <a class="hero__topic" href="#contact">
-              <span class="hero__topic-row">
-                <b class="hero__topic-title">상담사역</b>
-                <span class="hero__topic-arrow" aria-hidden="true">→</span>
-              </span>
-              <span class="hero__topic-desc">가정폭력·성폭력·진학·우울 상담, 비밀 보장</span>
-            </a>
-          </li>
-          <li class="hero__stat" id="ministry-4">
-            <a class="hero__topic" href="education.html">
-              <span class="hero__topic-row">
-                <b class="hero__topic-title">강의사역</b>
-                <span class="hero__topic-arrow" aria-hidden="true">→</span>
-              </span>
-              <span class="hero__topic-desc">성·흡연·음주·약물 예방교육, 학교·교회 출강</span>
-            </a>
-          </li>
-        </ul>
+        <div class="hero__groups">
+          <section class="hero__group" aria-labelledby="groupInfo">
+            <h3 class="hero__group-label" id="groupInfo">청소년 관련 보도·정책 브리핑</h3>
+            <ul class="hero__group-list">
+              <li class="hero__stat">
+                <a class="hero__topic" href="archive.html?cat=policy">
+                  <span class="hero__topic-row">
+                    <b class="hero__topic-title">청소년 보도·정책 브리핑</b>
+                    <span class="hero__topic-arrow" aria-hidden="true">→</span>
+                  </span>
+                  <span class="hero__topic-desc">정부·국회 정책 변화와 언론 보도를 출처와 함께 정리</span>
+                </a>
+              </li>
+              <li class="hero__stat">
+                <a class="hero__topic" href="archive.html?cat=news">
+                  <span class="hero__topic-row">
+                    <b class="hero__topic-title">국내·해외 뉴스</b>
+                    <span class="hero__topic-arrow" aria-hidden="true">→</span>
+                  </span>
+                  <span class="hero__topic-desc">국내 언론과 해외 교회·기관의 청소년 소식</span>
+                </a>
+              </li>
+              <li class="hero__stat">
+                <a class="hero__topic" href="archive.html?cat=benefit">
+                  <span class="hero__topic-row">
+                    <b class="hero__topic-title">정부혜택·지원</b>
+                    <span class="hero__topic-arrow" aria-hidden="true">→</span>
+                  </span>
+                  <span class="hero__topic-desc">1388·꿈드림·문화누리·국가장학금 신청 안내</span>
+                </a>
+              </li>
+              <li class="hero__stat">
+                <a class="hero__topic" href="archive.html?cat=edu">
+                  <span class="hero__topic-row">
+                    <b class="hero__topic-title">교육부·수능</b>
+                    <span class="hero__topic-arrow" aria-hidden="true">→</span>
+                  </span>
+                  <span class="hero__topic-desc">교육부 보도자료와 대입·수능 변화, 학년·일정 중심</span>
+                </a>
+              </li>
+            </ul>
+          </section>
+
+          <section class="hero__group" aria-labelledby="groupMinistry">
+            <h3 class="hero__group-label" id="groupMinistry">GV청소년 사역</h3>
+            <ul class="hero__group-list">
+              <li class="hero__stat" id="ministry-1">
+                <a class="hero__topic" href="#contact">
+                  <span class="hero__topic-row">
+                    <b class="hero__topic-title">동아리사역</b>
+                    <span class="hero__topic-arrow" aria-hidden="true">→</span>
+                  </span>
+                  <span class="hero__topic-desc">예배팀·워십팀·드라마팀, 주중 모임</span>
+                </a>
+              </li>
+              <li class="hero__stat" id="ministry-2">
+                <a class="hero__topic" href="bible-conference.html">
+                  <span class="hero__topic-row">
+                    <b class="hero__topic-title">캠프사역</b>
+                    <span class="hero__topic-arrow" aria-hidden="true">→</span>
+                  </span>
+                  <span class="hero__topic-desc">바이블·비전컨퍼런스, 겨울 집회와 진로 캠프</span>
+                </a>
+              </li>
+              <li class="hero__stat" id="ministry-3">
+                <a class="hero__topic" href="#contact">
+                  <span class="hero__topic-row">
+                    <b class="hero__topic-title">상담사역</b>
+                    <span class="hero__topic-arrow" aria-hidden="true">→</span>
+                  </span>
+                  <span class="hero__topic-desc">가정폭력·성폭력·진학·우울 상담, 비밀 보장</span>
+                </a>
+              </li>
+              <li class="hero__stat" id="ministry-4">
+                <a class="hero__topic" href="education.html">
+                  <span class="hero__topic-row">
+                    <b class="hero__topic-title">강의사역</b>
+                    <span class="hero__topic-arrow" aria-hidden="true">→</span>
+                  </span>
+                  <span class="hero__topic-desc">성·흡연·음주·약물 예방교육, 학교·교회 출강</span>
+                </a>
+              </li>
+            </ul>
+          </section>
+        </div>
       </div>
     </div>
   </section>
@@ -1061,6 +1072,6 @@
   </div>
 </div>
 
-<script src="assets/app.js?v=20261123l"></script>
+<script src="assets/app.js?v=20261124a"></script>
 </body>
 </html>
