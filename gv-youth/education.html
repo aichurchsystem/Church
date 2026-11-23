@@ -75,18 +75,23 @@
 }
 </script>
 
-<link rel="stylesheet" href="assets/styles.css?v=20261123c" />
-<link rel="stylesheet" href="assets/education.css?v=20261123c" />
+<link rel="stylesheet" href="assets/styles.css?v=20261123e" />
+<link rel="stylesheet" href="assets/education.css?v=20261123e" />
 </head>
 <body>
 
 <!-- ============================ 유틸리티 바 ============================ -->
 <div class="topbar">
   <div class="container topbar__inner">
+    <!-- 공지 줄 — 배지를 포함한 문구 영역은 공지사항 목록(notices.html), '일정 보기 →'는 그 공지의 안내 페이지로 갑니다.
+         두 링크를 형제로 두어 링크 안에 링크가 겹치지 않습니다.
+         공지가 여러 건이 되면 이 자리에 공지 목록(assets/notices.js)을 두고 한 건씩 돌리면 됩니다. -->
     <div class="topbar__notice">
-      <span class="topbar__label">교육 사역</span>
-      <span class="topbar__text"><span class="topbar__full"><strong>학교로 찾아가는 예방교육</strong> · 흡연·음주·약물 예방 · 성교육 · 심폐소생술</span><span class="topbar__mini">교육 사역 현장 · 사진 17장</span></span>
-      <a class="topbar__link" href="#contact">교육 문의 →</a>
+      <a class="topbar__notice-link" href="notices.html" title="공지사항 전체 보기">
+        <span class="topbar__label">기관 공지</span>
+        <span class="topbar__text"><span class="topbar__full"><strong>제46차 청소년 바이블컨퍼런스</strong> 참가 안내 · 2027. 1. 14(목)–16(토) · 승동기도원</span><span class="topbar__mini">제46차 바이블컨퍼런스 · 2027.1.14–16</span></span>
+      </a>
+      <a class="topbar__link" href="bible-conference.html">일정 보기 →</a>
     </div>
     <div class="topbar__right">
       <a class="topbar__tel" href="tel:024291318"><span class="topbar__tel-label">대표전화 </span>02-429-1318</a>
@@ -150,6 +155,7 @@
             선교회 소개 <span class="caret" aria-hidden="true"></span>
           </button>
           <div class="dropdown">
+            <a href="notices.html">공지사항</a>
             <a href="about-pastor.html">대표 소개</a>
             <a href="credentials.html">약력</a>
             <a href="index.html#history">연혁</a>
@@ -225,6 +231,7 @@
       선교회 소개 <span class="caret" aria-hidden="true"></span>
     </button>
     <div class="mobile-group__body">
+      <a href="notices.html">공지사항</a>
       <a href="about-pastor.html">대표 소개</a>
       <a href="credentials.html">약력</a>
       <a href="index.html#history">연혁</a>
@@ -566,6 +573,7 @@
         </div>
         <div class="footer__col">
           <h5>선교회</h5>
+          <a href="notices.html">공지사항</a>
           <a href="education.html">교육 사역</a>
           <a href="bible-conference.html">바이블컨퍼런스</a>
           <a href="vision-conference.html">비전컨퍼런스</a>
@@ -625,7 +633,7 @@
   </button>
 </div>
 
-<script src="assets/app.js?v=20261123c"></script>
+<script src="assets/app.js?v=20261123e"></script>
 <script>
 /* 교육 사역 사진 크게 보기 — 이 페이지에서만 쓰는 작은 스크립트 */
 (function () {

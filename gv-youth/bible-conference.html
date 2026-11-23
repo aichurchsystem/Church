@@ -92,7 +92,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/logo/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="192x192" href="assets/logo/favicon-192.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="assets/logo/apple-touch-icon-180.png" />
-<link rel="stylesheet" href="assets/styles.css?v=20261123c" />
+<link rel="stylesheet" href="assets/styles.css?v=20261123e" />
 </head>
 <body>
 <a class="skip-link" href="#main">본문으로 바로 가기</a>
@@ -100,10 +100,15 @@
 <!-- ============================ 유틸리티 바 ============================ -->
 <div class="topbar">
   <div class="container topbar__inner">
+    <!-- 공지 줄 — 배지를 포함한 문구 영역은 공지사항 목록(notices.html), '일정 보기 →'는 그 공지의 안내 페이지로 갑니다.
+         두 링크를 형제로 두어 링크 안에 링크가 겹치지 않습니다.
+         공지가 여러 건이 되면 이 자리에 공지 목록(assets/notices.js)을 두고 한 건씩 돌리면 됩니다. -->
     <div class="topbar__notice">
-      <span class="topbar__label">컨퍼런스</span>
-      <span class="topbar__text"><span class="topbar__full"><strong>제46차 청소년 바이블컨퍼런스</strong> · 2027. 1. 14(목)–16(토) · 승동기도원 · 회비 90,000원</span><span class="topbar__mini">제46차 바이블컨퍼런스 · 2027.1.14–16</span></span>
-      <a class="topbar__link" href="#apply">참가 안내 →</a>
+      <a class="topbar__notice-link" href="notices.html" title="공지사항 전체 보기">
+        <span class="topbar__label">기관 공지</span>
+        <span class="topbar__text"><span class="topbar__full"><strong>제46차 청소년 바이블컨퍼런스</strong> 참가 안내 · 2027. 1. 14(목)–16(토) · 승동기도원</span><span class="topbar__mini">제46차 바이블컨퍼런스 · 2027.1.14–16</span></span>
+      </a>
+      <a class="topbar__link" href="bible-conference.html">일정 보기 →</a>
     </div>
     <div class="topbar__right">
       <a class="topbar__tel" href="tel:024291318"><span class="topbar__tel-label">대표전화 </span>02-429-1318</a>
@@ -166,6 +171,7 @@
             선교회 소개 <span class="caret" aria-hidden="true"></span>
           </button>
           <div class="dropdown">
+            <a href="notices.html">공지사항</a>
             <a href="about-pastor.html">대표 소개</a>
             <a href="credentials.html">약력</a>
             <a href="index.html#history">연혁</a>
@@ -243,6 +249,7 @@
       선교회 소개 <span class="caret" aria-hidden="true"></span>
     </button>
     <div class="mobile-group__body">
+      <a href="notices.html">공지사항</a>
       <a href="index.html#ceo">대표소개</a>
       <a href="index.html#history">연혁</a>
       <a href="index.html#worship">정기예배 <span class="dim">· 시간 확인 중</span></a>
@@ -598,6 +605,7 @@
         </div>
         <div class="footer__col">
           <h5>선교회</h5>
+          <a href="notices.html">공지사항</a>
           <a href="education.html">교육 사역</a>
           <a href="bible-conference.html">바이블컨퍼런스</a>
           <a href="vision-conference.html">비전컨퍼런스</a>
@@ -651,6 +659,6 @@
   </div>
 </div>
 
-<script src="assets/app.js?v=20261123c"></script>
+<script src="assets/app.js?v=20261123e"></script>
 </body>
 </html>

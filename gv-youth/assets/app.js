@@ -430,6 +430,39 @@
   }
 
   /* ----------------------------------------------------------------------
+     3-d. 공지사항(notices.html) — assets/notices.js 의 GV_NOTICES 로 목록을 그린다
+     (공지를 더하거나 고칠 때는 notices.js 배열만 손보면 된다)
+     ---------------------------------------------------------------------- */
+  function noticeHTML(n) {
+    var meta = '<span class="chip">' + esc(n.tag) + '</span>' +
+      (n.datetime
+        ? '<time datetime="' + esc(n.datetime) + '">' + esc(n.date) + '</time>'
+        : '<span>' + esc(n.date) + '</span>');
+    var body = n.body.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('');
+    var go = n.link
+      ? '<a class="notice-card__go" href="' + esc(n.link.href) + '">' + esc(n.link.label) +
+        ' <span aria-hidden="true">→</span></a>'
+      : '';
+    return '' +
+      '<details class="notice-card reveal" data-notice="' + esc(n.id) + '">' +
+        '<summary class="notice-card__head">' +
+          '<span class="notice-card__meta">' + meta + '</span>' +
+          '<span class="notice-card__title">' + esc(n.title) + '</span>' +
+          '<span class="notice-card__lead">' + esc(n.lead) + '</span>' +
+          '<span class="notice-card__toggle" aria-hidden="true"></span>' +
+        '</summary>' +
+        '<div class="notice-card__body">' + body + go + '</div>' +
+      '</details>';
+  }
+
+  var noticeList = byId('noticeList');
+  if (noticeList && window.GV_NOTICES && window.GV_NOTICES.length) {
+    noticeList.innerHTML = window.GV_NOTICES.map(noticeHTML).join('');
+    var noticeCount = byId('noticeCount');
+    if (noticeCount) noticeCount.textContent = window.GV_NOTICES.length;
+  }
+
+  /* ----------------------------------------------------------------------
      3-c. 청소년 정보 아카이브(archive.html) — 분류 탭 + 키워드 검색 + 더 보기
      ---------------------------------------------------------------------- */
   var arcRoot = byId('archiveRoot');
