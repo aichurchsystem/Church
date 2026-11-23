@@ -4776,3 +4776,22 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   .ceo-card__links .btn { font-size: 11.6px; padding: 7px 10px; }
   .about-grid__main .timeline__item { grid-template-columns: 62px minmax(0, 1fr); }
 }
+
+/* --- 연혁: 위아래로 길게 늘어놓지 않고 좌우 두 줄로 나눠 스크롤 축소 --- */
+.timeline-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+.timeline {
+  columns: 2;
+  column-gap: clamp(28px, 4vw, 56px);
+  padding-top: 2px;
+}
+.timeline__item {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 10px;
+  padding: 9px 0;
+}
+@media (max-width: 760px) {
+  .timeline { columns: 1; }
+  .timeline__item { grid-template-columns: 74px minmax(0, 1fr); gap: 8px; padding: 7px 0; }
+}
