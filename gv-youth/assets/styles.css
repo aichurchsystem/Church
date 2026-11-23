@@ -5194,3 +5194,6 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   .footer__col--two a, .footer__col--inline a { font-size: 12px; padding: 1px 0; }
   .footer__col--inline { gap: 2px 12px; }
 }
+
+/* 푸터 SNS — 인스타그램·유튜브 컬러 로고 */
+.footer__sns .sns svg { display: block; flex: 0 0 auto; }
