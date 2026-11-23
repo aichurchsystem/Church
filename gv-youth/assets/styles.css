@@ -3789,7 +3789,6 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
   gap: 20px;
   align-items: stretch;
-  max-width: 132px;
 }
 .brief-col {
   display: flex;
@@ -4421,7 +4420,6 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
   gap: 20px;
   align-items: stretch;
-  max-width: 132px;
 }
 .brief-col {
   display: flex;
@@ -5042,4 +5040,45 @@ a.topbar__label:hover { background-color: #f2f7ff; }
 }
 @media (max-width: 380px) {
   .hero__group-label { font-size: 15.5px; }
+}
+
+/* --- 주요 브리핑 두 건: 세로 2단 대신 좌우 한 줄로 (스크롤 줄이기) --- */
+.brief-lead-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.brief-lead-list .brief-card { height: 100%; }
+@media (max-width: 1024px) {
+  .brief-split { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px; }
+}
+@media (max-width: 760px) {
+  .brief-split { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .brief-col { padding: 13px 12px 11px; }
+  .brief-col__head { padding-bottom: 9px; }
+  .brief-col__head h3 { font-size: 13.6px; letter-spacing: -0.04em; }
+  .brief-col__meta, .brief-col__more { font-size: 10.8px; }
+  .brief-lead-list { gap: 8px; margin-top: 9px; }
+  .brief-card { padding: 11px 10px 10px; border-radius: 10px; gap: 6px; }
+  .brief-card h4 { font-size: 12.6px; line-height: 1.35; letter-spacing: -0.035em; }
+  .brief-rows li { padding: 7px 0; }
+  .brief-row__title, .brief-rows a { font-size: 12.2px; }
+}
+@media (max-width: 400px) {
+  .brief-card h4 { font-size: 11.8px; }
+  .brief-col__head h3 { font-size: 12.8px; }
+}
+
+/* --- 대표 소개 사진 아바타 --- */
+.ceo-card__avatar--photo {
+  padding: 0;
+  overflow: hidden;
+  background: #e7edf6;
+  box-shadow: 0 0 0 3px rgba(216, 243, 74, .55);
+}
+.ceo-card__avatar--photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 28%;
+  display: block;
+}
+@media (max-width: 760px) {
+  .ceo-card__avatar--photo { width: 60px; height: 60px; }
 }
