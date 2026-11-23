@@ -3867,3 +3867,83 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   .brief-split { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   .brief-col { padding: 18px 18px 16px; }
 }
+
+/* ==========================================================================
+   v7 — 세로 여백 조이기 (같은 내용, 더 짧은 스크롤)
+   섹션 상하 여백·제목 아래 여백·카드 안쪽 여백을 8px 배수로 다시 잡았습니다.
+   ========================================================================== */
+.section { padding: 40px 0; }
+.sec-head { margin-bottom: 24px; }
+.sec-head--row { gap: 20px; }
+.briefing .sec-head { margin-bottom: 20px; }
+.briefing__note { margin-top: 16px; }
+
+/* 미션 밴드 */
+.mission-band { padding: 32px 0 28px; }
+.mission-band__grid { margin-top: 16px; }
+.mission-band__item { padding: 18px 24px 14px 0; }
+.mission-band__item + .mission-band__item { padding-left: 24px; }
+.mission-band__item p { margin-top: 8px; }
+.mission-band__foot { margin-top: 14px; }
+
+/* 4대 사역 카드 */
+.m-grid { gap: 16px; }
+.m-card__media { aspect-ratio: 16 / 8.5; }
+.m-card__body { padding: 18px 20px 18px; }
+.m-card__body h3 { margin-top: 0; }
+.m-card__note { margin-top: 12px; font-size: 13.8px; line-height: 1.68; }
+.pills { margin-top: 10px; }
+.m-card__body > .btn { margin-top: 14px; }
+
+/* 협력·파트너 */
+.partner { padding: 20px 24px 18px 0; }
+.partner h3 { margin-top: 8px; }
+.partner__flag { margin-top: 12px; }
+
+/* 지포커스예배 */
+.gfocus__top { margin-bottom: 20px; }
+.archive { padding: 14px 22px 4px; }
+.archive-table td { padding: 10px 16px; }
+.archive-table th { padding: 10px 16px; }
+.gfocus__foot { margin-top: 14px; }
+
+/* 선교회 소개 */
+.about-grid { gap: 20px; }
+.ceo-card { padding: 22px 22px 20px; }
+.panel { padding: 18px 20px; }
+.panel__title--gap { margin-top: 18px; }
+.history { margin-top: 20px; padding: 22px 24px 18px; }
+.history__head { padding-bottom: 12px; }
+.timeline__item { padding: 10px 0; }
+.placeholder-grid { gap: 16px; margin-top: 18px; }
+.placeholder { padding: 18px 20px; }
+.location { gap: 16px; margin-top: 18px; }
+.location__info { padding: 22px 24px; }
+.location__side { padding: 22px 24px; }
+
+/* 문의·푸터 */
+.contact { padding: clamp(40px, 4.4vw, 56px) 0; }
+.contact__grid { gap: 28px; }
+.contact__card { padding: 20px 22px; }
+.site-footer { padding: 38px 0 20px; }
+.footer__sns { margin-top: 22px; padding-top: 16px; }
+
+@media (max-width: 760px) {
+  .section { padding: 30px 0; }
+  .sec-head { margin-bottom: 18px; }
+  .mission-band { padding: 24px 0 22px; }
+  .mission-band__grid { margin-top: 12px; }
+  .mission-band__item { padding: 14px 0; }
+  .mission-band__item + .mission-band__item { padding-left: 0; }
+  .m-grid { gap: 14px; }
+  .m-card__body { padding: 16px 16px 16px; }
+  .history { padding: 18px 16px 14px; }
+  .location { gap: 12px; }
+  .location__info { padding: 18px 16px; }
+  .location__side { padding: 18px 16px; }
+  .contact { padding: 40px 0; }
+  .contact__grid { gap: 20px; }
+  .contact__card { padding: 18px 18px; }
+  .site-footer { padding: 30px 0 18px; }
+  .briefing .sec-head { margin-bottom: 16px; }
+}
