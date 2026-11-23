@@ -1,0 +1,13 @@
+# GV청소년선교회 — https://aichurchsystem.github.io/Church/gv-youth/
+# 도메인(gvmission.or.kr) 연결 시 아래 주소만 바꾸면 됩니다.
+
+User-agent: *
+Allow: /
+
+User-agent: Yeti
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://aichurchsystem.github.io/Church/gv-youth/sitemap.xml

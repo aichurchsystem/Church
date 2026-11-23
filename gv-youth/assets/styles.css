@@ -829,6 +829,21 @@ section[id], div[id], article[id] { scroll-margin-top: calc(var(--header-h) + 18
   line-height: 1.7;
 }
 
+/* 스크립트가 없을 때만 보이는 허브 요약 */
+.hub__noscript {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border-radius: var(--radius-s);
+  background: #f7f9fd;
+  border: 1px solid var(--line);
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+.hub__noscript ul { margin: 10px 0 0; padding-left: 18px; }
+.hub__noscript li { margin-top: 4px; }
+.hub__noscript strong { color: var(--navy); }
+
 /* ==========================================================================
    4대 사역
    ========================================================================== */
