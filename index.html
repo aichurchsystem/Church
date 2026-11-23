@@ -57,6 +57,13 @@
   .footnote{font-size:11.5px;color:#586174;text-align:center;margin:20px 0 8px}
   a.link{color:var(--accent2);text-decoration:none;font-size:13px}
   .hide{display:none}
+  .reco{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .reco button{background:#141922;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--text);text-align:left;line-height:1.35}
+  .reco button:active{border-color:var(--accent);background:rgba(233,180,76,.12)}
+  .reco button small{display:block;color:var(--dim);font-size:11px;margin-top:2px}
+  .recohead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+  .recohead b{font-size:13.5px}
+  .recohead span{font-size:11.5px;color:var(--dim)}
 </style>
 </head>
 <body>
@@ -95,6 +102,12 @@
       <div class="hint" id="lastHint"></div>
     </div>
 
+    <div class="card">
+      <div class="recohead"><b>추천 종목</b><span id="recoPart">가슴</span></div>
+      <div class="reco" id="recoBox"></div>
+      <div class="hint" style="margin-top:10px">종목을 누르면 위 칸에 채워집니다. 무게는 지난 기록 보시고 맞춰 올리세요. 등·하체·어깨는 각 부위를 골라 보세요.</div>
+    </div>
+
     <div id="list"></div>
     <div class="footnote">기록은 이 폰에만 저장됩니다 · <a class="link" href="#" id="exportBtn">파일로 내보내기</a></div>
   </section>
@@ -123,6 +136,15 @@
 <script>
 const KEY='workoutlog.v1';
 const PARTS=['가슴','등','하체','어깨','팔','복부','유산소'];
+const RECO={
+  가슴:[['벤치프레스','가슴 전체 · 3세트 8~12회'],['인클라인 덤벨프레스','윗가슴 · 3세트 10회'],['케이블 플라이','모아주기 · 3세트 12~15회'],['푸시업','맨몸 · 3세트 15회'],['딥스','아랫가슴 · 3세트 8~10회']],
+  등:[['랫풀다운','광배근 · 3세트 10~12회'],['바벨 로우','등 두께 · 3세트 8~12회'],['시티드 로우','중부 등 · 3세트 12회'],['풀업','맨몸 · 3세트 6~10회'],['원암 덤벨로우','좌우 균형 · 3세트 12회']],
+  하체:[['스쿼트','하체 전체 · 3세트 8~12회'],['레그프레스','대퇴사두 · 3세트 12회'],['런지','둔근·균형 · 3세트 10회'],['레그컬','햄스트링 · 3세트 12~15회'],['카프레이즈','종아리 · 3세트 15~20회']],
+  어깨:[['숄더프레스','전면 · 3세트 8~12회'],['사이드 레터럴 레이즈','측면 · 3세트 12~15회'],['페이스풀','후면·자세 · 3세트 15회'],['업라이트 로우','승모·측면 · 3세트 12회']],
+  팔:[['바벨 컬','이두 · 3세트 10~12회'],['해머 컬','전완·이두 · 3세트 12회'],['트라이셉스 푸시다운','삼두 · 3세트 12~15회'],['오버헤드 익스텐션','삼두 · 3세트 12회']],
+  복부:[['플랭크','코어 버티기 · 3세트 40초'],['크런치','상복부 · 3세트 20회'],['레그레이즈','하복부 · 3세트 12회'],['데드버그','허리 보호 · 3세트 10회']],
+  유산소:[['빠르게 걷기','20~30분 · 대화 가능한 정도'],['사이클','20분 · 중간 강도'],['로잉머신','15분 · 전신']]
+};
 let data=JSON.parse(localStorage.getItem(KEY)||'[]');
 let part='가슴';
 
@@ -143,9 +165,27 @@ function initChips(){
     const b=document.createElement('button');
     b.className='chip'+(p===part?' on':'');
     b.textContent=p;
-    b.onclick=()=>{part=p;[...box.children].forEach(c=>c.classList.toggle('on',c.textContent===p));};
+    b.onclick=()=>{part=p;[...box.children].forEach(c=>c.classList.toggle('on',c.textContent===p));renderReco();};
     box.appendChild(b);
   });
+}
+function renderReco(){
+  $('recoPart').textContent=part;
+  const box=$('recoBox');
+  box.innerHTML='';
+  (RECO[part]||[]).forEach(([name,tip])=>{
+    const b=document.createElement('button');
+    b.innerHTML=name+'<small>'+tip+'</small>';
+    b.onclick=()=>{fillExercise(name);};
+    box.appendChild(b);
+  });
+  if(!(RECO[part]||[]).length){box.innerHTML='<div class="hint">이 부위 추천은 준비 중이에요.</div>';}
+}
+function fillExercise(name){
+  $('ex').value=name;
+  const l=lastOf(name);
+  $('lastHint').textContent=l?('「'+name+'」 지난 기록: '+l.w+'kg × '+l.r+'회 × '+l.s+'세트 ('+l.date+')'):('「'+name+'」 처음이시면 가벼운 무게로 12회 가능한 정도부터.');
+  $('w').focus();
 }
 function refreshExList(){
   const names=[...new Set(data.map(x=>x.ex))];
@@ -237,7 +277,7 @@ $('ex').addEventListener('input',()=>{
   const l=lastOf($('ex').value.trim());
   $('lastHint').textContent=l?('지난 기록: '+l.w+'kg × '+l.r+'회 × '+l.s+'세트 ('+l.date+')'):'';
 });
-initToday();initChips();refreshExList();render();
+initToday();initChips();renderReco();refreshExList();render();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
 </script>
 </body>
