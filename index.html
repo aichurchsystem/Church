@@ -133,6 +133,119 @@
   .ico{width:22px;height:22px;flex:0 0 auto;color:var(--c)}
   .ico.big{width:38px;height:38px}
 
+  /* ── 홈 ── */
+  .tcard{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);
+    border-radius:22px;box-shadow:var(--sh);margin-bottom:11px}
+  .hero{position:relative;overflow:hidden;padding:14px 14px 13px;color:#fff;
+    background:linear-gradient(150deg,var(--cd) 0%,var(--cd) 44%,var(--c) 138%);
+    background-size:180% 180%;animation:heroShift 16s ease-in-out infinite;will-change:background-position}
+  @keyframes heroShift{0%{background-position:0% 18%}50%{background-position:100% 82%}100%{background-position:0% 18%}}
+  .hero:after{content:'';position:absolute;right:-34px;top:-46px;width:158px;height:158px;border-radius:50%;
+    background:rgba(255,255,255,.13);pointer-events:none}
+  .hrow1{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11.5px;
+    font-weight:700;position:relative;z-index:1}
+  .hrow1 span:first-child{letter-spacing:.2px}
+  .hrow1 span:last-child{font-weight:600;opacity:.88}
+  .hmain{display:flex;align-items:center;gap:8px;margin-top:7px;position:relative;z-index:1}
+  .hleft{flex:1;min-width:0}
+  .hleft > b{display:block;font-size:29px;font-weight:800;letter-spacing:-1px;line-height:1.1;
+    text-shadow:0 1px 3px rgba(20,25,38,.18)}
+  .htag{display:inline-block;margin-top:6px;font-size:10.5px;font-weight:700;padding:3px 8px;
+    border-radius:6px;background:rgba(255,255,255,.22)}
+  .hsub{margin-top:7px;font-size:12px;font-weight:600;opacity:.96;line-height:1.45}
+  .hring{position:relative;width:86px;height:86px;flex:0 0 auto}
+  .hring svg.rsvg{display:block;width:86px;height:86px}
+  .rtrack{fill:none;stroke:rgba(255,255,255,.3)}
+  .rfill{fill:none;stroke:#fff;stroke-linecap:round;transition:stroke-dashoffset .95s cubic-bezier(.25,.9,.25,1)}
+  .rcenter{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+  .rcenter b{font-size:19px;font-weight:800;letter-spacing:-.5px}
+  .rcenter span{font-size:9.5px;font-weight:700;opacity:.88;margin-top:3px}
+  .chkpop{width:36px;height:36px;animation:chkPop .6s cubic-bezier(.2,1.5,.4,1) both}
+  @keyframes chkPop{0%{transform:scale(.2);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
+  .tbody{padding:12px 14px 13px}
+  .tcnote{font-size:11px;color:var(--faint);margin:0 0 9px;line-height:1.5}
+  .tlist{display:flex;flex-direction:column;gap:6px;margin-bottom:11px}
+  .hrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fafbff;
+    border:1.5px solid var(--line2);border-radius:12px;padding:6px 9px;position:relative;overflow:hidden;
+    font:inherit;color:var(--text);line-height:1.35}
+  .hrow:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c)}
+  .hrow img{width:38px;height:38px;border-radius:9px;object-fit:cover;background:#eceef3;flex:0 0 auto;display:block}
+  .hrow .t{flex:1;min-width:0;padding-left:2px}
+  .hrow b{display:block;font-size:13.5px;font-weight:700;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hrow small{display:block;font-size:11px;color:var(--faint);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hrow:active{background:var(--cl);border-color:var(--c)}
+  .hrow .plus2{flex:0 0 auto;font-size:15px;font-weight:800;color:var(--cd);opacity:.5;padding-right:2px}
+  .hrow .plus2.ok{opacity:1;font-size:13px;width:19px;height:19px;border-radius:50%;background:var(--cd);
+    color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .hrow img,.reco .thumb,.fav img{transition:transform .28s cubic-bezier(.2,.8,.3,1)}
+  .hrow:active img,.reco button:active .thumb,.fav:active img{transform:scale(1.12)}
+  .reco button,.fav,.hrow,.chip,.hchip{transition:transform .12s ease,background .15s ease,border-color .15s ease,box-shadow .15s ease}
+  .reco button:active,.fav:active,.hrow:active{transform:scale(.985)}
+  .rdate{flex:0 0 auto;font-size:12px;font-weight:600;color:var(--dim);white-space:nowrap}
+  .tmore{font-size:11.5px;color:var(--faint);text-align:center;padding:1px 0 0}
+  .tbtn{margin-top:2px}
+  .hpick{margin-top:10px;border-top:1px dashed var(--line);padding-top:9px}
+  .hplabel{font-size:10.5px;font-weight:700;color:var(--faint);letter-spacing:.2px;margin:0 0 6px 2px}
+  .hchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;
+    -webkit-mask-image:linear-gradient(90deg,#000 0,#000 88%,transparent 100%);
+    mask-image:linear-gradient(90deg,#000 0,#000 88%,transparent 100%)}
+  .hchips::-webkit-scrollbar{display:none}
+  .hchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;background:#fff;border:1.5px solid var(--line);
+    border-radius:999px;padding:7px 12px 7px 10px;font-size:12.5px;font-weight:600;color:#3b4357;line-height:1;font-family:inherit}
+  .hchip i{width:7px;height:7px;border-radius:50%;background:var(--c)}
+  .hchip.on{background:var(--cd);border-color:var(--cd);color:#fff}
+  .hchip.on i{background:#fff}
+  .hchip:active{transform:scale(.97)}
+  .tcdone{display:flex;align-items:center;gap:11px;margin:12px 0 6px}
+  .chk{width:42px;height:42px;border-radius:50%;background:var(--cd);color:#fff;display:flex;align-items:center;
+    justify-content:center;flex:0 0 auto;box-shadow:0 6px 14px rgba(20,25,38,.18)}
+  .chk svg{width:23px;height:23px;display:block}
+  .tcdone b{display:block;font-size:19px;font-weight:800;letter-spacing:-.5px;color:var(--cd);line-height:1.2}
+  .tcdone span{display:block;font-size:11.5px;color:var(--dim);margin-top:3px}
+  .tcsum{display:flex;align-items:baseline;gap:5px;margin:9px 0 12px;font-size:15.5px;font-weight:800;
+    letter-spacing:-.4px;color:#3b4357}
+  .tcsum em{font-style:normal;color:var(--cd);font-size:17px}
+  .tcsum i{font-style:normal;color:#c3c9d8;font-weight:600;margin:0 1px}
+  .wsum{display:flex;gap:8px;margin-bottom:11px}
+  .wsum > div{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:15px;
+    padding:11px 11px 10px;box-shadow:var(--sh)}
+  .wsum span{display:block;font-size:10.5px;font-weight:600;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .wsum b{display:block;font-size:17px;margin-top:5px;letter-spacing:-.6px;color:var(--brand);white-space:nowrap}
+  .wsum .w2 b{color:#0b8b7a}
+  .wsum .w3 b{color:#9c5705}
+  .item.rowflash{animation:rowflash 1.7s ease}
+  @keyframes rowflash{0%,55%{box-shadow:inset 0 0 0 999px #eef1f7}100%{box-shadow:inset 0 0 0 999px rgba(238,241,247,0)}}
+
+  /* ── 움직임 ── */
+  .btn{transition:transform .12s ease,opacity .15s ease,box-shadow .2s ease}
+  .btn.onsave{animation:btnPop .34s ease}
+  @keyframes btnPop{0%{transform:scale(1)}42%{transform:scale(.955)}100%{transform:scale(1)}}
+  .item.newrow{animation:rowIn .6s cubic-bezier(.2,.8,.3,1) both}
+  @keyframes rowIn{0%{opacity:0;transform:translateY(14px)}60%{opacity:1}100%{opacity:1;transform:none}}
+  .viewin{animation:viewIn .32s cubic-bezier(.2,.8,.3,1) both}
+  @keyframes viewIn{0%{opacity:0;transform:translateY(7px)}100%{opacity:1;transform:none}}
+  .bar i{transition:width .8s cubic-bezier(.22,.8,.26,1)}
+  .wprog{margin:-2px 0 12px;padding:0 2px}
+  .wprow{display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;font-weight:600;color:var(--dim);margin-bottom:6px}
+  .wprow b{color:var(--cd);font-weight:800}
+  .wprow em{font-style:normal;color:var(--cd);font-weight:800;font-size:13px}
+  .wbar{height:7px;border-radius:6px;background:#eef1f7;overflow:hidden}
+  .wbar i{display:block;height:100%;width:0;border-radius:6px;background:var(--c);
+    transition:width .7s cubic-bezier(.22,.8,.26,1)}
+  #toast{position:fixed;left:16px;right:16px;bottom:18px;z-index:60;background:#141926;color:#fff;
+    border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.45;box-shadow:0 12px 28px rgba(20,25,38,.3);
+    transform:translateY(130%);opacity:0;transition:transform .38s cubic-bezier(.2,.9,.3,1),opacity .3s ease;
+    pointer-events:none;max-width:520px;margin:0 auto}
+  #toast.on{transform:none;opacity:1}
+  #toast b{font-weight:800}
+  #toast small{display:block;font-size:11.5px;opacity:.8;margin-top:3px}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;
+      transition-duration:.001ms!important;scroll-behavior:auto!important}
+    .rfill{transition:none!important}
+  }
+
 </style>
 </head>
 <body>
@@ -143,9 +256,25 @@
 
 <div class="wrap">
   <div class="tabs">
-    <button id="tabWrite" class="on">기록하기</button>
+    <button id="tabHome" class="on">홈</button>
+    <button id="tabWrite">기록하기</button>
     <button id="tabStat">통계</button>
   </div>
+
+  <!-- 홈 -->
+  <section id="viewHome">
+    <div class="tcard" id="todayCard"></div>
+    <div class="wsum">
+      <div class="w1"><span>이번 주 볼륨</span><b id="hWeek">0kg</b></div>
+      <div class="w2"><span>이번 주 운동일</span><b id="hDays">0일</b></div>
+      <div class="w3"><span>연속 운동일</span><b id="hStreak">0일</b></div>
+    </div>
+    <div class="card" style="padding:13px 14px 11px">
+      <div class="cardhead" style="margin-bottom:9px"><b>최근 기록</b><span>눌러서 보기</span></div>
+      <div class="tlist" id="hRecent" style="margin-bottom:0"></div>
+    </div>
+    <div class="footnote">기록은 이 폰에만 저장됩니다</div>
+  </section>
 
   <!-- 기록 -->
   <section id="viewWrite">
@@ -173,6 +302,10 @@
     </div>
 
     <div class="card" id="formCard">
+      <div class="wprog" id="wProg">
+        <div class="wprow"><span>오늘 <b id="wProgPart">가슴</b></span><span><em id="wProgNum">0</em> / <span id="wProgGoal">12</span>세트</span></div>
+        <div class="wbar"><i id="wProgBar"></i></div>
+      </div>
       <div class="cardhead"><b>기록 입력</b><span id="formPart">가슴</span></div>
       <div class="row" style="margin-bottom:10px">
         <div>
@@ -219,6 +352,8 @@
     </div>
   </section>
 </div>
+
+<div id="toast" aria-live="polite"></div>
 
 <script>
 const KEY='workoutlog.v1';
@@ -353,6 +488,9 @@ const MY_FAV=[
 /* 종목명 → 기구key / 부위 (색상용) */
 const EX_EQ={},EX_PART={};
 Object.keys(RECO).forEach(p=>RECO[p].forEach(([n,eq])=>{EX_EQ[n]=eq;EX_PART[n]=p;}));
+/* 내 운동 중 추천 목록에 없는 종목의 부위 */
+EX_PART['바벨 오버헤드 프레스']='어깨';
+EX_PART['숄더프레스 머신']='어깨';
 function eqOf(name){
   if(EX_EQ[name])return EX_EQ[name];
   for(const k in EQUIP){if(name.indexOf(EQUIP[k].n)>=0)return k;}
@@ -393,6 +531,7 @@ function initChips(){
 }
 function renderReco(){
   markChips();
+  renderWriteProg();
 
   /* 내 운동 — 부위와 상관없이 항상 */
   $('favWrap').classList.toggle('hide',!MY_FAV.length);
@@ -469,8 +608,16 @@ function addItem(){
   const w=parseFloat($('w').value), r=parseInt($('r').value), s=parseInt($('s').value)||1;
   if(!ex){alert('종목을 적어 주세요.');return;}
   if(!(w>=0)||!(r>0)){alert('무게와 횟수를 숫자로 적어 주세요.');return;}
-  data.push({id:Date.now()+''+Math.floor(Math.random()*99),date:todayStr(),part,ex,w,r,s,m:$('m').value.trim()});
-  save();refreshExList();render();renderReco();
+  const id=Date.now()+''+Math.floor(Math.random()*99);
+  data.push({id:id,date:todayStr(),part,ex,w,r,s,m:$('m').value.trim()});
+  save();refreshExList();render();renderReco();clearHomeOverride();
+  const pr=renderWriteProg();
+  renderHome();
+  const sb=$('save');
+  if(sb){sb.classList.remove('onsave');void sb.offsetWidth;if(!reduced())sb.classList.add('onsave');}
+  const row=document.querySelector('#list .item[data-id="'+id+'"]');
+  if(row&&!reduced()){row.classList.add('newrow');setTimeout(()=>row.classList.remove('newrow'),900);}
+  showToast('<b>'+ex+'</b> 저장 · '+w+'kg × '+r+'회 × '+s+'세트<small>오늘 '+part+' '+(pr?pr.done+' / '+pr.goal+'세트':'')+' · 이번 기록 '+won(w*r*s)+'kg</small>');
   $('ex').value='';$('w').value='';$('r').value='';$('s').value='';$('m').value='';
   const l=lastOf(ex);
   $('lastHint').textContent=l?('「'+ex+'」 지난 기록: '+l.w+'kg × '+l.r+'회 × '+l.s+'세트 ('+l.date+')'):'';
@@ -490,7 +637,7 @@ function render(){
     html+='<div class="day"><span>'+d+' '+wd[dd.getDay()]+'</span><span>'+won(vol)+'kg</span></div><div class="card" style="padding:2px 14px">';
     rows.forEach(x=>{
       const k=PC(x.part);
-      html+='<div class="item"><div class="name"><b>'+x.ex+'</b><small><span class="ptag" style="--cl:'+k.cl+';--cd:'+k.cd+'">'+x.part+'</span>'
+      html+='<div class="item" data-id="'+x.id+'"><div class="name"><b>'+x.ex+'</b><small><span class="ptag" style="--cl:'+k.cl+';--cd:'+k.cd+'">'+x.part+'</span>'
         +x.w+'kg × '+x.r+'회 × '+x.s+'세트'+(x.m?' · '+x.m:'')+'</small></div>'
         +'<div class="vol">'+won(x.w*x.r*x.s)+'</div><button class="del" data-id="'+x.id+'">×</button></div>';
     });
@@ -499,17 +646,281 @@ function render(){
   box.innerHTML=html;
   box.querySelectorAll('.del').forEach(b=>b.onclick=()=>{
     if(!confirm('이 기록을 지울까요?'))return;
-    data=data.filter(x=>x.id!==b.dataset.id);save();render();renderReco();
+    data=data.filter(x=>x.id!==b.dataset.id);save();render();renderReco();renderHome();
   });
 }
+/* ══════════ 홈 =═════════ */
+/* 요일별 부위 로테이션: getDay() 0=일 … 6=토. 이 배열만 고치면 로테이션이 바뀝니다. */
+const ROTATION=[null,'가슴','등','하체','어깨','팔','복부'];
+const HPKEY='workoutlog.homepart';
+const RM=(window.matchMedia?window.matchMedia('(prefers-reduced-motion: reduce)'):null);
+const reduced=()=>!!(RM&&RM.matches);
+
+function todayRows(){const t=todayStr();return data.filter(x=>x.date===t);}
+function weekStats(){
+  const ws=weekStart(0).getTime(),en=ws+7*864e5;
+  const rows=data.filter(x=>{const t=new Date(x.date+'T00:00:00').getTime();return t>=ws&&t<en;});
+  return {rows:rows,vol:rows.reduce((a,x)=>a+x.w*x.r*x.s,0),days:new Set(rows.map(x=>x.date)).size};
+}
+function streakDays(){
+  const days=new Set(data.map(x=>x.date));
+  const d=new Date(),p=n=>String(n).padStart(2,'0');
+  const fm=dd=>dd.getFullYear()+'-'+p(dd.getMonth()+1)+'-'+p(dd.getDate());
+  if(!days.has(fm(d)))d.setDate(d.getDate()-1);
+  let n=0;
+  for(let i=0;i<730;i++){if(!days.has(fm(d)))break;n++;d.setDate(d.getDate()-1);}
+  return n;
+}
+function weekDoneParts(){return new Set(weekStats().rows.map(x=>x.part));}
+function suggestedPart(){
+  const w0=new Date().getDay(),done=weekDoneParts(),cur=ROTATION[w0];
+  if(!cur)return {part:'유산소',rest:true};
+  if(!done.has(cur))return {part:cur};
+  for(let i=1;w0+i<=6;i++){
+    const px=ROTATION[w0+i];
+    if(px&&!done.has(px))return {part:px,movedFrom:cur};
+  }
+  return {part:'유산소',rest:true,allDone:true};
+}
+function homeOverride(){
+  try{
+    const o=JSON.parse(localStorage.getItem(HPKEY)||'null');
+    if(o&&o.date===todayStr()&&PARTS.indexOf(o.part)>=0)return o.part;
+  }catch(e){}
+  return null;
+}
+function setHomeOverride(p){
+  try{localStorage.setItem(HPKEY,JSON.stringify({date:todayStr(),part:p}));}catch(e){}
+}
+function clearHomeOverride(){try{localStorage.removeItem(HPKEY);}catch(e){}}
+function modePart(rows){
+  const c={};rows.forEach(x=>{c[x.part]=(c[x.part]||0)+1;});
+  return Object.keys(c).sort((a,b)=>c[b]-c[a])[0]||'가슴';
+}
+function homeDisplayPart(){
+  const ov=homeOverride();
+  if(ov)return ov;
+  const t=todayRows();
+  if(t.length)return modePart(t);
+  return suggestedPart().part;
+}
+function setsNum(s){const m=/(\d+)\s*세트/.exec(s||'');return m?+m[1]:0;}
+/* 오늘 할 종목: 내 운동(MY_FAV) 먼저, 부족하면 부위 추천으로 최대 4개 */
+function todayList(p){
+  const out=[],seen={};
+  MY_FAV.forEach(f=>{
+    const n=f[0],eq=f[1],sets=f[2],label=f[3];
+    if(partOf(n,'')===p&&!seen[n]){seen[n]=1;out.push({n:n,eq:eq,sets:sets,label:label});}
+  });
+  (RECO[p]||[]).forEach(r=>{
+    const n=r[0],eq=r[1],label=r[2],sets=r[3];
+    if(out.length<4&&!seen[n]){seen[n]=1;out.push({n:n,eq:eq,sets:sets,label:label});}
+  });
+  return out.slice(0,4);
+}
+function planGoal(list){
+  let s=0;list.forEach(r=>{s+=setsNum(r.sets);});
+  return s||list.length||1;
+}
+
+/* 오늘의 운동 히어로: 링·그라데이션으로 움직임 (외부 이미지 없이) */
+
+/* 숫자 카운트업(값은 즉시 확정, 연출만 부드럽게) */
+function countUp(el,to,fmt){
+  if(!el)return;
+  const f=fmt||(v=>won(v));
+  if(el._raf){cancelAnimationFrame(el._raf);el._raf=null;}
+  if(reduced()||!isFinite(to)){el.textContent=f(to);return;}
+  const t0=performance.now(),dur=650;
+  const step=t=>{
+    const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);
+    el.textContent=f(to*e);
+    if(k<1)el._raf=requestAnimationFrame(step);else el._raf=null;
+  };
+  el._raf=requestAnimationFrame(step);
+}
+/* 막대 게이지를 화면에 보일 때 왼쪽→오른쪽으로 순서대로 */
+function growBars(root){
+  if(!root)return;
+  const els=[].slice.call(root.querySelectorAll('.bar i'));
+  els.forEach((el,i)=>{
+    const w=el.getAttribute('data-w')||'0%';
+    el.style.width='0.01%';
+    if(reduced()){el.style.width=w;return;}
+    setTimeout(()=>{el.style.width=w;},30+i*70);
+  });
+}
+let toastT=0;
+function showToast(html){
+  const t=$('toast');
+  if(!t)return;
+  t.innerHTML=html;t.classList.add('on');
+  clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove('on'),2600);
+}
+function homeRowHTML(name,eq,sets,label,sub,done){
+  const e=EQUIP[eq]||{};
+  const right=done?'<span class="plus2 ok">✓</span>':'<span class="plus2">+</span>';
+  return '<button class="hrow" data-ex="'+name.replace(/"/g,'')+'">'
+    +(e.img?'<img src="'+e.img+'" alt="">':icon(eq))
+    +'<div class="t"><b>'+name+'</b><small>'+(sub||((label||e.n||'')+' · '+sets))+'</small></div>'
+    +right+'</button>';
+}
+function renderHome(){
+  const card=$('todayCard');
+  if(!card)return;
+  const t=todayRows(),ov=homeOverride(),sug=suggestedPart();
+  const p=homeDisplayPart();
+  const restDay=!t.length&&!ov&&sug.rest;
+  const plan=restDay
+    ?RECO['유산소'].slice(0,2).map(r=>({n:r[0],eq:r[1],label:r[2],sets:r[3]}))
+    :todayList(p);
+  const goal=planGoal(plan);
+  const hasSets=plan.some(r=>setsNum(r.sets)>0);
+  const mine=t.filter(x=>x.part===p);
+  const doneSets=mine.reduce((a,x)=>a+(x.s||1),0);
+  const mineVol=mine.reduce((a,x)=>a+x.w*x.r*x.s,0);
+  const mineExs=[];mine.forEach(x=>{if(mineExs.indexOf(x.ex)<0)mineExs.push(x.ex);});
+  const pct=goal?Math.min(1,doneSets/goal):0;
+  const complete=mine.length>0&&doneSets>=goal;
+  const doing=mine.length>0&&!complete;
+  paintColor(card,p);
+
+  const dd=new Date();
+  const dateTxt=(dd.getMonth()+1)+'월 '+dd.getDate()+'일 '+wd[dd.getDay()]+'요일';
+  let title=p,tag='요일 로테이션',sub=plan.length+'종목'+(hasSets?' · '+goal+'세트 예정':' 예정');
+  if(ov&&!t.length){tag='직접 고름';}
+  if(restDay){
+    title='휴식';tag='로테이션';
+    sub=sug.allDone?'이번 주 로테이션은 다 도셨어요. 남은 날은 가볍게.':'오늘은 쉬는 날 — 가볍게 걷거나 스트레칭으로 몸을 풀어 주세요.';
+  }else if(complete){
+    tag='완료';
+    sub=mineExs.length+'종목 · '+doneSets+'세트 · '+won(mineVol)+'kg';
+  }else if(doing){
+    tag='진행 중';
+    sub=mineExs.length+'종목 · '+doneSets+'세트 · '+won(mineVol)+'kg';
+  }
+
+  const C=2*Math.PI*34;
+  const center=complete
+    ?'<svg class="chkpop" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l4.8 4.8L19.5 7"/></svg>'
+    :'<b>'+doneSets+'</b><span>/'+goal+(hasSets?'세트':'개')+'</span>';
+  const startOff=reduced()?C*(1-pct):C;
+  const ringHTML=restDay?'':'<div class="hring"><svg class="rsvg" viewBox="0 0 86 86">'
+    +'<circle class="rtrack" cx="43" cy="43" r="34" stroke-width="7"/>'
+    +'<circle class="rfill" cx="43" cy="43" r="34" stroke-width="7" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+startOff.toFixed(1)+'" transform="rotate(-90 43 43)"/>'
+    +'</svg><div class="rcenter">'+center+'</div></div>';
+
+  let html='<div class="hero">'
+    +'<div class="hrow1"><span>오늘의 운동</span><span>'+dateTxt+'</span></div>'
+    +'<div class="hmain"><div class="hleft"><b>'+title+'</b><span class="htag">'+tag+'</span>'
+    +'<div class="hsub">'+sub+'</div></div>'+ringHTML+'</div></div><div class="tbody">';
+
+  if(complete){
+    html+='<div class="tlist">'+mine.slice(0,3).map(x=>
+      homeRowHTML(x.ex,eqOf(x.ex),x.s+'세트',null,x.w+'kg × '+x.r+'회 × '+x.s+'세트',true)).join('')
+      +(mine.length>3?'<div class="tmore">기록 '+(mine.length-3)+'건 더 있어요</div>':'')+'</div>';
+  }else{
+    const doneNames={};mine.forEach(x=>{doneNames[x.ex]=1;});
+    if(doing)html+='<div class="tcnote">오늘 '+doneSets+' / '+goal+'세트 하셨어요. 남은 종목을 마저 해 보세요.</div>';
+    else if(t.length)html+='<div class="tcnote">오늘 「'+modePart(t)+'」 기록이 이미 있어요. 부위를 바꿔 보는 중입니다.</div>';
+    else if(sug.movedFrom&&!ov)html+='<div class="tcnote">이번 주에 「'+sug.movedFrom+'」 기록이 있어 오늘은 「'+p+'」로 당겼어요.</div>';
+    html+='<div class="tlist">'+plan.map(r=>homeRowHTML(r.n,r.eq,r.sets,r.label,null,!!doneNames[r.n])).join('')+'</div>';
+  }
+
+  const btnLabel=complete?'오늘 기록 더 하기':(restDay?'가볍게 기록하기':'오늘 운동 기록하기');
+  html+='<button class="btn tbtn" data-act="go" data-p="'+p+'">'+btnLabel+'</button>'
+    +'<div class="hpick"><div class="hplabel">부위 바꾸기</div><div class="hchips">'
+    +PARTS.map(x=>'<button class="hchip'+(x===p?' on':'')+'" data-p="'+x+'" style="--c:'+PC(x).c+';--cd:'+PC(x).cd+'"><i></i>'+x+'</button>').join('')
+    +'</div></div></div>';
+
+  card.innerHTML=html;
+
+  const rf=card.querySelector('.rfill');
+  if(rf&&!reduced())requestAnimationFrame(()=>{rf.style.strokeDashoffset=(C*(1-pct)).toFixed(1);});
+
+  card.querySelectorAll('[data-ex]').forEach(b=>{
+    b.onclick=()=>{
+      const n=b.dataset.ex;
+      part=partOf(n,homeDisplayPart());
+      markChips();renderReco();
+      showTab('write');
+      fillExercise(n,eqOf(n));
+    };
+  });
+  card.querySelectorAll('.hchip').forEach(b=>{
+    b.onclick=()=>{
+      setHomeOverride(b.dataset.p);
+      part=b.dataset.p;markChips();renderReco();renderHome();
+    };
+  });
+  const go=card.querySelector('[data-act="go"]');
+  if(go)go.onclick=()=>{
+    part=go.dataset.p;markChips();renderReco();showTab('write');
+  };
+
+  const w=weekStats();
+  countUp($('hWeek'),w.vol,v=>won(v)+'kg');
+  countUp($('hDays'),w.days,v=>Math.round(v)+'일');
+  countUp($('hStreak'),streakDays(),v=>Math.round(v)+'일');
+  renderRecent();
+}
+function renderRecent(){
+  const box=$('hRecent');
+  if(!box)return;
+  const rows=data.slice().sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:(a.id<b.id?1:-1)).slice(0,3);
+  if(!rows.length){box.innerHTML='<div class="empty" style="padding:16px 6px">아직 기록이 없어요. 오늘부터 하나씩 쌓아 보세요.</div>';return;}
+  box.innerHTML=rows.map(x=>{
+    const dd=new Date(x.date+'T00:00:00');
+    return '<button class="hrow" data-id="'+x.id+'" style="--c:'+PC(x.part).c+'">'
+      +'<div class="t"><b>'+x.ex+'</b><small>'+x.part+' · '+(dd.getMonth()+1)+'월 '+dd.getDate()+'일 '+wd[dd.getDay()]+' · '+x.s+'세트</small></div>'
+      +'<span class="rdate">'+won(x.w*x.r*x.s)+'kg</span></button>';
+  }).join('');
+}
+function renderWriteProg(){
+  const list=todayList(part),goal=planGoal(list);
+  const done=data.filter(x=>x.date===todayStr()&&x.part===part).reduce((a,x)=>a+(x.s||1),0);
+  const pp=$('wProgPart');
+  if(!pp)return;
+  pp.textContent=part;pp.style.color=PC(part).cd;
+  $('wProgNum').textContent=done;$('wProgNum').style.color=PC(part).cd;
+  $('wProgGoal').textContent=goal;
+  const bar=$('wProgBar');
+  bar.style.background=PC(part).c;
+  bar.style.width=Math.min(100,goal?done/goal*100:0)+'%';
+  return {done:done,goal:goal};
+}
+function openRecord(id){
+  showTab('write');
+  render();
+  const el=document.querySelector('#list .item[data-id="'+id+'"]');
+  if(!el)return;
+  el.scrollIntoView({behavior:reduced()?'auto':'smooth',block:'center'});
+  el.classList.add('rowflash');
+  setTimeout(()=>el.classList.remove('rowflash'),1700);
+}
+const VIEWS={home:['tabHome','viewHome'],write:['tabWrite','viewWrite'],stat:['tabStat','viewStat']};
+function showTab(k){
+  Object.keys(VIEWS).forEach(x=>{
+    $(VIEWS[x][0]).classList.toggle('on',x===k);
+    $(VIEWS[x][1]).classList.toggle('hide',x!==k);
+  });
+  const v=$(VIEWS[k][1]);
+  v.classList.remove('viewin');
+  void v.offsetWidth;
+  if(!reduced())v.classList.add('viewin');
+  if(k==='stat')renderStat();
+  if(k==='home')renderHome();
+  window.scrollTo(0,0);
+}
+
 function weekStart(offset){
   const d=new Date();const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day-(offset||0)*7);d.setHours(0,0,0,0);return d;
 }
 function renderStat(){
-  const ws=weekStart(0).getTime();
-  const wk=data.filter(x=>new Date(x.date+'T00:00:00').getTime()>=ws);
-  $('sWeek').textContent=won(wk.reduce((a,x)=>a+x.w*x.r*x.s,0))+'kg';
-  $('sDays').textContent=new Set(wk.map(x=>x.date)).size+'일';
+  const w0=weekStats();
+  countUp($('sWeek'),w0.vol,v=>won(v)+'kg');
+  countUp($('sDays'),w0.days,v=>Math.round(v)+'일');
 
   const from=Date.now()-30*864e5;
   const recent=data.filter(x=>new Date(x.date+'T00:00:00').getTime()>=from);
@@ -517,16 +928,17 @@ function renderStat(){
   const max=Math.max(1,...Object.values(pm));
   $('partStat').innerHTML=Object.keys(pm).length?Object.entries(pm).sort((a,b)=>b[1]-a[1]).map(([p,v])=>
     '<div class="part" style="--c:'+PC(p).c+'"><div class="top"><span><i class="dotr"></i>'+p+'</span><span>'+won(v)+'kg</span></div>'
-    +'<div class="bar"><i style="width:'+(v/max*100).toFixed(0)+'%;background:'+PC(p).c+'"></i></div></div>').join(''):'<div class="empty">최근 30일 기록이 없어요.</div>';
+    +'<div class="bar"><i data-w="'+(v/max*100).toFixed(0)+'%" style="background:'+PC(p).c+';width:0.01%"></i></div></div>').join(''):'<div class="empty">최근 30일 기록이 없어요.</div>';
 
   let wh='';
   for(let i=5;i>=0;i--){
     const st=weekStart(i).getTime(), en=st+7*864e5;
     const v=data.filter(x=>{const t=new Date(x.date+'T00:00:00').getTime();return t>=st&&t<en;}).reduce((a,x)=>a+x.w*x.r*x.s,0);
     wh+='<div class="part"><div class="top"><span>'+(i===0?'이번 주':(i+'주 전'))+'</span><span>'+won(v)+'kg</span></div>'
-      +'<div class="bar"><i style="width:'+Math.min(100,v/Math.max(1,20000)*100).toFixed(0)+'%;background:linear-gradient(90deg,#8b6cf6,#5a45e8)"></i></div></div>';
+      +'<div class="bar"><i data-w="'+Math.min(100,v/Math.max(1,20000)*100).toFixed(0)+'%" style="width:0.01%;background:linear-gradient(90deg,#8b6cf6,#5a45e8)"></i></div></div>';
   }
   $('weekStat').innerHTML=wh;
+  growBars($('partStat'));growBars($('weekStat'));
 
   const pr={},prp={};data.forEach(x=>{if(!pr[x.ex]||x.w>pr[x.ex]){pr[x.ex]=x.w;prp[x.ex]=x.part;}});
   $('prStat').innerHTML=Object.keys(pr).length?Object.entries(pr).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([e,v])=>
@@ -544,14 +956,18 @@ function exportFile(){
   a.href=URL.createObjectURL(blob);a.download='운동일지_'+todayStr()+'.csv';a.click();
 }
 $('save').onclick=addItem;
-$('tabWrite').onclick=()=>{$('tabWrite').classList.add('on');$('tabStat').classList.remove('on');$('viewWrite').classList.remove('hide');$('viewStat').classList.add('hide');};
-$('tabStat').onclick=()=>{$('tabStat').classList.add('on');$('tabWrite').classList.remove('on');$('viewStat').classList.remove('hide');$('viewWrite').classList.add('hide');renderStat();};
+$('tabHome').onclick=()=>showTab('home');
+$('tabWrite').onclick=()=>showTab('write');
+$('tabStat').onclick=()=>showTab('stat');
+$('hRecent').onclick=e=>{const b=e.target.closest('[data-id]');if(b&&$('hRecent').contains(b))openRecord(b.dataset.id);};
 $('exportBtn').onclick=e=>{e.preventDefault();exportFile();};
 $('ex').addEventListener('input',()=>{
   const l=lastOf($('ex').value.trim());
   $('lastHint').textContent=l?('지난 기록: '+l.w+'kg × '+l.r+'회 × '+l.s+'세트 ('+l.date+')'):'';
 });
-initToday();initChips();renderReco();refreshExList();render();
+initToday();initChips();refreshExList();render();
+part=homeDisplayPart();markChips();renderReco();
+showTab('home');
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
 </script>
 </body>
