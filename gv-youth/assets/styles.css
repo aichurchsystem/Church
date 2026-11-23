@@ -5019,3 +5019,24 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   .hero__group-list .hero__topic-desc { font-size: 10.4px; }
   .hero__group-label { font-size: 10.8px; }
 }
+
+/* --- 8칸 묶음 머리글: 두 배 크기로 (2026-11-24 지시) --- */
+.hero__group-label {
+  font-size: 25px;
+  line-height: 1.24;
+  letter-spacing: -0.035em;
+  padding-bottom: 11px;
+  margin-bottom: 9px;
+  gap: 9px;
+}
+.hero__group-label::before { width: 8px; height: 8px; }
+@media (max-width: 900px) {
+  .hero__group-label { font-size: 20px; letter-spacing: -0.04em; padding-bottom: 9px; margin-bottom: 7px; }
+  .hero__group-label::before { width: 7px; height: 7px; }
+}
+@media (max-width: 760px) {
+  .hero__group-label { font-size: 17.5px; line-height: 1.26; padding-bottom: 8px; margin-bottom: 6px; }
+}
+@media (max-width: 380px) {
+  .hero__group-label { font-size: 15.5px; }
+}
