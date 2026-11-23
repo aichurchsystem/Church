@@ -89,6 +89,38 @@
   .cardhead b{font-size:15px;letter-spacing:-.2px}
   .cardhead span{font-size:11.5px;color:var(--faint)}
 
+  /* ── 세트별 무게·횟수 입력 ── */
+  .setlist{display:flex;flex-direction:column;gap:7px;margin-bottom:9px}
+  .setrow{display:grid;grid-template-columns:42px minmax(0,1fr) 18px minmax(0,1fr) 16px 24px;
+    align-items:center;gap:4px}
+  .setrow .sn{font-size:11.5px;font-weight:800;color:var(--dim);letter-spacing:-.3px;white-space:nowrap}
+  .setrow input{padding:9px 6px;font-size:15px;border-radius:10px;text-align:center}
+  .setrow .u{font-size:10.5px;color:var(--faint);font-weight:700}
+  .setrow .rm{background:none;border:0;color:#9aa2b6;font-size:18px;line-height:1;padding:2px 0;border-radius:8px}
+  .setrow .rm:active{background:#eef1f7;color:var(--danger)}
+  .setrow .rm.off{visibility:hidden}
+  .addset{width:100%;background:#fff;border:1.5px dashed #cfd6e6;border-radius:11px;padding:10px;
+    font-size:13px;font-weight:700;color:var(--brand);display:flex;align-items:center;justify-content:center;gap:5px}
+  .addset b{font-size:15px;font-weight:800;line-height:1}
+  .addset:active{background:#f4f1ff;border-color:var(--brand2)}
+  .volprev{display:flex;align-items:baseline;gap:5px;margin-top:9px;padding:0 2px;font-size:11.5px;color:var(--dim)}
+  .volprev b{font-size:14.5px;font-weight:800;color:var(--cd);letter-spacing:-.3px}
+  .volprev em{font-style:normal;font-weight:700;color:var(--dim)}
+
+  /* ── 기록 수정 ── */
+  #formCard.editing{border-color:#cabfff;box-shadow:0 0 0 3px rgba(90,69,232,.1),var(--sh)}
+  .btnrow{display:flex;gap:8px}
+  .btnrow .btn{flex:1}
+  .btn.ghost{flex:0 0 88px;background:#fff;color:#5c6478;border:1.5px solid var(--line);box-shadow:none}
+  .item .rt{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+  .item .acts{display:flex;align-items:center;gap:1px}
+  .btn-edit{background:#f3f1ff;border:1.5px solid #e3ddff;color:var(--brand);border-radius:8px;
+    padding:3px 7px;font-size:11px;font-weight:800;line-height:1.3;letter-spacing:-.2px}
+  .btn-edit:active{background:#e7e1ff;border-color:var(--brand2)}
+  .item .name small{line-height:1.55;word-break:keep-all}
+  .lastload{background:none;border:0;padding:0 0 0 2px;color:var(--brand);font-size:12px;font-weight:700;
+    text-decoration:underline;text-underline-offset:2px}
+
   .sec{margin-bottom:14px}
   .seclabel{font-size:11.5px;font-weight:700;color:var(--dim);letter-spacing:.2px;margin:0 0 8px 2px}
 
@@ -270,7 +302,7 @@
       <div class="w3"><span>연속 운동일</span><b id="hStreak">0일</b></div>
     </div>
     <div class="card" style="padding:13px 14px 11px">
-      <div class="cardhead" style="margin-bottom:9px"><b>최근 기록</b><span>눌러서 보기</span></div>
+      <div class="cardhead" style="margin-bottom:9px"><b>최근 기록</b><span>눌러서 수정</span></div>
       <div class="tlist" id="hRecent" style="margin-bottom:0"></div>
     </div>
     <div class="footnote">기록은 이 폰에만 저장됩니다</div>
@@ -306,24 +338,29 @@
         <div class="wprow"><span>오늘 <b id="wProgPart">가슴</b></span><span><em id="wProgNum">0</em> / <span id="wProgGoal">12</span><span id="wProgUnit">세트</span></span></div>
         <div class="wbar"><i id="wProgBar"></i></div>
       </div>
-      <div class="cardhead"><b>기록 입력</b><span id="formPart">가슴</span></div>
-      <div class="row" style="margin-bottom:10px">
-        <div>
-          <label>종목</label>
-          <input id="ex" list="exList" placeholder="벤치프레스" autocomplete="off">
-          <datalist id="exList"></datalist>
-        </div>
+      <div class="cardhead"><b id="formTitle">기록 입력</b><span id="formPart">가슴</span></div>
+      <div class="row hide" id="dateRow" style="margin-bottom:10px">
+        <div><label>날짜</label><input id="date" type="date"></div>
       </div>
-      <div class="row" style="margin-bottom:10px">
-        <div><label>무게(kg)</label><input id="w" type="number" inputmode="decimal" step="0.5" placeholder="40"></div>
-        <div><label>횟수</label><input id="r" type="number" inputmode="numeric" placeholder="10"></div>
-        <div><label>세트</label><input id="s" type="number" inputmode="numeric" placeholder="3"></div>
+      <div style="margin-bottom:11px">
+        <label>종목</label>
+        <input id="ex" list="exList" placeholder="벤치프레스" autocomplete="off">
+        <datalist id="exList"></datalist>
+      </div>
+      <div style="margin-bottom:12px">
+        <label>세트별 무게·횟수</label>
+        <div class="setlist" id="setRows"></div>
+        <button class="addset" id="addSet" type="button"><b>+</b> 세트 추가</button>
+        <div class="volprev">총 볼륨 <b id="volPrev">0</b>kg <em>· <span id="volSets">1세트</span></em></div>
       </div>
       <div style="margin-bottom:12px">
         <label>메모 (선택)</label>
         <input id="m" placeholder="컨디션, 자세 등">
       </div>
-      <button class="btn" id="save">저장</button>
+      <div class="btnrow">
+        <button class="btn" id="save">저장</button>
+        <button class="btn ghost hide" id="cancelEdit" type="button">취소</button>
+      </div>
       <div class="hint" id="lastHint"></div>
     </div>
 
@@ -505,6 +542,163 @@ function partOf(name,fallback){
 
 function save(){localStorage.setItem(KEY,JSON.stringify(data));}
 
+/* ── 기록 형식 호환 ──
+   새 형식: {setList:[{kg,reps},...]}
+   옛 형식: {w? kg, reps, sets} → 같은 무게·횟수를 sets개 행으로 펼칩니다. */
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+function recSetList(r){
+  if(Array.isArray(r.setList)&&r.setList.length){
+    return r.setList.map(s=>({kg:+s.kg||0,reps:+s.reps||0}));
+  }
+  /* 옛 형식: {w,r,s} (원래 저장 형식) 또는 {kg,reps,sets} */
+  const nRaw=(r.s!=null?r.s:(r.sets!=null?r.sets:1));
+  const n=Math.max(1,+nRaw||1);
+  const kg=+(r.kg!=null?r.kg:(r.w!=null?r.w:0))||0;
+  const reps=+(r.reps!=null?r.reps:(r.r!=null?r.r:0))||0;
+  const out=[];
+  for(let i=0;i<n;i++)out.push({kg:kg,reps:reps});
+  return out;
+}
+const recSets=r=>recSetList(r).length;
+const recVolOf=list=>list.reduce((a,s)=>a+(+s.kg||0)*(+s.reps||0),0);
+const recVol=r=>recVolOf(recSetList(r));
+const recKg=r=>Math.max.apply(null,[0].concat(recSetList(r).map(s=>s.kg)));
+function setDetail(r){
+  return recSetList(r).map((s,i)=>(i+1)+'세트 '+s.kg+'kg×'+s.reps).join(' · ');
+}
+function setShort(r){
+  const l=recSetList(r);
+  if(l.length>1&&l.every(s=>s.kg===l[0].kg&&s.reps===l[0].reps))
+    return l[0].kg+'kg × '+l[0].reps+'회 × '+l.length+'세트';
+  return l.map(s=>s.kg+'kg×'+s.reps).join(' · ');
+}
+
+/* ── 입력 폼: 세트 행 ── */
+let editingId=null;
+let formSets=[{kg:'',reps:''}];
+function setFormSets(list){
+  formSets=list.map(s=>({kg:(s.kg==null?'':String(s.kg)),reps:(s.reps==null?'':String(s.reps))}));
+  if(!formSets.length)formSets=[{kg:'',reps:''}];
+  renderSets();updateVolPrev();
+}
+function readSetInputs(){
+  const rows=$('setRows');
+  if(!rows)return;
+  [...rows.children].forEach((row,i)=>{
+    if(!formSets[i])return;
+    formSets[i].kg=row.querySelector('.kg').value;
+    formSets[i].reps=row.querySelector('.reps').value;
+  });
+}
+function renderSets(focusIdx){
+  const box=$('setRows');
+  if(!box)return;
+  box.innerHTML=formSets.map((s,i)=>
+    '<div class="setrow"><span class="sn">'+(i+1)+'세트</span>'
+    +'<input class="kg" type="number" inputmode="decimal" step="0.5" min="0" placeholder="40" value="'+esc(s.kg)+'">'
+    +'<span class="u">kg</span>'
+    +'<input class="reps" type="number" inputmode="numeric" step="1" min="0" placeholder="10" value="'+esc(s.reps)+'">'
+    +'<span class="u">회</span>'
+    +'<button class="rm'+(formSets.length<2?' off':'')+'" type="button" data-i="'+i+'" aria-label="'+(i+1)+'세트 삭제">×</button></div>').join('');
+  box.querySelectorAll('.kg,.reps').forEach(inp=>inp.addEventListener('input',()=>{readSetInputs();updateVolPrev();}));
+  box.querySelectorAll('.rm').forEach(b=>b.onclick=()=>{
+    readSetInputs();
+    formSets.splice(+b.dataset.i,1);
+    if(!formSets.length)formSets=[{kg:'',reps:''}];
+    renderSets();updateVolPrev();
+  });
+  if(focusIdx!=null){
+    const r=box.children[focusIdx];
+    if(r){const inp=r.querySelector('.kg');if(inp){inp.focus();if(inp.select)inp.select();}}
+  }
+}
+function updateVolPrev(){
+  let v=0;
+  formSets.forEach(s=>{
+    const kg=parseFloat(s.kg),r=parseInt(s.reps);
+    if(s.kg!==''&&s.reps!==''&&isFinite(kg)&&isFinite(r)&&kg>=0&&r>0)v+=kg*r;
+  });
+  if($('volPrev'))$('volPrev').textContent=won(v);
+  if($('volSets'))$('volSets').textContent=formSets.length+'세트';
+}
+function collectSets(){
+  readSetInputs();
+  const out=[];
+  for(let i=0;i<formSets.length;i++){
+    const ks=formSets[i].kg,rs=formSets[i].reps;
+    if(ks===''&&rs==='')continue;                 /* 남은 빈 행은 무시 */
+    const kg=parseFloat(ks),r=parseInt(rs);
+    if(!isFinite(kg)||kg<0||!isFinite(r)||r<=0)return null;
+    out.push({kg:kg,reps:Math.round(r)});
+  }
+  return out.length?out:null;
+}
+function applySets(rec,list){
+  rec.setList=list.map(s=>({kg:s.kg,reps:s.reps}));
+  rec.s=rec.sets=rec.setList.length;
+  rec.vol=recVolOf(rec.setList);
+  rec.kg=Math.max.apply(null,rec.setList.map(s=>s.kg));
+  rec.reps=rec.setList[0].reps;
+  return rec;
+}
+const addSetRow=()=>{
+  readSetInputs();
+  const last=formSets[formSets.length-1]||{kg:'',reps:''};
+  formSets.push({kg:last.kg,reps:last.reps});
+  renderSets(formSets.length-1);updateVolPrev();
+};
+function resetForm(){
+  $('ex').value='';$('m').value='';$('date').value=todayStr();
+  $('lastHint').innerHTML='';
+  setFormSets([{kg:'',reps:''}]);
+}
+function updateFormMode(){
+  const card=$('formCard');
+  if(!card)return;
+  card.classList.toggle('editing',!!editingId);
+  $('formTitle').textContent=editingId?'기록 수정 중':'기록 입력';
+  $('save').textContent=editingId?'수정 저장':'저장';
+  $('cancelEdit').classList.toggle('hide',!editingId);
+  $('dateRow').classList.toggle('hide',!editingId);
+  if(!editingId)$('date').value=todayStr();
+}
+function setLastHint(name,eqLine){
+  const l=name?lastOf(name):null;
+  const box=$('lastHint');
+  if(!box)return;
+  if(!l){box.innerHTML=eqLine||'';return;}
+  box.innerHTML=(eqLine||'')+'지난 기록: '+setShort(l)+' <span style="color:var(--faint)">('+l.date+')</span> '
+    +'<button type="button" class="lastload" id="useLast">불러오기</button>';
+  const b=$('useLast');
+  if(b)b.onclick=()=>{setFormSets(recSetList(l));updateVolPrev();};
+}
+function startEdit(id){
+  const r=data.find(x=>x.id===id);
+  if(!r)return;
+  editingId=id;
+  part=r.part;
+  $('ex').value=r.ex;
+  $('m').value=r.m||'';
+  $('date').value=r.date;
+  setFormSets(recSetList(r));
+  $('lastHint').innerHTML='';
+  updateFormMode();
+  markChips();renderReco();
+  showTab('write');
+  const card=$('formCard');
+  if(card){
+    card.classList.remove('flash');void card.offsetWidth;card.classList.add('flash');
+    const y=card.getBoundingClientRect().top+window.scrollY-8;
+    window.scrollTo({top:y,behavior:reduced()?'auto':'smooth'});
+  }
+  $('ex').focus({preventScroll:true});
+}
+function cancelEdit(){
+  editingId=null;
+  resetForm();
+  updateFormMode();
+}
+
 function initToday(){
   const d=new Date();
   $('today').textContent=d.getMonth()+1+'월 '+d.getDate()+'일 '+wd[d.getDay()]+'요일';
@@ -512,6 +706,7 @@ function initToday(){
 function markChips(){
   [...$('partChips').children].forEach(c=>c.classList.toggle('on',c.dataset.p===part));
   paintColor($('recoCard'),part);
+  paintColor($('formCard'),part);
   $('recoLabel').textContent=part+' 추천';
   $('recoLabel').parentElement.style.setProperty('--c',PC(part).c);
   $('formPart').textContent=part;
@@ -583,9 +778,9 @@ function myTop(n){
 function fillExercise(name,eq){
   $('ex').value=name;
   if(EX_PART[name]){part=EX_PART[name];markChips();}
-  const l=lastOf(name);
   const eqLine=eq&&EQUIP[eq]?('기구: '+EQUIP[eq].n+' — '+EQUIP[eq].d+' '):'';
-  $('lastHint').textContent=eqLine+(l?('지난 기록: '+l.w+'kg × '+l.r+'회 × '+l.s+'세트 ('+l.date+')'):'처음이면 12회 가능한 무게부터.');
+  const l=lastOf(name);
+  setLastHint(name,eqLine+(l?'':'처음이면 12회 가능한 무게부터.'));
   const card=$('formCard');
   if(card){
     card.classList.remove('flash');
@@ -593,7 +788,8 @@ function fillExercise(name,eq){
     card.classList.add('flash');
     card.scrollIntoView({behavior:'smooth',block:'center'});
   }
-  $('w').focus({preventScroll:true});
+  const first=$('setRows')&&$('setRows').querySelector('.kg');
+  if(first&&!editingId)first.focus({preventScroll:true});
 }
 function refreshExList(){
   const names=[...new Set(data.map(x=>x.ex))];
@@ -604,12 +800,14 @@ function lastOf(name){
   return rows[0];
 }
 function addItem(){
+  if(editingId){saveEdit();return;}
   const ex=$('ex').value.trim();
-  const w=parseFloat($('w').value), r=parseInt($('r').value), s=parseInt($('s').value)||1;
-  if(!ex){alert('종목을 적어 주세요.');return;}
-  if(!(w>=0)||!(r>0)){alert('무게와 횟수를 숫자로 적어 주세요.');return;}
+  if(!ex){alert('종목을 적어 주세요.');$('ex').focus();return;}
+  const list=collectSets();
+  if(!list){alert('세트마다 무게와 횟수를 숫자로 적어 주세요. (홧수는 1 이상)');return;}
   const id=Date.now()+''+Math.floor(Math.random()*99);
-  data.push({id:id,date:todayStr(),part,ex,w,r,s,m:$('m').value.trim()});
+  const rec=applySets({id:id,date:todayStr(),part:part,ex:ex,m:$('m').value.trim()},list);
+  data.push(rec);
   save();refreshExList();render();renderReco();clearHomeOverride();
   const pr=renderWriteProg();
   renderHome();
@@ -617,10 +815,35 @@ function addItem(){
   if(sb){sb.classList.remove('onsave');void sb.offsetWidth;if(!reduced())sb.classList.add('onsave');}
   const row=document.querySelector('#list .item[data-id="'+id+'"]');
   if(row&&!reduced()){row.classList.add('newrow');setTimeout(()=>row.classList.remove('newrow'),900);}
-  showToast('<b>'+ex+'</b> 저장 · '+w+'kg × '+r+'회 × '+s+'세트<small>오늘 '+part+' '+(pr?pr.done+' / '+pr.goal+'세트':'')+' · 이번 기록 '+won(w*r*s)+'kg</small>');  $('ex').value='';$('w').value='';$('r').value='';$('s').value='';$('m').value='';
-  const l=lastOf(ex);
-  $('lastHint').textContent=l?('「'+ex+'」 지난 기록: '+l.w+'kg × '+l.r+'회 × '+l.s+'세트 ('+l.date+')'):'';
+  showToast('<b>'+esc(ex)+'</b> 저장 · '+won(rec.vol)+'kg<small>'+setDetail(rec)+' · 오늘 '+part+' '+(pr?pr.done+' / '+pr.goal+'세트':'')+'</small>');
+  const keep=ex;
+  resetForm();
+  $('ex').value='';
+  const l=lastOf(keep);
+  setLastHint('',l?('「'+esc(keep)+'」 지난 기록: '+setShort(l)+' ('+l.date+')'):'');
   $('ex').focus();
+}
+function saveEdit(){
+  const r=data.find(x=>x.id===editingId);
+  if(!r){editingId=null;updateFormMode();return;}
+  const ex=$('ex').value.trim();
+  if(!ex){alert('종목을 적어 주세요.');$('ex').focus();return;}
+  const list=collectSets();
+  if(!list){alert('세트마다 무게와 횟수를 숫자로 적어 주세요. (홧수는 1 이상)');return;}
+  r.ex=ex;r.part=part;r.m=$('m').value.trim();
+  const d=$('date').value;
+  if(d)r.date=d;
+  applySets(r,list);
+  const id=r.id,msg='<b>수정 저장 완료</b><small>'+esc(ex)+' · '+won(r.vol)+'kg · '+setDetail(r)+'</small>';
+  save();refreshExList();render();renderReco();renderHome();
+  editingId=null;
+  resetForm();
+  updateFormMode();
+  renderWriteProg();
+  showToast(msg);
+  const row=document.querySelector('#list .item[data-id="'+id+'"]');
+  if(row){row.scrollIntoView({behavior:reduced()?'auto':'smooth',block:'center'});
+    if(!reduced()){row.classList.add('newrow');setTimeout(()=>row.classList.remove('newrow'),900);}}
 }
 function render(){
   const box=$('list');
@@ -631,22 +854,25 @@ function render(){
   let html='';
   dates.forEach(d=>{
     const rows=byDate[d];
-    const vol=rows.reduce((a,x)=>a+x.w*x.r*x.s,0);
+    const vol=rows.reduce((a,x)=>a+recVol(x),0);
     const dd=new Date(d+'T00:00:00');
     html+='<div class="day"><span>'+d+' '+wd[dd.getDay()]+'</span><span>'+won(vol)+'kg</span></div><div class="card" style="padding:2px 14px">';
     rows.forEach(x=>{
       const k=PC(x.part);
-      html+='<div class="item" data-id="'+x.id+'"><div class="name"><b>'+x.ex+'</b><small><span class="ptag" style="--cl:'+k.cl+';--cd:'+k.cd+'">'+x.part+'</span>'
-        +x.w+'kg × '+x.r+'회 × '+x.s+'세트'+(x.m?' · '+x.m:'')+'</small></div>'
-        +'<div class="vol">'+won(x.w*x.r*x.s)+'</div><button class="del" data-id="'+x.id+'">×</button></div>';
+      html+='<div class="item" data-id="'+x.id+'"><div class="name"><b>'+esc(x.ex)+'</b><small><span class="ptag" style="--cl:'+k.cl+';--cd:'+k.cd+'">'+x.part+'</span>'
+        +setDetail(x)+(x.m?' · '+esc(x.m):'')+'</small></div>'
+        +'<div class="rt"><div class="vol">'+won(recVol(x))+'</div>'
+        +'<div class="acts"><button class="btn-edit" data-id="'+x.id+'">수정</button><button class="del" data-id="'+x.id+'" aria-label="삭제">×</button></div></div></div>';
     });
     html+='</div>';
   });
   box.innerHTML=html;
   box.querySelectorAll('.del').forEach(b=>b.onclick=()=>{
     if(!confirm('이 기록을 지울까요?'))return;
+    if(editingId===b.dataset.id){editingId=null;resetForm();updateFormMode();}
     data=data.filter(x=>x.id!==b.dataset.id);save();render();renderReco();renderHome();
   });
+  box.querySelectorAll('.btn-edit').forEach(b=>b.onclick=()=>startEdit(b.dataset.id));
 }
 /* ══════════ 홈 =═════════ */
 /* 요일별 부위 로테이션: getDay() 0=일 … 6=토. 이 배열만 고치면 로테이션이 바뀝니다. */
@@ -659,7 +885,7 @@ function todayRows(){const t=todayStr();return data.filter(x=>x.date===t);}
 function weekStats(){
   const ws=weekStart(0).getTime(),en=ws+7*864e5;
   const rows=data.filter(x=>{const t=new Date(x.date+'T00:00:00').getTime();return t>=ws&&t<en;});
-  return {rows:rows,vol:rows.reduce((a,x)=>a+x.w*x.r*x.s,0),days:new Set(rows.map(x=>x.date)).size};
+  return {rows:rows,vol:rows.reduce((a,x)=>a+recVol(x),0),days:new Set(rows.map(x=>x.date)).size};
 }
 function streakDays(){
   const days=new Set(data.map(x=>x.date));
@@ -777,8 +1003,8 @@ function renderHome(){
   const goal=planGoal(plan);
   const hasSets=plan.some(r=>setsNum(r.sets)>0);
   const mine=t.filter(x=>x.part===p);
-  const doneSets=mine.reduce((a,x)=>a+(x.s||1),0);
-  const mineVol=mine.reduce((a,x)=>a+x.w*x.r*x.s,0);
+  const doneSets=mine.reduce((a,x)=>a+recSets(x),0);
+  const mineVol=mine.reduce((a,x)=>a+recVol(x),0);
   const mineExs=[];mine.forEach(x=>{if(mineExs.indexOf(x.ex)<0)mineExs.push(x.ex);});
   const doneNum=hasSets?doneSets:mineExs.length;
   const pct=goal?Math.min(1,doneNum/goal):0;
@@ -818,7 +1044,7 @@ function renderHome(){
 
   if(complete){
     html+='<div class="tlist">'+mine.slice(0,3).map(x=>
-      homeRowHTML(x.ex,eqOf(x.ex),x.s+'세트',null,x.w+'kg × '+x.r+'회 × '+x.s+'세트',true)).join('')
+      homeRowHTML(x.ex,eqOf(x.ex),recSets(x)+'세트',null,setShort(x),true)).join('')
       +(mine.length>3?'<div class="tmore">기록 '+(mine.length-3)+'건 더 있어요</div>':'')+'</div>';
   }else{
     const doneNames={};mine.forEach(x=>{doneNames[x.ex]=1;});
@@ -872,16 +1098,16 @@ function renderRecent(){
   if(!rows.length){box.innerHTML='<div class="empty" style="padding:16px 6px">아직 기록이 없어요. 오늘부터 하나씩 쌓아 보세요.</div>';return;}
   box.innerHTML=rows.map(x=>{
     const dd=new Date(x.date+'T00:00:00');
-    return '<button class="hrow" data-id="'+x.id+'" style="--c:'+PC(x.part).c+'">'
-      +'<div class="t"><b>'+x.ex+'</b><small>'+x.part+' · '+(dd.getMonth()+1)+'월 '+dd.getDate()+'일 '+wd[dd.getDay()]+' · '+x.s+'세트</small></div>'
-      +'<span class="rdate">'+won(x.w*x.r*x.s)+'kg</span></button>';
+    return '<button class="hrow" data-id="'+x.id+'" style="--c:'+PC(x.part).c+'" title="눌러서 수정">'
+      +'<div class="t"><b>'+esc(x.ex)+'</b><small>'+x.part+' · '+(dd.getMonth()+1)+'월 '+dd.getDate()+'일 '+wd[dd.getDay()]+' · '+recSets(x)+'세트</small></div>'
+      +'<span class="rdate">'+won(recVol(x))+'kg</span></button>';
   }).join('');
 }
 function renderWriteProg(){
   const list=todayList(part),goal=planGoal(list);
   const hasSets=list.some(r=>setsNum(r.sets)>0);
   const mine=data.filter(x=>x.date===todayStr()&&x.part===part);
-  const doneSets=mine.reduce((a,x)=>a+(x.s||1),0);
+  const doneSets=mine.reduce((a,x)=>a+recSets(x),0);
   const exs=[];mine.forEach(x=>{if(exs.indexOf(x.ex)<0)exs.push(x.ex);});
   const done=hasSets?doneSets:exs.length;
   const pp=$('wProgPart');
@@ -929,7 +1155,7 @@ function renderStat(){
 
   const from=Date.now()-30*864e5;
   const recent=data.filter(x=>new Date(x.date+'T00:00:00').getTime()>=from);
-  const pm={};recent.forEach(x=>{pm[x.part]=(pm[x.part]||0)+x.w*x.r*x.s;});
+  const pm={};recent.forEach(x=>{pm[x.part]=(pm[x.part]||0)+recVol(x);});
   const max=Math.max(1,...Object.values(pm));
   $('partStat').innerHTML=Object.keys(pm).length?Object.entries(pm).sort((a,b)=>b[1]-a[1]).map(([p,v])=>
     '<div class="part" style="--c:'+PC(p).c+'"><div class="top"><span><i class="dotr"></i>'+p+'</span><span>'+won(v)+'kg</span></div>'
@@ -938,39 +1164,45 @@ function renderStat(){
   let wh='';
   for(let i=5;i>=0;i--){
     const st=weekStart(i).getTime(), en=st+7*864e5;
-    const v=data.filter(x=>{const t=new Date(x.date+'T00:00:00').getTime();return t>=st&&t<en;}).reduce((a,x)=>a+x.w*x.r*x.s,0);
+    const v=data.filter(x=>{const t=new Date(x.date+'T00:00:00').getTime();return t>=st&&t<en;}).reduce((a,x)=>a+recVol(x),0);
     wh+='<div class="part"><div class="top"><span>'+(i===0?'이번 주':(i+'주 전'))+'</span><span>'+won(v)+'kg</span></div>'
       +'<div class="bar"><i data-w="'+Math.min(100,v/Math.max(1,20000)*100).toFixed(0)+'%" style="width:0.01%;background:linear-gradient(90deg,#8b6cf6,#5a45e8)"></i></div></div>';
   }
   $('weekStat').innerHTML=wh;
   growBars($('partStat'));growBars($('weekStat'));
 
-  const pr={},prp={};data.forEach(x=>{if(!pr[x.ex]||x.w>pr[x.ex]){pr[x.ex]=x.w;prp[x.ex]=x.part;}});
+  const pr={},prp={};data.forEach(x=>{const k=recKg(x);if(!pr[x.ex]||k>pr[x.ex]){pr[x.ex]=k;prp[x.ex]=x.part;}});
   $('prStat').innerHTML=Object.keys(pr).length?Object.entries(pr).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([e,v])=>
-    '<div class="item"><div class="name"><b>'+e+'</b><small><span class="dotr" style="--c:'+PC(prp[e]).c+'"></span>'+prp[e]+'</small></div>'
+    '<div class="item"><div class="name"><b>'+esc(e)+'</b><small><span class="dotr" style="--c:'+PC(prp[e]).c+'"></span>'+prp[e]+'</small></div>'
     +'<div class="vol">'+v+'kg</div></div>').join(''):'<div class="empty">기록이 쌓이면 최고 무게가 보여요.</div>';
 }
 function exportFile(){
   if(!data.length){alert('내보낼 기록이 없어요.');return;}
-  let csv='날짜,부위,종목,무게,횟수,세트,볼륨,메모\n';
+  let csv='날짜,부위,종목,세트별,세트수,총볼륨,최고무게,메모\n';
   data.slice().sort((a,b)=>(a.date<b.date?-1:1)).forEach(x=>{
-    csv+=[x.date,x.part,x.ex,x.w,x.r,x.s,x.w*x.r*x.s,(x.m||'').replace(/,/g,' ')].join(',')+'\n';
+    const list=recSetList(x);
+    const detail=list.map((s,i)=>(i+1)+'세트 '+s.kg+'kg×'+s.reps).join(' / ');
+    csv+=[x.date,x.part,'"'+x.ex.replace(/"/g,'')+'"','"'+detail+'"',list.length,recVol(x),recKg(x),'"'+(x.m||'').replace(/"/g,'')+'"'].join(',')+'\n';
   });
   const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);a.download='운동일지_'+todayStr()+'.csv';a.click();
 }
 $('save').onclick=addItem;
+$('addSet').onclick=addSetRow;
+$('cancelEdit').onclick=()=>cancelEdit();
 $('tabHome').onclick=()=>showTab('home');
 $('tabWrite').onclick=()=>showTab('write');
 $('tabStat').onclick=()=>showTab('stat');
-$('hRecent').onclick=e=>{const b=e.target.closest('[data-id]');if(b&&$('hRecent').contains(b))openRecord(b.dataset.id);};
+$('hRecent').onclick=e=>{const b=e.target.closest('[data-id]');if(b&&$('hRecent').contains(b))startEdit(b.dataset.id);};
 $('exportBtn').onclick=e=>{e.preventDefault();exportFile();};
 $('ex').addEventListener('input',()=>{
-  const l=lastOf($('ex').value.trim());
-  $('lastHint').textContent=l?('지난 기록: '+l.w+'kg × '+l.r+'회 × '+l.s+'세트 ('+l.date+')'):'';
+  const n=$('ex').value.trim();
+  if(!n){$('lastHint').innerHTML='';return;}
+  setLastHint(n,'');
 });
 initToday();initChips();refreshExList();render();
+setFormSets([{kg:'',reps:''}]);updateFormMode();
 part=homeDisplayPart();markChips();renderReco();
 showTab('home');
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
