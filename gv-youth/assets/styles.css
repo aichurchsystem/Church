@@ -5176,3 +5176,21 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   .worship-card h4 { font-size: 16px; }
   .worship-card__time { font-size: 14.4px; }
 }
+
+/* 푸터 — 링크 목록 2칸, 문의는 한 줄 (스크롤 줄이기) */
+.footer__col--two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 16px;
+  align-content: start;
+}
+.footer__col--two h5 { grid-column: 1 / -1; margin-bottom: 5px; }
+.footer__col--two a { padding: 1.5px 0; line-height: 1.5; font-size: 12.4px; }
+.footer__col--inline { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; }
+.footer__col--inline h5 { flex: 0 0 100%; margin-bottom: 2px; }
+.footer__col--inline a { display: inline-block; padding: 0; white-space: nowrap; font-size: 12.4px; }
+@media (max-width: 760px) {
+  .footer__col--two { column-gap: 12px; }
+  .footer__col--two a, .footer__col--inline a { font-size: 12px; padding: 1px 0; }
+  .footer__col--inline { gap: 2px 12px; }
+}
