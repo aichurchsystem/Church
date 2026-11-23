@@ -27,7 +27,8 @@
   input,select,textarea,button{font:inherit;color:var(--text)}
   input,select,textarea{width:100%;background:#141922;border:1px solid var(--line);border-radius:11px;padding:12px;font-size:16px}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
-  .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;margin-bottom:10px}
+  .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;margin-bottom:10px;scrollbar-width:none;-ms-overflow-style:none}
+  .chips::-webkit-scrollbar{display:none}
   .chip{flex:0 0 auto;background:#141922;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:13.5px;color:var(--dim)}
   .chip.on{background:rgba(233,180,76,.15);border-color:var(--accent);color:var(--accent)}
   .btn{width:100%;padding:15px;border:0;border-radius:13px;background:var(--accent);color:#1a1408;font-weight:700;font-size:16px}
