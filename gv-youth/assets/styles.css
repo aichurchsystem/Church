@@ -5082,3 +5082,13 @@ a.topbar__label:hover { background-color: #f2f7ff; }
 @media (max-width: 760px) {
   .ceo-card__avatar--photo { width: 60px; height: 60px; }
 }
+
+/* 20261124w — 저서 01 표지 교체 대기 + 모바일 '분야별 브리핑' 가로 넘침(28px) 방지 */
+.brief-split, .brief-col, .brief-card, .brief-lead-list, .brief-rows, .brief-row { min-width: 0; }
+.brief-row > * { min-width: 0; }
+.brief-row__title { overflow-wrap: anywhere; }
+@media (max-width: 760px) {
+  .brief-row .chip { white-space: normal; }
+  .brief-row { max-width: 100%; }
+  html, body { overflow-x: hidden; }
+}
