@@ -3947,3 +3947,67 @@ a.topbar__label:hover { background-color: #f2f7ff; }
   .site-footer { padding: 30px 0 18px; }
   .briefing .sec-head { margin-bottom: 16px; }
 }
+
+/* v7b — 한 번 더 조임 (섹션·카드·표·푸터) */
+.section { padding: 32px 0; }
+.sec-head { margin-bottom: 20px; }
+.briefing .sec-head { margin-bottom: 16px; }
+.briefing__note { margin-top: 12px; }
+
+.hero__inner { padding-top: 44px; padding-bottom: 32px; }
+.hero__desc { margin-top: 14px; }
+.hero { min-height: clamp(440px, 58vh, 600px); }
+.hero__stats--topics .hero__topic { padding-top: 16px; padding-bottom: 16px; }
+
+.mission-band { padding: 24px 0 20px; }
+.mission-band__foot { margin-top: 12px; }
+
+.m-grid { gap: 14px; }
+.m-card__media { aspect-ratio: 16 / 6.6; }
+.m-card__body { padding: 16px 18px 16px; }
+.m-card__note { margin-top: 10px; font-size: 13.5px; line-height: 1.65; }
+.m-card__body > .btn { margin-top: 12px; }
+
+.partner { padding: 16px 20px 14px 0; }
+.partner + .partner { padding-left: 20px; }
+
+.archive-table td { padding: 8px 14px; }
+.archive-table th { padding: 8px 14px; }
+.archive { padding: 10px 20px 2px; }
+.gfocus__top { margin-bottom: 16px; }
+
+.about-grid { gap: 16px; }
+.ceo-card { padding: 18px 18px 16px; }
+.panel { padding: 16px 18px; }
+.history { margin-top: 16px; padding: 18px 20px 14px; }
+.timeline__item { padding: 8px 0; }
+.placeholder { padding: 16px 18px; }
+.placeholder-grid { gap: 14px; margin-top: 14px; }
+.location { gap: 14px; margin-top: 14px; }
+.location__info { padding: 18px 20px; }
+.location__side { padding: 18px 20px; }
+
+.brief-col { padding: 18px 20px 16px; }
+.brief-card { padding: 14px 14px 12px; }
+.brief-lead-list { gap: 10px; margin-top: 10px; }
+
+.contact { padding: 40px 0; }
+.contact__grid { gap: 24px; }
+.contact__card { padding: 18px 20px; }
+
+.site-footer { padding: 32px 0 18px; }
+.footer__top { gap: 32px; }
+.footer__col a { padding: 3px 0; }
+.footer__addr { line-height: 1.75; }
+.footer__sns { margin-top: 18px; padding-top: 14px; }
+
+@media (max-width: 760px) {
+  .section { padding: 26px 0; }
+  .hero__inner { padding-top: 32px; padding-bottom: 24px; }
+  .m-card__media { aspect-ratio: 16 / 9; }
+  .m-card__body { padding: 14px 14px 14px; }
+  .archive-table td { padding: 8px 10px; }
+  .contact { padding: 32px 0; }
+  .site-footer { padding: 26px 0 16px; }
+  .footer__col a { padding: 3px 0; }
+}
