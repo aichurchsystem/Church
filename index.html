@@ -57,13 +57,22 @@
   .footnote{font-size:11.5px;color:#586174;text-align:center;margin:20px 0 8px}
   a.link{color:var(--accent2);text-decoration:none;font-size:13px}
   .hide{display:none}
-  .reco{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
-  .reco button{background:#141922;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--text);text-align:left;line-height:1.35}
-  .reco button:active{border-color:var(--accent);background:rgba(233,180,76,.12)}
-  .reco button small{display:block;color:var(--dim);font-size:11px;margin-top:2px}
   .recohead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
   .recohead b{font-size:13.5px}
   .recohead span{font-size:11.5px;color:var(--dim)}
+  .reco{display:flex;flex-direction:column;gap:8px}
+  .reco button{display:flex;gap:10px;align-items:center;width:100%;background:#141922;border:1px solid var(--line);
+    border-radius:12px;padding:10px 12px;font-size:13.5px;text-align:left;line-height:1.35}
+  .reco button:active{border-color:var(--accent);background:rgba(233,180,76,.12)}
+  .reco .txt{flex:1;min-width:0}
+  .reco .txt b{display:block;font-size:14px;font-weight:600}
+  .reco .txt small{display:block;color:var(--dim);font-size:11.5px;margin-top:3px}
+  .ico{width:22px;height:22px;flex:0 0 auto;color:var(--accent2)}
+  .ico.big{width:38px;height:38px;color:var(--accent)}
+  .eqgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .eqi{background:#141922;border:1px solid var(--line);border-radius:12px;padding:10px}
+  .eqi b{display:block;font-size:12.5px;margin-top:6px;font-weight:600}
+  .eqi small{display:block;color:var(--dim);font-size:11px;line-height:1.45;margin-top:3px}
 </style>
 </head>
 <body>
@@ -105,7 +114,12 @@
     <div class="card">
       <div class="recohead"><b>추천 종목</b><span id="recoPart">가슴</span></div>
       <div class="reco" id="recoBox"></div>
-      <div class="hint" style="margin-top:10px">종목을 누르면 위 칸에 채워집니다. 무게는 지난 기록 보시고 맞춰 올리세요. 등·하체·어깨는 각 부위를 골라 보세요.</div>
+      <div class="hint" style="margin-top:11px">종목을 누르면 위 칸에 채워집니다. 무게는 지난 기록 보시고 맞춰 올리세요.</div>
+    </div>
+
+    <div class="card">
+      <div class="recohead"><b>기구 사전</b><span>그림으로 보기</span></div>
+      <div class="eqgrid" id="eqGrid"></div>
     </div>
 
     <div id="list"></div>
@@ -136,15 +150,92 @@
 <script>
 const KEY='workoutlog.v1';
 const PARTS=['가슴','등','하체','어깨','팔','복부','유산소'];
-const RECO={
-  가슴:[['벤치프레스','가슴 전체 · 3세트 8~12회'],['인클라인 덤벨프레스','윗가슴 · 3세트 10회'],['케이블 플라이','모아주기 · 3세트 12~15회'],['푸시업','맨몸 · 3세트 15회'],['딥스','아랫가슴 · 3세트 8~10회']],
-  등:[['랫풀다운','광배근 · 3세트 10~12회'],['바벨 로우','등 두께 · 3세트 8~12회'],['시티드 로우','중부 등 · 3세트 12회'],['풀업','맨몸 · 3세트 6~10회'],['원암 덤벨로우','좌우 균형 · 3세트 12회']],
-  하체:[['스쿼트','하체 전체 · 3세트 8~12회'],['레그프레스','대퇴사두 · 3세트 12회'],['런지','둔근·균형 · 3세트 10회'],['레그컬','햄스트링 · 3세트 12~15회'],['카프레이즈','종아리 · 3세트 15~20회']],
-  어깨:[['숄더프레스','전면 · 3세트 8~12회'],['사이드 레터럴 레이즈','측면 · 3세트 12~15회'],['페이스풀','후면·자세 · 3세트 15회'],['업라이트 로우','승모·측면 · 3세트 12회']],
-  팔:[['바벨 컬','이두 · 3세트 10~12회'],['해머 컬','전완·이두 · 3세트 12회'],['트라이셉스 푸시다운','삼두 · 3세트 12~15회'],['오버헤드 익스텐션','삼두 · 3세트 12회']],
-  복부:[['플랭크','코어 버티기 · 3세트 40초'],['크런치','상복부 · 3세트 20회'],['레그레이즈','하복부 · 3세트 12회'],['데드버그','허리 보호 · 3세트 10회']],
-  유산소:[['빠르게 걷기','20~30분 · 대화 가능한 정도'],['사이클','20분 · 중간 강도'],['로잉머신','15분 · 전신']]
+
+/* ── 기구 사전: 이름, 모양 설명, 그림(선 도해) ── */
+const EQUIP={
+  barbell:{n:'바벨',d:'양쪽에 원판을 끼우는 긴 쇠막대. 봉만 보통 20kg.',
+    s:'<path d="M7 24h34"/><rect x="9" y="15" width="5" height="18" rx="1.6"/><rect x="34" y="15" width="5" height="18" rx="1.6"/>'},
+  dumbbell:{n:'덤벨',d:'한 손에 하나씩 드는 짧은 막대. 양 끝에 무게 뭉치.',
+    s:'<path d="M19 24h10"/><rect x="10" y="16" width="6" height="16" rx="2"/><rect x="32" y="16" width="6" height="16" rx="2"/>'},
+  bench:{n:'플랫 벤치',d:'바닥에 누워 쓰는 평평한 의자. 등받이 각도 없음.',
+    s:'<path d="M8 25h32"/><path d="M15 25v9"/><path d="M33 25v9"/><path d="M10 34h10"/><path d="M28 34h10"/>'},
+  incline:{n:'인클라인 벤치',d:'등받이가 30~45도로 올라간 벤치. 윗가슴 운동에 씀.',
+    s:'<path d="M11 34l9-17"/><path d="M24 31h14"/><path d="M18 31v7"/><path d="M33 31v7"/>'},
+  rack:{n:'스쿼트 랙',d:'바벨을 걸어 두는 두 기둥 틀. 서서 스쿼트할 때 씀.',
+    s:'<path d="M14 41V7"/><path d="M34 41V7"/><path d="M14 17h20"/><path d="M17 17v5"/><path d="M31 17v5"/>'},
+  cable:{n:'케이블 머신',d:'도르래에 줄이 달린 기둥 기구. 손잡이를 당겨 씀.',
+    s:'<rect x="9" y="8" width="9" height="32" rx="2"/><circle cx="20" cy="14" r="2.4"/><path d="M22.4 14H32"/><path d="M32 14v12"/><path d="M28 26h8"/>'},
+  latpull:{n:'랫풀다운',d:'머리 위 긴 바를 아래로 당기는 기구. 앉아서 함.',
+    s:'<path d="M12 41V8h24"/><path d="M16 13h16"/><path d="M16 13v4"/><path d="M32 13v4"/><path d="M19 32h10"/>'},
+  row:{n:'시티드 로우',d:'앉아서 가슴 쪽으로 손잡이를 당기는 기구.',
+    s:'<rect x="7" y="28" width="13" height="7" rx="2"/><path d="M20 31.5h7"/><circle cx="30" cy="31.5" r="2.6"/><path d="M30 29V18"/><path d="M23 18h14"/>'},
+  legpress:{n:'레그프레스',d:'앉아서 두 발로 판을 앞으로 미는 기구. 하체 전체.',
+    s:'<path d="M8 41V28a2 2 0 012-2h8v7"/><path d="M18 25h9"/><path d="M35 11l-6 26"/><path d="M40 13l-6 26"/>'},
+  legcurl:{n:'레그컬',d:'앉거나 엎드려 다리 뒤꿈치를 말아 올리는 기구.',
+    s:'<path d="M6 22h19"/><path d="M10 22v10"/><path d="M19 22v10"/><path d="M25 22h9"/><circle cx="34" cy="28" r="5"/>'},
+  dip:{n:'평행봉',d:'두 개의 평행한 봉. 팔로 몸을 지지하고 내려갔다 올라옴.',
+    s:'<path d="M12 41V15"/><path d="M12 15h8"/><path d="M28 15h8"/><path d="M36 41V15"/>'},
+  pullup:{n:'풀업 바',d:'머리 위 가로 막대. 매달려 몸을 끌어올림.',
+    s:'<path d="M6 15h36"/><path d="M11 7v8"/><path d="M37 7v8"/><path d="M18 15v6"/><path d="M30 15v6"/>'},
+  machine:{n:'웨이트 머신',d:'무게추가 쌓인 기구. 핀을 꽂아 무게를 정함.',
+    s:'<rect x="9" y="7" width="10" height="34" rx="2"/><path d="M11 14h6"/><path d="M11 20h6"/><path d="M11 26h6"/><path d="M22 33h13"/><path d="M28 33v5"/>'},
+  treadmill:{n:'트레드밀',d:'돌아가는 벨트 위를 걷거나 뛰는 기구. 속도 조절 가능.',
+    s:'<path d="M7 36h22l8-6"/><path d="M30 30h9"/><path d="M35 30V16"/><path d="M30 16h10"/><path d="M11 36v5"/><path d="M26 36v5"/>'},
+  bike:{n:'실내 사이클',d:'앉아서 페달을 밟는 자전거. 무릎 부담이 적음.',
+    s:'<circle cx="15" cy="33" r="6.5"/><circle cx="35" cy="33" r="6.5"/><path d="M15 33l7-13h8l5 13"/><path d="M22 20h7"/><path d="M30 20l-4-6"/>'},
+  rower:{n:'로잉머신',d:'노젓듯 앉아서 손잡이를 당기는 기구. 전신 운동.',
+    s:'<path d="M6 38h36"/><rect x="14" y="31" width="11" height="5" rx="2"/><path d="M9 34v-9"/><path d="M9 25h7"/><path d="M27 21l9 5"/>'},
+  bodyweight:{n:'맨몸',d:'기구 없이 체중으로 하는 운동. 푸시업·스쿼트 등.',
+    s:'<circle cx="24" cy="11" r="4"/><path d="M24 15v12"/><path d="M24 20l-7 4"/><path d="M24 20l7 4"/><path d="M24 27l-6 11"/><path d="M24 27l6 11"/>'}
 };
+
+const RECO={
+  가슴:[
+    ['벤치프레스','barbell','바벨 + 플랫 벤치','3세트 8~12회'],
+    ['인클라인 덤벨프레스','dumbbell','덤벨 + 인클라인 벤치','3세트 10회'],
+    ['케이블 플라이','cable','케이블 머신','3세트 12~15회'],
+    ['딥스','dip','평행봉','3세트 8~10회'],
+    ['푸시업','bodyweight','맨몸','3세트 15회']
+  ],
+  등:[
+    ['랫풀다운','latpull','랫풀다운 머신','3세트 10~12회'],
+    ['바벨 로우','barbell','바벨','3세트 8~12회'],
+    ['시티드 로우','row','시티드 로우 머신','3세트 12회'],
+    ['풀업','pullup','풀업 바','3세트 6~10회'],
+    ['원암 덤벨로우','dumbbell','덤벨 + 플랫 벤치','3세트 12회']
+  ],
+  하체:[
+    ['스쿼트','rack','스쿼트 랙 + 바벨','3세트 8~12회'],
+    ['레그프레스','legpress','레그프레스 머신','3세트 12회'],
+    ['런지','dumbbell','덤벨(없어도 됨)','3세트 10회'],
+    ['레그컬','legcurl','레그컬 머신','3세트 12~15회'],
+    ['카프레이즈','machine','웨이트 머신(또는 맨몸)','3세트 15~20회']
+  ],
+  어깨:[
+    ['숄더프레스','dumbbell','덤벨 + 인클라인 벤치','3세트 8~12회'],
+    ['사이드 레터럴 레이즈','dumbbell','덤벨','3세트 12~15회'],
+    ['페이스풀','cable','케이블 머신','3세트 15회'],
+    ['업라이트 로우','barbell','바벨(또는 케이블)','3세트 12회']
+  ],
+  팔:[
+    ['바벨 컬','barbell','바벨','3세트 10~12회'],
+    ['해머 컬','dumbbell','덤벨','3세트 12회'],
+    ['트라이셉스 푸시다운','cable','케이블 머신','3세트 12~15회'],
+    ['오버헤드 익스텐션','dumbbell','덤벨','3세트 12회']
+  ],
+  복부:[
+    ['플랭크','bodyweight','맨몸','3세트 40초'],
+    ['크런치','bodyweight','맨몸','3세트 20회'],
+    ['레그레이즈','bodyweight','맨몸','3세트 12회'],
+    ['데드버그','bodyweight','맨몸','3세트 10회']
+  ],
+  유산소:[
+    ['빠르게 걷기','treadmill','트레드밀','20~30분'],
+    ['실내 사이클','bike','실내 사이클','20분 중간 강도'],
+    ['로잉머신','rower','로잉머신','15분']
+  ]
+};
+
 let data=JSON.parse(localStorage.getItem(KEY)||'[]');
 let part='가슴';
 
@@ -152,6 +243,7 @@ const $=id=>document.getElementById(id);
 const won=n=>Math.round(n).toLocaleString('ko-KR');
 const todayStr=()=>{const d=new Date();const p=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());};
 const wd=['일','월','화','수','목','금','토'];
+const icon=(k,cls)=>'<svg class="ico'+(cls?' '+cls:'')+'" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">'+((EQUIP[k]||{}).s||'')+'</svg>';
 
 function save(){localStorage.setItem(KEY,JSON.stringify(data));}
 
@@ -173,18 +265,24 @@ function renderReco(){
   $('recoPart').textContent=part;
   const box=$('recoBox');
   box.innerHTML='';
-  (RECO[part]||[]).forEach(([name,tip])=>{
+  const list=RECO[part]||[];
+  if(!list.length){box.innerHTML='<div class="hint">이 부위 추천은 준비 중이에요.</div>';return;}
+  list.forEach(([name,eq,sets])=>{
     const b=document.createElement('button');
-    b.innerHTML=name+'<small>'+tip+'</small>';
-    b.onclick=()=>{fillExercise(name);};
+    b.innerHTML=icon(eq)+'<div class="txt"><b>'+name+'</b><small>'+EQUIP[eq].n+' · '+sets+'</small></div>';
+    b.onclick=()=>fillExercise(name,eq);
     box.appendChild(b);
   });
-  if(!(RECO[part]||[]).length){box.innerHTML='<div class="hint">이 부위 추천은 준비 중이에요.</div>';}
 }
-function fillExercise(name){
+function renderEq(){
+  $('eqGrid').innerHTML=Object.keys(EQUIP).map(k=>
+    '<div class="eqi">'+icon(k,'big')+'<b>'+EQUIP[k].n+'</b><small>'+EQUIP[k].d+'</small></div>').join('');
+}
+function fillExercise(name,eq){
   $('ex').value=name;
   const l=lastOf(name);
-  $('lastHint').textContent=l?('「'+name+'」 지난 기록: '+l.w+'kg × '+l.r+'회 × '+l.s+'세트 ('+l.date+')'):('「'+name+'」 처음이시면 가벼운 무게로 12회 가능한 정도부터.');
+  const eqLine=eq&&EQUIP[eq]?('기구: '+EQUIP[eq].n+' — '+EQUIP[eq].d+' '):'';
+  $('lastHint').textContent=eqLine+(l?('지난 기록: '+l.w+'kg × '+l.r+'회 × '+l.s+'세트 ('+l.date+')'):'처음이면 12회 가능한 무게부터.');
   $('w').focus();
 }
 function refreshExList(){
@@ -277,7 +375,7 @@ $('ex').addEventListener('input',()=>{
   const l=lastOf($('ex').value.trim());
   $('lastHint').textContent=l?('지난 기록: '+l.w+'kg × '+l.r+'회 × '+l.s+'세트 ('+l.date+')'):'';
 });
-initToday();initChips();renderReco();refreshExList();render();
+initToday();initChips();renderReco();renderEq();refreshExList();render();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
 </script>
 </body>

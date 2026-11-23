@@ -1,4 +1,4 @@
-const CACHE='workoutlog-v2';
+const CACHE='workoutlog-v3';
 const FILES=['./','./index.html','./manifest.json','./icon.svg'];
 
 self.addEventListener('install',e=>{
