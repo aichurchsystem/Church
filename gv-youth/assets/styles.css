@@ -3358,3 +3358,12 @@ body.zoom-open { overflow: hidden; }
 @media (max-width: 860px) {
   .mission-band__grid, .partner-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* 남은 라임 계열 → 스틸 블루로 통일 */
+.btn--lime { box-shadow: none; }
+.hint, .conf-verse, .conf-hero__kicker {
+  border-color: rgba(205, 223, 251, .45);
+}
+.conf-verse { border-left-color: rgba(205, 223, 251, .45); }
+.hint { background: rgba(205, 223, 251, .12); color: #cddffb; }
+.conf-hero__kicker { background: rgba(255, 255, 255, .04); color: #cddffb; }
