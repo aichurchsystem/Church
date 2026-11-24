@@ -637,9 +637,9 @@
   color: var(--bc-navy);
 }
 .bc-worship__photo {
-  width: 144px;
-  height: 96px;
-  border-radius: 10px;
+  width: 216px;
+  height: 144px;
+  border-radius: 12px;
   object-fit: cover;
   object-position: center 35%;
   border: 2px solid rgba(11, 27, 52, .16);
