@@ -152,6 +152,7 @@ body.bc-page {
   color: #8b8674;
   line-height: 1.4;
 }
+.print--bare { padding-bottom: 9px; }
 .print--l { --tilt: -1.9deg; }
 .print--r { --tilt: 1.5deg; }
 .print--s { --tilt: .8deg; }
@@ -177,7 +178,7 @@ body.bc-page {
   font-family: var(--bc-sans);
   font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: .2em;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--bc-muted);
 }
@@ -189,7 +190,7 @@ body.bc-page {
   font-family: var(--bc-sans);
   font-size: 11.5px;
   font-weight: 700;
-  letter-spacing: .34em;
+  letter-spacing: .16em;
   color: var(--bc-brass);
 }
 .bc-mast h1 {
@@ -232,15 +233,6 @@ body.bc-page {
   font-size: clamp(15.6px, 1.5vw, 17.6px);
   line-height: 2;
   color: var(--bc-body);
-}
-.bc-mast__lead::first-letter {
-  float: left;
-  margin: 6px 10px 0 0;
-  font-family: var(--bc-serif-kr);
-  font-size: 3.3em;
-  line-height: .82;
-  font-weight: 500;
-  color: var(--bc-teal);
 }
 .bc-mast__p { margin-top: 12px; font-family: var(--bc-serif-kr); font-size: 15.2px; line-height: 1.95; color: var(--bc-body); }
 .bc-verse {
