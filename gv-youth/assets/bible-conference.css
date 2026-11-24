@@ -629,12 +629,21 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 16px 26px;
+  gap: 16px 22px;
   margin-top: 28px;
   padding: 18px 22px;
   border-radius: 14px;
   background: var(--bc-lime);
   color: var(--bc-navy);
+}
+.bc-worship__photo {
+  width: 144px;
+  height: 96px;
+  border-radius: 10px;
+  object-fit: cover;
+  object-position: center 35%;
+  border: 2px solid rgba(11, 27, 52, .16);
+  flex-shrink: 0;
 }
 .bc-worship .k {
   font-size: 10.4px;
