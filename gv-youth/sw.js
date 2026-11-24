@@ -3,7 +3,7 @@
    gv-youth 폴더 범위(scope: /Church/gv-youth/)만 담당한다.
    화면은 항상 네트워크에서 먼저 받아 오고, 네트워크가 없을 때만 최근에 받아 둔 사본을 쓴다. */
 
-const CACHE = 'gv-youth-shell-v1';
+const CACHE = 'gv-youth-shell-v2';
 const SHELL = [
   './index.html',
   './assets/styles.css',
