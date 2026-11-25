@@ -801,7 +801,7 @@ body.bc-page {
 /* 신청서 */
 .bc-apply__grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(14px, 2vw, 22px);
   margin-top: clamp(24px, 3vw, 34px);
 }
@@ -854,6 +854,15 @@ body.bc-page {
   font-weight: 600;
   color: var(--bc-muted);
   border-bottom: 1px dashed var(--bc-rule);
+}
+.bc-apply__meta {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--bc-sans);
+  font-size: 11.2px;
+  font-weight: 600;
+  letter-spacing: .01em;
+  color: var(--bc-brass);
 }
 .bc-apply__steps {
   display: grid;
@@ -1143,6 +1152,8 @@ body.bc-page {
   .bc-spk { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .bc-spk__item:nth-child(4) { grid-column: 1 / span 1; }
   .bc-index { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .bc-apply__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bc-apply__grid > :nth-child(3) { grid-column: 1 / -1; }
 }
 
 @media (max-width: 900px) {
