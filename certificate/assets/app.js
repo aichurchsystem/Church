@@ -27,6 +27,7 @@
       signerTitle: '노회 서기',
       signerName: '박재용',
       noPrefix: '노회(증)',
+      watermark: 'navy',
       note1: '본 증명서의 진위는 대한예수교장로회(백석) 서울강동노회로 문의하시기 바랍니다.',
       note2: '발급일로부터 90일까지만 효력이 있습니다.',
       types: {}
@@ -158,6 +159,7 @@
   ];
   var KEY_SEAL_BASE = 'cert.v1.seal.';
   var pendingSealKey = null;
+  var WM_VARIANTS = ['navy', 'slate', 'ink', 'none'];
 
   function getSeal(key) {
     try { return localStorage.getItem(KEY_SEAL_BASE + key) || null; } catch (e) { return null; }
@@ -439,8 +441,18 @@
     el.pNote2.textContent = F.note2;
     el.pInet.textContent = state.inet || '';
 
+    // 엠블럼 워터마크: 종류별 켜기·끄기 + 지면 전체 시안(네이비·회청·먹색·없음)
+    var wmVariant = F.watermark || 'navy';
+    if (WM_VARIANTS.indexOf(wmVariant) < 0) wmVariant = 'navy';
     var wm = el.paper.querySelector('.wm');
-    if (wm) wm.style.display = def.watermark === false ? 'none' : '';
+    if (wm) {
+      el.paper.dataset.wm = wmVariant;
+      if (wmVariant !== 'none') {
+        var src = 'assets/emblem-' + wmVariant + '.png';
+        if (wm.getAttribute('src') !== src) wm.setAttribute('src', src);
+      }
+      wm.style.display = (def.watermark === false || wmVariant === 'none') ? 'none' : '';
+    }
 
     // 발신처 · 수신처 (빈 줄은 찍지 않는다)
     el.pFrom.textContent = state.sender || '';
@@ -522,6 +534,10 @@
     Array.prototype.forEach.call(document.querySelectorAll('[data-fmt]'), function (inp) {
       if (document.activeElement === inp) return;
       inp.value = F[inp.dataset.fmt] == null ? '' : F[inp.dataset.fmt];
+    });
+    var wmV = WM_VARIANTS.indexOf(F.watermark) > -1 ? F.watermark : 'navy';
+    Array.prototype.forEach.call(document.querySelectorAll('input[name="wmChoice"]'), function (r) {
+      r.checked = r.value === wmV;
     });
 
     if (!TYPES.length) return;
@@ -847,6 +863,14 @@
     });
 
     /* 양식 관리 */
+    Array.prototype.forEach.call(document.querySelectorAll('input[name="wmChoice"]'), function (r) {
+      r.addEventListener('change', function () {
+        if (!r.checked) return;
+        state.fmt.watermark = r.value;
+        saveState(); renderPaper();
+      });
+    });
+
     Array.prototype.forEach.call(document.querySelectorAll('[data-fmt]'), function (inp) {
       inp.addEventListener('input', function () {
         var key = inp.dataset.fmt;

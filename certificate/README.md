@@ -20,7 +20,9 @@ assets/app.js         동작 (정의를 읽어 폼과 지면을 그림)
 data/types.json       증명서 종류별 정의 — 제목·항목·본문·추가 입력·워터마크
 data/people.json      사람 명단 (교회명·이름·생년월일·주소·직위)
 data/config.json      직인 기본 경로(seal) — 보통은 앱에서 직접 올리는 방식을 씁니다
-assets/emblem.png     총회 엠블럼 워터마크(스캔에서 떠서 투명 PNG로 처리)
+assets/emblem-navy.png   총회 엠블럼 워터마크 — 네이비(기본, 40%)
+assets/emblem-slate.png  같은 워터마크 회청(35%)
+assets/emblem-ink.png    같은 워터마크 먹색(30%)
 assets/band.png       보안 패턴 띠(스캔에서 추출)
 vendor/html2canvas.min.js  이미지(PNG) 저장용
 sw.js, manifest.webmanifest, assets/icons/  설치·오프라인용

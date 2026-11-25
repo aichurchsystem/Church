@@ -137,7 +137,7 @@
           <div class="paper-host" id="paperHost">
             <!-- ===== A4 지면 ===== -->
             <div class="paper" id="paper">
-              <img class="wm" src="assets/emblem.png" alt="">
+              <img class="wm" id="pWm" src="assets/emblem-navy.png" alt="">
 
               <div class="head" id="pHead">
                 <div class="hl hl1" id="pOrgLine"><span id="pOrg">대한예수교장로회(백석)</span><span class="gap-org" id="pOrgGap"></span><span id="pPresb">서울강동노회</span></div>
@@ -229,6 +229,14 @@
           <div class="row2">
             <div class="field"><label for="fmSignTitle">직함</label><input id="fmSignTitle" data-fmt="signerTitle"></div>
             <div class="field"><label for="fmSigner">성명</label><input id="fmSigner" data-fmt="signerName"></div>
+          </div>
+
+          <h3 class="fmt-h">워터마크</h3>
+          <div class="seg" id="wmSeg" role="radiogroup" aria-label="워터마크 진하기">
+            <label><input type="radio" name="wmChoice" value="navy" checked><span>네이비 40%</span></label>
+            <label><input type="radio" name="wmChoice" value="slate"><span>회청 35%</span></label>
+            <label><input type="radio" name="wmChoice" value="ink"><span>먹색 30%</span></label>
+            <label><input type="radio" name="wmChoice" value="none"><span>없음</span></label>
           </div>
 
           <h3 class="fmt-h">문서 번호</h3>
