@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>전자명함 디자인 시안 5종 · 박재용 목사님</title>
+<meta name="description" content="박재용 목사님 모바일 전자명함 디자인 시안 5종. 넘겨 보시고 마음에 드는 안을 골라 주세요.">
+<meta name="theme-color" content="#EFECE3">
+<meta property="og:title" content="전자명함 디자인 시안 5종">
+<meta property="og:description" content="클래식 세리프 · 모던 미니멀 · 딥그린 · 라인 프레임 · 컬러 블록">
+<meta property="og:url" content="https://aichurchsystem.github.io/Church/card/designs/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231B3A31'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-size='24' fill='%23F4F1E8' text-anchor='middle'%3EGV%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#EFECE3;
+    --card:#FCFBF7;
+    --ink:#1E211C;
+    --ink2:#454B41;
+    --mute:#7C8278;
+    --hair:#DED9CB;
+    --green:#1B3A31;
+    --serif:"Nanum Myeongjo","Noto Serif KR","Apple SD Gothic Neo",serif;
+    --sans:"Pretendard","Apple SD Gothic Neo",system-ui,-apple-system,"Malgun Gothic",sans-serif;
+    --lat:Georgia,"Times New Roman",serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    min-height:100svh;background:
+      radial-gradient(90% 60% at 50% 0%, #F7F5EF 0%, #EFECE3 48%, #E7E3D7 100%);
+    color:var(--ink);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    padding:19px 0 calc(22px + env(safe-area-inset-bottom));
+    overflow-x:hidden;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:0 20px}
+
+  header.top{text-align:center;padding:4px 0 0}
+  .kicker{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--lat);font-size:10px;letter-spacing:.3em;color:#8A8168;text-transform:uppercase;
+  }
+  .kicker i{display:block;width:16px;height:1px;background:#C6BC9E}
+  h1{
+    margin:12px 0 0;font-family:var(--serif);font-weight:700;font-size:26px;letter-spacing:-.01em;line-height:1.3;
+  }
+  .sub{margin:8px 0 0;font-size:12.5px;line-height:1.6;color:var(--ink2)}
+  .sub b{font-weight:600;color:var(--green)}
+
+  /* 번호 선택 */
+  .chips{display:flex;justify-content:center;gap:7px;margin-top:14px;flex-wrap:wrap}
+  .chip{
+    appearance:none;border:1px solid var(--hair);background:#fff;color:var(--ink2);
+    font-family:var(--lat);font-size:11px;letter-spacing:.06em;
+    width:32px;height:32px;border-radius:50%;cursor:pointer;
+    display:grid;place-items:center;transition:all .18s ease;
+  }
+  .chip[aria-current="true"]{background:var(--green);border-color:var(--green);color:#F6F3EA}
+
+  /* 캐러셀 */
+  .stage{margin-top:14px;position:relative}
+  .track{
+    display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
+    scrollbar-width:none;-ms-overflow-style:none;
+    gap:0;
+  }
+  .track::-webkit-scrollbar{display:none}
+  .slide{
+    flex:0 0 100%;scroll-snap-align:center;
+    display:flex;flex-direction:column;align-items:center;
+    padding:0 2px;
+  }
+
+  .phone{
+    position:relative;height:min(56vh,600px);width:auto;max-width:100%;
+    display:flex;border-radius:26px;background:#141614;padding:6px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.35) inset,
+      0 2px 4px rgba(30,33,28,.18),
+      0 20px 40px -18px rgba(30,33,28,.5),
+      0 40px 70px -40px rgba(30,33,28,.45);
+    overflow:hidden;
+  }
+  .phone::after{
+    content:"";position:absolute;left:50%;top:6px;transform:translateX(-50%);
+    width:66px;height:13px;border-radius:0 0 9px 9px;background:#141614;z-index:3;
+  }
+  .screen{
+    position:relative;height:100%;aspect-ratio:390/844;width:auto;flex:0 0 auto;
+    overflow:hidden;border-radius:21px;background:#fff;
+  }
+  .screen iframe{
+    width:390px;height:844px;border:0;display:block;
+    transform-origin:top left;position:absolute;left:0;top:0;
+  }
+  @media (max-height:740px){ .phone{height:44vh} }
+
+  .cap{margin:0 0 12px;text-align:center;max-width:340px}
+  .cap .no{
+    font-family:var(--lat);font-size:9.5px;letter-spacing:.26em;color:#A99E82;text-transform:uppercase;
+  }
+  .cap h2{margin:4px 0 0;font-family:var(--serif);font-weight:700;font-size:17px;letter-spacing:.01em;line-height:1.3}
+  .cap p{margin:5px 0 0;font-size:11.5px;line-height:1.6;color:var(--mute);word-break:keep-all}
+
+  .open{
+    display:inline-flex;align-items:center;gap:7px;margin-top:12px;
+    height:40px;padding:0 18px;border-radius:999px;
+    background:var(--green);color:#F7F4EB;text-decoration:none;
+    font-size:12.5px;letter-spacing:.02em;font-weight:600;
+    box-shadow:0 8px 18px -10px rgba(27,58,49,.9);
+  }
+  .open svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+  /* 컨트롤 */
+  .controls{display:none;align-items:center;justify-content:center;gap:14px;margin-top:14px}
+  @media (min-width:521px){ .controls{display:flex} }
+  .arrow{
+    appearance:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--hair);background:#fff;
+    display:grid;place-items:center;cursor:pointer;color:var(--ink2);
+  }
+  .arrow:disabled{opacity:.35;cursor:default}
+  .arrow svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .dots{display:flex;gap:7px}
+  .dot{width:6px;height:6px;border-radius:50%;background:#CFC8B6;border:0;padding:0;cursor:pointer}
+  .dot[aria-current="true"]{background:var(--green);width:18px;border-radius:3px}
+
+  footer.note{
+    margin:18px auto 0;padding:14px 16px;background:#fff;border:1px solid var(--hair);
+    max-width:420px;
+  }
+  footer.note p{margin:0;font-size:11.5px;line-height:1.7;color:var(--mute);word-break:keep-all}
+  footer.note b{color:var(--ink2);font-weight:600}
+
+  @media (max-width:360px){
+    h1{font-size:23px}
+    .sub{font-size:12.5px}
+  }
+  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="kicker"><i></i>Global Vision Church<i></i></span>
+    <h1>전자명함 디자인 시안 5종</h1>
+    <p class="sub">옆으로 넘겨 보시고 <b>마음에 드는 안</b>을 골라 주세요.<br>어느 안이든 연락처 저장·전화·지도·QR이 똑같이 동작합니다.</p>
+    <div class="chips" role="tablist" aria-label="시안 선택">
+      <button class="chip" role="tab" data-go="0" aria-current="true">01</button>
+      <button class="chip" role="tab" data-go="1">02</button>
+      <button class="chip" role="tab" data-go="2">03</button>
+      <button class="chip" role="tab" data-go="3">04</button>
+      <button class="chip" role="tab" data-go="4">05</button>
+    </div>
+  </header>
+
+  <div class="stage">
+    <div class="track" id="track">
+
+      <div class="slide">
+        <div class="cap">
+          <span class="no">Design 01 · 격식 · 전통</span>
+          <h2>클래식 세리프</h2>
+          <p>크림색 종이와 금색 이중 테두리, 명조체. 종이 명함을 그대로 손에 쥔 느낌의 격식 있는 안.</p>
+        </div>
+        <div class="phone"><div class="screen"><iframe src="../v1/" title="시안 1 클래식 세리프" loading="lazy"></iframe></div></div>
+        <a class="open" href="../v1/">바로 열기 <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12.5 6 6 6-6 6"/></svg></a>
+      </div>
+
+      <div class="slide">
+        <div class="cap">
+          <span class="no">Design 02 · 단정 · 현대적</span>
+          <h2>모던 미니멀</h2>
+          <p>흰 바탕에 검정 타이포만. 큰 이름과 얇은 선, 넉넉한 여백으로 정돈한 안.</p>
+        </div>
+        <div class="phone"><div class="screen"><iframe src="../v2/" title="시안 2 모던 미니멀" loading="lazy"></iframe></div></div>
+        <a class="open" href="../v2/">바로 열기 <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12.5 6 6 6-6 6"/></svg></a>
+      </div>
+
+      <div class="slide">
+        <div class="cap">
+          <span class="no">Design 03 · 차분 · 깊이</span>
+          <h2>딥그린</h2>
+          <p>어두운 초록 바탕에 은은한 빛과 질감. 사진을 올린 듯한 깊이로 이름을 띄운 안.</p>
+        </div>
+        <div class="phone"><div class="screen"><iframe src="../v3/" title="시안 3 딥그린" loading="lazy"></iframe></div></div>
+        <a class="open" href="../v3/">바로 열기 <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12.5 6 6 6-6 6"/></svg></a>
+      </div>
+
+      <div class="slide">
+        <div class="cap">
+          <span class="no">Design 04 · 입체 · 정갈</span>
+          <h2>라인 프레임 카드</h2>
+          <p>명함 비율 카드가 화면에 떠 있는 구성. 앞면에 이름과 QR, 뒷면에 연락처를 담았습니다.</p>
+        </div>
+        <div class="phone"><div class="screen"><iframe src="../v4/" title="시안 4 라인 프레임 카드" loading="lazy"></iframe></div></div>
+        <a class="open" href="../v4/">바로 열기 <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12.5 6 6 6-6 6"/></svg></a>
+      </div>
+
+      <div class="slide">
+        <div class="cap">
+          <span class="no">Design 05 · 명확 · 실용</span>
+          <h2>컬러 블록</h2>
+          <p>위는 남색 블록에 이름, 아래는 흰 바탕에 아이콘과 연락처. 가장 빨리 읽히는 안.</p>
+        </div>
+        <div class="phone"><div class="screen"><iframe src="../v5/" title="시안 5 컬러 블록" loading="lazy"></iframe></div></div>
+        <a class="open" href="../v5/">바로 열기 <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12.5 6 6 6-6 6"/></svg></a>
+      </div>
+
+    </div>
+
+    <div class="controls">
+      <button class="arrow" id="prev" aria-label="이전 시안"><svg viewBox="0 0 24 24"><path d="M19 12H6"/><path d="m11.5 6-6 6 6 6"/></svg></button>
+      <div class="dots" id="dots" aria-hidden="true">
+        <button class="dot" data-go="0" aria-current="true"></button>
+        <button class="dot" data-go="1"></button>
+        <button class="dot" data-go="2"></button>
+        <button class="dot" data-go="3"></button>
+        <button class="dot" data-go="4"></button>
+      </div>
+      <button class="arrow" id="next" aria-label="다음 시안"><svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="m12.5 6 6 6-6 6"/></svg></button>
+    </div>
+  </div>
+
+  <footer class="note">
+    <p><b>기존에 보내 드린 명함</b>은 <a href="../" style="color:#1B3A31">/card/</a> 에 그대로 있습니다. 다섯 안 모두 휴대전화·교회 전화·팩스·이메일·주소가 같고, QR은 각 안의 주소로 연결됩니다.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var track = document.getElementById("track");
+  var slides = track.querySelectorAll(".slide");
+  var dots = document.querySelectorAll(".dot");
+  var chips = document.querySelectorAll(".chip");
+  var prev = document.getElementById("prev");
+  var next = document.getElementById("next");
+  var index = 0;
+
+  function setIndex(i){
+    index = Math.max(0, Math.min(slides.length - 1, i));
+    track.scrollTo({ left: index * track.clientWidth, behavior: "smooth" });
+    paint();
+  }
+  function paint(){
+    Array.prototype.forEach.call(dots, function(d, i){
+      if (i === index) d.setAttribute("aria-current", "true"); else d.removeAttribute("aria-current");
+    });
+    Array.prototype.forEach.call(chips, function(c, i){
+      if (i === index) c.setAttribute("aria-current", "true"); else c.removeAttribute("aria-current");
+    });
+    prev.disabled = index === 0;
+    next.disabled = index === slides.length - 1;
+  }
+  prev.addEventListener("click", function(){ setIndex(index - 1); });
+  next.addEventListener("click", function(){ setIndex(index + 1); });
+  Array.prototype.forEach.call(dots, function(d){
+    d.addEventListener("click", function(){ setIndex(+d.dataset.go); });
+  });
+  Array.prototype.forEach.call(chips, function(c){
+    c.addEventListener("click", function(){ setIndex(+c.dataset.go); });
+  });
+
+  var t;
+  track.addEventListener("scroll", function(){
+    clearTimeout(t);
+    t = setTimeout(function(){
+      var i = Math.round(track.scrollLeft / track.clientWidth);
+      if (i !== index) { index = i; paint(); }
+    }, 80);
+  }, { passive: true });
+
+  // 키보드 이동
+  document.addEventListener("keydown", function(e){
+    if (e.key === "ArrowRight") setIndex(index + 1);
+    if (e.key === "ArrowLeft") setIndex(index - 1);
+  });
+
+  // 미리보기 배율: 화면 크기에 맞춰 iframe을 정확히 채움
+  function fitScreens(){
+    Array.prototype.forEach.call(document.querySelectorAll(".screen"), function(sc){
+      var f = sc.querySelector("iframe");
+      if (!f) return;
+      var w = sc.clientWidth, h = sc.clientHeight;
+      if (!w || !h) return;
+      var s = w / 390;
+      f.style.height = Math.ceil(h / s) + "px";
+      f.style.transform = "scale(" + s + ")";
+    });
+  }
+
+  paint();
+  fitScreens();
+  window.addEventListener("load", fitScreens);
+  window.addEventListener("resize", function(){
+    fitScreens();
+    track.scrollTo({ left: index * track.clientWidth });
+  });
+})();
+</script>
+</body>
+</html>

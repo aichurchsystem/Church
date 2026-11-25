@@ -1,0 +1,15 @@
+BEGIN:VCARD
+VERSION:3.0
+N:박;재용;;;
+FN:박재용
+ORG:글로벌비전교회
+TITLE:담임목사
+ROLE:Senior Pastor
+TEL;TYPE=CELL,VOICE:+821053283683
+TEL;TYPE=WORK,VOICE:+8224291318
+TEL;TYPE=WORK,FAX:+8224291319
+EMAIL;TYPE=WORK,INTERNET:pjy53283683@gmail.com
+ADR;TYPE=WORK:;;서울 광진구 구의강변로3가길 33 상가 2층;서울특별시;;;대한민국
+URL:https://aichurchsystem.github.io/Church/card/v3/
+NOTE:박재용 Th.D · 글로벌비전교회 담임목사
+END:VCARD
