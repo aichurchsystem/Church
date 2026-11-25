@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="증명서 발급">
-<link rel="stylesheet" href="assets/app.css?v=20">
+<link rel="stylesheet" href="assets/app.css?v=21">
 </head>
 <body>
 
@@ -131,6 +131,27 @@
 
             <div id="extraBox"></div>
 
+            <details class="adv" id="noticeBox">
+              <summary>노회 공문 연결 · 문서번호 · 제목</summary>
+              <div class="adv-body">
+                <div class="field">
+                  <label for="fNotice">노회 공문</label>
+                  <select id="fNotice"><option value="">— 연결 안 함 —</option></select>
+                </div>
+                <div class="row2">
+                  <div class="field">
+                    <label for="fDocNo">문서번호</label>
+                    <input id="fDocNo" placeholder="예: 서울강동 제1102603-16호">
+                  </div>
+                  <div class="field">
+                    <label for="fTitle">제목</label>
+                    <input id="fTitle" placeholder="예: 제87회(111) 4월 정기노회 소집 건">
+                  </div>
+                </div>
+                <p class="hint">공문을 고르면 문서번호·제목이 그 공문 값으로 들어가고, 발급대장에 공문번호가 함께 기록됩니다.</p>
+              </div>
+            </details>
+
             <div class="field">
               <label for="fDate">발급일</label>
               <input id="fDate" type="date">
@@ -140,14 +161,14 @@
               <summary>증명서 번호 · Internet No.</summary>
               <div class="adv-body">
                 <div class="field">
-                  <label for="fNo">증명서 번호</label>
-                  <input id="fNo" placeholder="노회(증) 제26-00001호">
+                  <label for="fNo">발급번호 (자동)</label>
+                  <input id="fNo" placeholder="제2026-001호" readonly>
                 </div>
                 <div class="field">
                   <label for="fInet">Internet No.</label>
                   <input id="fInet" placeholder="자동 생성">
                 </div>
-                <p class="hint">증명서 번호는 발급할 때마다 자동으로 올라가고, Internet No.는 자동으로 만들어집니다. 필요하면 고쳐 쓰세요.</p>
+                <p class="hint">발급번호는 드라이브 발급대장과 이어서 자동으로 올라갑니다. 규칙(접두어·시작번호·자릿수)은 관리자 › 발급번호 설정에서 바꿉니다. Internet No.는 필요하면 고쳐 쓰세요.</p>
               </div>
             </details>
 
@@ -172,6 +193,8 @@
             <button type="button" class="btn" id="btnPdf">PDF 저장</button>
             <button type="button" class="btn" id="btnPng">이미지 저장</button>
           </div>
+          <p class="cloud-chip" id="cloudChip" hidden></p>
+          <p class="cloud-hint">발급하면 이 지면이 JPG로 목사님 드라이브 <b>certificate-app › 발급증명서</b>에 저절로 저장되고, 발급대장에 한 줄 남습니다.</p>
         </div>
 
         <div class="preview-card">
@@ -250,17 +273,27 @@
     <section class="view" id="view-history" hidden>
       <div class="card history">
         <div class="card-head">
-          <h2>발급 이력 <span class="cnt" id="hCnt">0건</span></h2>
-          <button type="button" class="mini" id="csvBtn">CSV로 받기</button>
+          <h2>발급 이력 <span class="cnt" id="hCnt">—</span></h2>
+          <button type="button" class="mini" id="hXlsx">엑셀로 받기</button>
         </div>
 
         <div class="hfilter">
-          <input type="search" id="hSearch" placeholder="이름으로 찾기" enterkeyhint="search">
+          <input type="search" id="hSearch" placeholder="이름·제목·번호로 찾기" enterkeyhint="search">
           <select id="hType"><option value="">전체 종류</option></select>
-          <select id="hMonth"><option value="">전체 기간</option></select>
+          <select id="hPeriod">
+            <option value="all">전체 기간</option>
+            <option value="this">이번 달</option>
+            <option value="last">지난달</option>
+            <option value="custom">직접 지정</option>
+          </select>
+        </div>
+        <div class="hcustom" id="hCustom" hidden>
+          <input type="date" id="hFrom" aria-label="시작일"> <span>~</span> <input type="date" id="hTo" aria-label="끝일">
         </div>
 
+        <p class="hstate" id="hState" hidden></p>
         <div class="hlist" id="hList"></div>
+        <div class="hdetail" id="hDetail" hidden></div>
       </div>
     </section>
 
@@ -392,6 +425,29 @@
           <div class="fmt-actions">
             <button type="button" class="btn" id="peReset">기본 명단으로</button>
           </div>
+        </div>
+
+        <div class="card fmt">
+          <div class="card-head"><h2>드라이브 연결</h2></div>
+          <p class="hint" style="margin:-4px 2px 10px">발급할 때마다 JPG를 목사님 드라이브에 저장하고 발급 이력을 읽으려면 연결 키가 필요합니다. 키는 공개 저장소에 넣지 않고 <b>이 기기 브라우저에만</b> 저장됩니다.</p>
+          <p class="hint" id="apiKeyState" style="margin:0 2px 10px;color:#0e2442;font-weight:600">아직 연결하지 않았습니다</p>
+          <div class="field"><label for="apiKeyInput">연결 키 (40자)</label><input id="apiKeyInput" autocomplete="off" spellcheck="false" placeholder="붙여 넣기"></div>
+          <div class="fmt-actions">
+            <button type="button" class="btn primary" id="apiKeySave">연결 저장</button>
+            <button type="button" class="btn" id="apiKeyClear">연결 해제</button>
+          </div>
+        </div>
+
+        <div class="card fmt">
+          <div class="card-head"><h2>발급번호 설정</h2></div>
+          <p class="hint" style="margin:-4px 2px 10px">접두어·시작번호·자릿수를 정하면 발급할 때마다 번호가 하나씩 올라갑니다. 연도는 오늘 날짜의 연도가 들어가고, 해가 바뀌면 그 해 1번부터 새로 시작합니다.</p>
+          <div class="row2">
+            <div class="field"><label for="cfgPrefix">접두어</label><input id="cfgPrefix" placeholder="제"></div>
+            <div class="field"><label for="cfgStart">시작번호</label><input id="cfgStart" type="number" min="1" placeholder="1"></div>
+          </div>
+          <div class="field"><label for="cfgDigits">자릿수 <small class="hint-inline">(3이면 001)</small></label><input id="cfgDigits" type="number" min="1" max="6" placeholder="3"></div>
+          <p class="hint" id="noPreview" style="margin:2px 2px 10px">다음 번호: —</p>
+          <div class="fmt-actions"><button type="button" class="btn primary" id="cfgSave">번호 규칙 저장</button></div>
         </div>
 
         <div class="card fmt">
@@ -527,7 +583,7 @@
 
 <div class="toast" id="toast" hidden></div>
 
-<script src="vendor/html2canvas.min.js?v=20"></script>
-<script src="assets/app.js?v=20"></script>
+<script src="vendor/html2canvas.min.js?v=21"></script>
+<script src="assets/app.js?v=21"></script>
 </body>
 </html>

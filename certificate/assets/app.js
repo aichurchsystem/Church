@@ -69,7 +69,8 @@
     pNote1: $('pNote1'), pNote2: $('pNote2'), pInet: $('pInet'), pPhoto: $('pPhoto'),
     pFrom: $('pFrom'), pTo: $('pTo'), pFromRow: $('pFromRow'), pToRow: $('pToRow'),
     sealSlots: $('sealSlots'), sealSlotsAdmin: $('sealSlotsAdmin'),
-    hList: $('hList'), hCnt: $('hCnt'), hSearch: $('hSearch'), hMonth: $('hMonth'), hType: $('hType'),
+    hList: $('hList'), hCnt: $('hCnt'), hSearch: $('hSearch'), hType: $('hType'), hPeriod: $('hPeriod'),
+    hState: $('hState'), noticeSel: $('fNotice'),
     toast: $('toast'), tabDot: $('tabDot'), actionBar: $('actionBar')
   };
 
@@ -353,7 +354,7 @@
       representative: (p && p.representative) || DEFAULTS.representative,
       address: (p && p.address) || DEFAULTS.address,
       sender: '서울강동노회', recipient: '',
-      date: iso, no: '', inet: makeInet(),
+      date: iso, no: '', inet: makeInet(), docNo: '', title: '', noticeId: '',
       noEdited: false, inetEdited: false,
       sealsOn: true,
       extras: {}, bodies: {}, fmt: defaultFmt()
@@ -762,7 +763,12 @@
     });
   }
 
-  function render() { renderForm(); renderPaper(); }
+  function render() {
+    if ($('fDocNo') && document.activeElement !== $('fDocNo')) $('fDocNo').value = state.docNo || '';
+    if ($('fTitle') && document.activeElement !== $('fTitle')) $('fTitle').value = state.title || '';
+    renderNoticeOptions();
+    renderForm(); renderPaper();
+  }
 
   function typeNameOf(id) {
     var t = TYPE_BY_ID[id];
@@ -1014,62 +1020,6 @@
     return true;
   }
 
-  function renderHistory() {
-    var list = loadHistory();
-    var q = normalize(el.hSearch.value);
-    var curType = el.hType.value, curMonth = el.hMonth.value;
-
-    var typesInList = {};
-    list.forEach(function (h) { typesInList[typeNameOf(h.typeId) || h.type] = true; });
-    el.hType.innerHTML = '<option value="">전체 종류</option>' +
-      Object.keys(typesInList).map(function (n) { return '<option value="' + esc(n) + '">' + esc(n) + '</option>'; }).join('');
-    el.hType.value = typesInList[curType] ? curType : '';
-
-    var months = {};
-    list.forEach(function (h) {
-      var d = new Date(h.at);
-      months[d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2)] = true;
-    });
-    el.hMonth.innerHTML = '<option value="">전체 기간</option>' + Object.keys(months).sort().reverse().map(function (k) {
-      var p = k.split('-');
-      return '<option value="' + k + '">' + p[0] + '년 ' + (+p[1]) + '월</option>';
-    }).join('');
-    el.hMonth.value = months[curMonth] ? curMonth : '';
-
-    var rows = list.filter(function (h) {
-      if (el.hType.value && (typeNameOf(h.typeId) || h.type) !== el.hType.value) return false;
-      if (el.hMonth.value) {
-        var d = new Date(h.at);
-        var k = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2);
-        if (k !== el.hMonth.value) return false;
-      }
-      if (q && normalize(h.name).indexOf(q) < 0) return false;
-      return true;
-    });
-
-    el.hCnt.textContent = rows.length + '건';
-    el.tabDot.hidden = list.length === 0;
-    el.tabDot.textContent = list.length > 99 ? '99+' : String(list.length);
-
-    if (!rows.length) {
-      el.hList.innerHTML = '<p class="empty">' + (list.length ?
-        '조건에 맞는 발급 기록이 없습니다.' :
-        '아직 발급한 증명서가 없습니다.<br>발급하기에서 인쇄·PDF·이미지로 받으면 여기에 쌓입니다.') + '</p>';
-      return;
-    }
-
-    el.hList.innerHTML = rows.map(function (h) {
-      return '<div class="hitem" data-id="' + h.id + '">' +
-        '<div class="who"><b>' + esc(h.name) + ' <em class="badge">' + esc(typeNameOf(h.typeId) || h.type) + '</em></b>' +
-        '<small>' + esc(h.no) + ' · ' + esc(h.church || '') +
-        (h.date ? ' · 발급일 ' + esc(fmtDate(h.date)) : '') +
-        (h.recipient ? ' · 수신 ' + esc(h.recipient) : '') + '</small></div>' +
-        '<div class="when">' + fmtStamp(h.at) + '</div>' +
-        '<button type="button" class="del" data-del="' + h.id + '" aria-label="기록 삭제">✕</button>' +
-        '</div>';
-    }).join('');
-  }
-
   function loadFromHistory(id) {
     var h = loadHistory().filter(function (x) { return x.id === id; })[0];
     if (!h) return;
@@ -1119,6 +1069,348 @@
     return true;
   }
 
+  /* ================================================================ 드라이브 연결
+     발급할 때마다 지면을 JPG로 만들어 목사님 드라이브에 저장하고 발급대장에 한 줄 남긴다.
+     - 연결 키(40자)는 저장소에 넣지 않고 이 기기(localStorage)에만 둔다.
+     - 발급은 화면을 막지 않고 뒤에서 한다. 실패하면 큐에 넣고 다시 보낸다. */
+  var KV_KEY = 'cert.v1.key';
+  var KV_QUEUE = 'cert.drive.pending';
+  var API_URL = 'https://script.google.com/macros/s/AKfycbyL7uvAFlx1Vgk2-WC8G3dDIGMRzpvqoqb90BVKe64DMd7qAdzNGqF4v-7-EKMQi0yP/exec';
+
+  function apiKey() { try { return String(localStorage.getItem(KV_KEY) || '').trim(); } catch (e) { return ''; } }
+  function setApiKey(k) { try { localStorage.setItem(KV_KEY, String(k || '').trim()); } catch (e) {} }
+
+  function apiGet(params) {
+    var q = Object.keys(params).map(function (k) {
+      return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+    }).join('&');
+    return fetch(API_URL + '?key=' + encodeURIComponent(apiKey()) + '&' + q, { cache: 'no-store' })
+      .then(function (r) { return r.json(); });
+  }
+
+  function apiPost(payload) {
+    var body = Object.assign({ key: apiKey() }, payload);
+    return fetch(API_URL, {
+      method: 'POST', cache: 'no-store',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(body)
+    }).then(function (r) { return r.json(); });
+  }
+
+  /* ---------------------------------------------------------- 발급 상태 표시 */
+  function chip(kind, text, retry) {
+    var c = $('cloudChip');
+    if (!c) return;
+    c.hidden = !text;
+    c.className = 'cloud-chip' + (kind ? ' ' + kind : '');
+    c.innerHTML = '<span class="dot"></span><span class="t">' + esc(text) + '</span>';
+    if (retry) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'mini'; b.textContent = '다시 시도';
+      b.addEventListener('click', function () { flushQueue(true); });
+      c.appendChild(b);
+    }
+  }
+
+  function pendingCount() { return (loadJSON(KV_QUEUE, []) || []).length; }
+  function pendingChip() {
+    var n = pendingCount();
+    if (!n) return;
+    chip('warn', '저장 대기 ' + n + '건 — 인터넷이 되면 자동으로 다시 보냅니다', true);
+  }
+
+  function blobsToBase64(blob) {
+    return new Promise(function (res, rej) {
+      var r = new FileReader();
+      r.onload = function () { res(String(r.result).split(',')[1] || ''); };
+      r.onerror = function () { rej(new Error('이미지를 읽지 못했습니다.')); };
+      r.readAsDataURL(blob);
+    });
+  }
+
+  /* 지면을 150dpi 정도의 JPG로 (1MB 이하로 줄인다) */
+  function paperJpeg() {
+    return paperCanvas().then(function (canvas) {
+      function make(scale, q) {
+        var w = Math.round(canvas.width * scale), h = Math.round(canvas.height * scale);
+        var c2 = document.createElement('canvas');
+        c2.width = w; c2.height = h;
+        c2.getContext('2d').drawImage(canvas, 0, 0, w, h);
+        return new Promise(function (res) { c2.toBlob(res, 'image/jpeg', q); });
+      }
+      return make(0.62, 0.92).then(function (b) {
+        if (b && b.size <= 1000 * 1024) return b;
+        return make(0.5, 0.86).then(function (b2) { return (b2 && b2.size < b.size) ? b2 : b; });
+      });
+    });
+  }
+
+  function ledgerMeta() {
+    var def = currentDef();
+    var notice = noticeById(state.noticeId);
+    return {
+      certType: typeText(def).title || def.name,
+      personName: def.kind === 'church' ? state.representative : state.name,
+      birth: state.birth || '',
+      church: state.church || '',
+      position: state.position || '',
+      issueDate: state.date || todayISO(),
+      docNo: notice ? String(notice.no || '') : String(state.docNo || ''),
+      title: String(state.title || '') || (notice ? String(notice.title || '') : (typeText(def).title || def.name)),
+      noticeNo: notice ? String(notice.no || '') : ''
+    };
+  }
+
+  var issuing = false;
+  function cloudIssue() {
+    if (!apiKey()) {
+      chip('warn', '드라이브 연결 키가 없어 저장하지 못했습니다 · 관리자 > 드라이브 연결');
+      return;
+    }
+    if (issuing) return;
+    issuing = true;
+    var meta = ledgerMeta();
+    chip('busy', '드라이브 저장 중…');
+    paperJpeg().then(function (blob) {
+      if (!blob) throw new Error('이미지를 만들지 못했습니다.');
+      return blobsToBase64(blob).then(function (b64) {
+        return apiPost(Object.assign({ action: 'issue', certNo: state.no, dataBase64: b64, mimeType: 'image/jpeg' }, meta));
+      });
+    }).then(function (r) {
+      issuing = false;
+      if (!r || !r.ok) throw new Error((r && r.error) || '저장하지 못했습니다.');
+      if (r.no && r.no !== state.no) { state.no = r.no; saveState(); renderPaper(); }
+      chip('ok', '드라이브 저장됨 · ' + r.no);
+      refreshNextNo();
+      if (pendingCount()) flushQueue();
+    }).catch(function (e) {
+      issuing = false;
+      console.error(e);
+      var list = loadJSON(KV_QUEUE, []) || [];
+      if (list.length < 5) {
+        paperJpeg().then(function (blob) {
+          return blobsToBase64(blob).then(function (b64) {
+            list.push(Object.assign({ certNo: state.no, dataBase64: b64, mimeType: 'image/jpeg', ts: Date.now() }, meta));
+            localStorage.setItem(KV_QUEUE, JSON.stringify(list));
+          });
+        }).catch(function () {}).then(function () {
+          chip('warn', '저장 안 됨 — ' + (e.message || '연결 실패') + ' (대기 ' + pendingCount() + '건)', true);
+        });
+      } else {
+        chip('warn', '저장 안 됨 — ' + (e.message || '연결 실패'), true);
+      }
+    });
+  }
+
+  function flushQueue(force) {
+    var list = loadJSON(KV_QUEUE, []) || [];
+    if (!list.length) { toast('저장 대기 중인 발급이 없습니다.'); return Promise.resolve(); }
+    if (!apiKey()) return Promise.resolve();
+    if (!navigator.onLine && !force) return Promise.resolve();
+    chip('busy', '저장 대기 ' + list.length + '건 보내는 중…');
+    var left = [];
+    return list.reduce(function (p, item) {
+      return p.then(function () {
+        return apiPost(Object.assign({ action: 'issue' }, item)).then(function (r) {
+          if (!r || !r.ok) left.push(item);
+        }).catch(function () { left.push(item); });
+      });
+    }, Promise.resolve()).then(function () {
+      localStorage.setItem(KV_QUEUE, JSON.stringify(left));
+      if (left.length) chip('warn', '저장 대기 ' + left.length + '건 — 다시 시도해 주세요', true);
+      else { chip('ok', '드라이브 저장됨'); toast('대기 중이던 발급을 드라이브에 저장했습니다.'); }
+    });
+  }
+
+  /* ---------------------------------------------------------- 번호·공문 목록 */
+  function refreshNextNo() {
+    if (!apiKey()) return Promise.resolve();
+    return apiGet({ action: 'next-no' }).then(function (r) {
+      if (r && r.ok && r.no && !pendingCount()) {
+        state.no = r.no; state.serverNo = r.no; saveState();
+        if (el.no) el.no.value = r.no;
+        renderPaper();
+      }
+    }).catch(function () {});
+  }
+
+  var NOTICES = [];
+  function noticeById(id) {
+    if (!id) return null;
+    return NOTICES.filter(function (n) { return n.id === id; })[0] || null;
+  }
+  function loadNotices() {
+    if (!apiKey()) return Promise.resolve([]);
+    return apiGet({ action: 'notice-list' }).then(function (r) {
+      NOTICES = (r && r.ok && r.items) ? r.items : [];
+      renderNoticeOptions();
+      return NOTICES;
+    }).catch(function () { NOTICES = []; renderNoticeOptions(); return []; });
+  }
+  function renderNoticeOptions() {
+    var sel = el.noticeSel;
+    if (!sel) return;
+    var cur = state.noticeId || '';
+    sel.innerHTML = '<option value="">— 연결 안 함 —</option>' + NOTICES.map(function (n) {
+      return '<option value="' + esc(n.id) + '">' + esc(n.no) + ' · ' + esc(String(n.title || '').slice(0, 28)) + '</option>';
+    }).join('');
+    sel.value = noticeById(cur) ? cur : '';
+  }
+
+  /* --------------------------------------------------------------- 발급 이력 */
+  var HROWS = [], HXLSX = '';
+
+  function periodRange() {
+    var p = el.hPeriod ? el.hPeriod.value : 'all';
+    var d = new Date(), y = d.getFullYear(), m = d.getMonth();
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    var lastDay = function (yy, mm) { return new Date(yy, mm + 1, 0).getDate(); };
+    if (p === 'this') return { from: y + '-' + pad(m + 1) + '-01', to: y + '-' + pad(m + 1) + '-' + pad(lastDay(y, m)) };
+    if (p === 'last') {
+      var ly = m === 0 ? y - 1 : y, lm = m === 0 ? 11 : m - 1;
+      return { from: ly + '-' + pad(lm + 1) + '-01', to: ly + '-' + pad(lm + 1) + '-' + pad(lastDay(ly, lm)) };
+    }
+    if (p === 'custom') return { from: $('hFrom').value || '', to: $('hTo').value || '' };
+    return { from: '', to: '' };
+  }
+
+  function renderHistory() {
+    if (!el.hList) return;
+    if (!apiKey()) {
+      el.hCnt.textContent = '—';
+      el.hList.innerHTML = '<p class="empty">드라이브에 연결하면 발급 이력이 여기에 나옵니다.<br>관리자 › 드라이브 연결에서 연결 키를 넣어 주세요.</p>';
+      if (el.hState) el.hState.textContent = '';
+      return;
+    }
+    if (el.hState) { el.hState.textContent = '불러오는 중…'; el.hState.hidden = false; }
+    var rg = periodRange();
+    var params = { action: 'list', limit: 200 };
+    if (el.hSearch.value.trim()) params.q = el.hSearch.value.trim();
+    if (el.hType.value) params.type = el.hType.value;
+    if (rg.from) params.from = rg.from;
+    if (rg.to) params.to = rg.to;
+    apiGet(params).then(function (r) {
+      if (!r || !r.ok) throw new Error((r && r.error) || '불러오지 못했습니다.');
+      HROWS = r.items || [];
+      HXLSX = r.xlsxUrl || '';
+      if (el.hState) el.hState.hidden = true;
+      el.hCnt.textContent = (r.total != null ? r.total : HROWS.length) + '건';
+      if (!HROWS.length) {
+        el.hList.innerHTML = '<p class="empty">조건에 맞는 발급 기록이 없습니다.</p>';
+        return;
+      }
+      el.hList.innerHTML = HROWS.map(function (h, i) {
+        var id = h['파일ID'] || '';
+        var thumb = id ? '<img class="hthumb" loading="lazy" src="https://drive.google.com/thumbnail?id=' + encodeURIComponent(id) + '&sz=w200" alt="" onerror="this.classList.add(\'none\')">' : '<span class="hthumb ph">JPG</span>';
+        return '<button type="button" class="hitem" data-i="' + i + '">' + thumb +
+          '<span class="hmain"><b>' + esc(h['이름']) + '</b>' +
+          '<em>' + esc(h['증명서종류']) + '</em>' +
+          '<small>' + esc(h['발급일자'] || h['발급일시'] || '') + ' · ' + esc(h['자체번호'] || '') + '</small>' +
+          (h['노회공문번호'] ? '<small class="notice">공문 ' + esc(h['노회공문번호']) + '</small>' : '') +
+          (h['제목'] ? '<small class="ttl">' + esc(String(h['제목']).slice(0, 40)) + '</small>' : '') +
+          '</span></button>';
+      }).join('');
+    }).catch(function (e) {
+      HROWS = [];
+      el.hCnt.textContent = '—';
+      if (el.hState) { el.hState.hidden = false; el.hState.className = 'hstate bad'; el.hState.textContent = '불러오지 못했습니다 · ' + (e.message || '연결 실패'); }
+      el.hList.innerHTML = '<p class="empty">불러오지 못했습니다.<br><button type="button" class="mini" id="hRetry">다시 시도</button></p>';
+      var b = $('hRetry');
+      if (b) b.addEventListener('click', renderHistory);
+    });
+  }
+
+  function openHistoryItem(i) {
+    var h = HROWS[i]; if (!h) return;
+    var box = $('hDetail'); if (!box) return;
+    box.hidden = false;
+    box.innerHTML = '<div class="hdb"><div class="hdb-head"><b>' + esc(h['이름']) + '</b>' +
+      '<button type="button" class="mini" id="hClose">닫기</button></div>' +
+      '<p class="hdb-meta">' + esc(h['증명서종류']) + ' · ' + esc(h['자체번호'] || '') + ' · ' + esc(h['발급일자'] || '') +
+      (h['문서번호'] ? '<br>문서번호 ' + esc(h['문서번호']) : '') +
+      (h['노회공문번호'] ? '<br>노회 공문 ' + esc(h['노회공문번호']) : '') + '</p>' +
+      '<div class="hdb-img" id="hdbImg">불러오는 중…</div>' +
+      '<div class="hdb-acts"><a class="btn" target="_blank" rel="noopener" href="' + esc(h['파일링크'] || '#') + '">드라이브에서 열기</a>' +
+      '<button type="button" class="btn primary" id="hReissue">다시 발급</button></div></div>';
+    $('hClose').addEventListener('click', function () { box.hidden = true; });
+    $('hReissue').addEventListener('click', function () {
+      state.typeId = typeIdByName(h['증명서종류']) || state.typeId;
+      state.name = h['이름'] || state.name;
+      state.birth = h['생년월일'] || '';
+      state.church = h['교회명'] || state.church;
+      state.position = h['직분'] || state.position;
+      state.docNo = h['문서번호'] || '';
+      state.title = h['제목'] || '';
+      var p = personByName(h['이름']);
+      state.personId = p ? p.id : '';
+      saveState(); render(); switchView('issue'); fitPreview();
+      toast('같은 사람·같은 종류로 발급 화면을 채웠습니다.');
+    });
+    if (h['파일ID']) {
+      apiPost({ action: 'file', id: h['파일ID'] }).then(function (r) {
+        if (!r || !r.ok) throw new Error('미리보기를 불러오지 못했습니다.');
+        $('hdbImg').innerHTML = '<img alt="발급한 증명서" src="data:' + (r.mimeType || 'image/jpeg') + ';base64,' + r.dataBase64 + '">';
+      }).catch(function (e) {
+        $('hdbImg').innerHTML = '<p class="empty">' + esc(e.message) + '</p>';
+      });
+    } else {
+      $('hdbImg').innerHTML = '<p class="empty">파일이 없습니다.</p>';
+    }
+  }
+
+  function typeIdByName(name) {
+    var hit = TYPES.filter(function (t) { return t.name === name; })[0];
+    return hit ? hit.id : '';
+  }
+
+  function downloadXlsx() {
+    if (!HXLSX) { toast('엑셀 주소를 아직 받지 못했습니다. 목록을 먼저 불러와 주세요.'); return; }
+    window.open(HXLSX, '_blank', 'noopener');
+    toast('엑셀 파일을 내려받습니다. (발급대장 전체)');
+  }
+
+  /* ------------------------------------------------------- 발급번호 설정(관리자) */
+  function loadNoConfig() {
+    if (!apiKey()) { if ($('noPreview')) $('noPreview').textContent = '드라이브 연결 키를 먼저 넣어 주세요.'; return; }
+    apiGet({ action: 'no-config' }).then(function (r) {
+      if (!r || !r.ok) throw new Error((r && r.error) || '불러오지 못했습니다.');
+      if ($('cfgPrefix')) $('cfgPrefix').value = r.cfg.noPrefix;
+      if ($('cfgStart')) $('cfgStart').value = r.cfg.noStart;
+      if ($('cfgDigits')) $('cfgDigits').value = r.cfg.noDigits;
+      if ($('noPreview')) $('noPreview').textContent = '다음 번호: ' + r.next;
+    }).catch(function (e) { if ($('noPreview')) $('noPreview').textContent = '불러오지 못했습니다 · ' + e.message; });
+  }
+
+  function saveNoConfig() {
+    if (!apiKey()) { toast('드라이브 연결 키를 먼저 넣어 주세요.'); return; }
+    if (!confirm('발급번호 규칙을 바꿉니다. 앞으로 발급되는 번호에 바로 적용됩니다.<br>저장할까요?'.replace(/<br>/g, '\n'))) return;
+    apiPost({ action: 'no-config-save', noPrefix: $('cfgPrefix').value, noStart: $('cfgStart').value, noDigits: $('cfgDigits').value })
+      .then(function (r) {
+        if (!r || !r.ok) throw new Error((r && r.error) || '저장하지 못했습니다.');
+        if ($('noPreview')) $('noPreview').textContent = '다음 번호: ' + r.next;
+        toast('발급번호 규칙을 저장했습니다. 다음 번호: ' + r.next);
+        refreshNextNo();
+      }).catch(function (e) { toast('저장하지 못했습니다 · ' + e.message); });
+  }
+
+  function saveApiKey() {
+    var v = String($('apiKeyInput').value || '').trim();
+    if (v.length < 20) { toast('연결 키가 너무 짧습니다. 40자짜리 키를 그대로 붙여 넣어 주세요.'); return; }
+    setApiKey(v);
+    toast('드라이브 연결을 저장했습니다.');
+    $('apiKeyInput').value = '';
+    $('apiKeyState').textContent = '연결됨 (키 ' + apiKey().slice(0, 4) + '…' + apiKey().slice(-4) + ')';
+    loadNoConfig(); refreshNextNo(); loadNotices(); renderHistory();
+  }
+
+  function cloudBoot() {
+    if ($('apiKeyState')) $('apiKeyState').textContent = apiKey() ? ('연결됨 (키 ' + apiKey().slice(0, 4) + '…' + apiKey().slice(-4) + ')') : '아직 연결하지 않았습니다';
+    if (!apiKey()) { pendingChip(); return; }
+    loadNoConfig(); refreshNextNo(); loadNotices();
+    if (navigator.onLine && pendingCount()) flushQueue();
+    window.addEventListener('online', function () { if (pendingCount()) flushQueue(); });
+  }
+
   /* ------------------------------------------------------------------ 받기 */
   /* 받은 뒤에는 다음 번호로 넘어간다(번호를 직접 고친 경우는 그대로 둠) */
   function advanceNo() {
@@ -1138,6 +1430,7 @@
       return;
     }
     recordIssue();
+    cloudIssue();
     window.print();
     advanceNo();
   }
@@ -1499,6 +1792,7 @@
           hint: '<b>저장</b>을 누르면 휴대폰의 <b>다운로드</b> 폴더에 들어갑니다. 아무 일도 없으면 <b>위 그림을 눌러 크게 띄운 뒤 손가락으로 길게 눌러</b> ‘이미지 저장’을 고르세요.'
         });
         recordIssue();
+        cloudIssue();
         advanceNo();
       }, 'image/png');
     }).catch(function (e) {
@@ -1534,6 +1828,7 @@
         hint: '<b>저장</b>을 누르면 휴대폰의 <b>다운로드</b> 폴더에 들어갑니다. 안 되면 <b>새 창에서 열기</b>로 크롬 PDF 화면을 띄운 뒤 <b>오른쪽 위 내려받기</b>를 누르세요.'
       });
       recordIssue();
+      cloudIssue();
       advanceNo();
     }).catch(function (e) {
       console.error(e);
@@ -1857,27 +2152,6 @@
       toast('입력을 초기화했습니다.');
     });
 
-    el.hSearch.addEventListener('input', renderHistory);
-    el.hMonth.addEventListener('change', renderHistory);
-    el.hType.addEventListener('change', renderHistory);
-
-    el.hList.addEventListener('click', function (e) {
-      var del = e.target.closest('[data-del]');
-      if (del) {
-        var id = del.dataset.del;
-        var row = loadHistory().filter(function (x) { return x.id === id; })[0];
-        if (!row) return;
-        if (!confirm('이 발급 기록을 지울까요?\n\n' + (typeNameOf(row.typeId) || row.type) + ' · ' + row.name + ' · ' + row.no)) return;
-        saveHistory(loadHistory().filter(function (x) { return x.id !== id; }));
-        renderHistory();
-        toast('기록을 지웠습니다.');
-        return;
-      }
-      var item = e.target.closest('.hitem');
-      if (item && item.dataset.id) loadFromHistory(item.dataset.id);
-    });
-
-    $('csvBtn').addEventListener('click', csvDownload);
     $('btnPrint').addEventListener('click', doPrint);
     $('btnPng').addEventListener('click', doPng);
     $('btnPdf').addEventListener('click', doPdf);
@@ -1933,6 +2207,36 @@
       deferred.userChoice.then(function () { deferred = null; $('installBtn').hidden = true; });
     });
     window.addEventListener('appinstalled', function () { $('installBtn').hidden = true; });
+
+    /* ---------------- 드라이브 연결·발급 이력·번호 설정 */
+    if ($('hXlsx')) $('hXlsx').addEventListener('click', downloadXlsx);
+    if (el.hSearch) el.hSearch.addEventListener('input', function () { clearTimeout(el.hSearch._t); el.hSearch._t = setTimeout(renderHistory, 320); });
+    if (el.hType) el.hType.addEventListener('change', renderHistory);
+    if (el.hPeriod) el.hPeriod.addEventListener('change', function () {
+      $('hCustom').hidden = el.hPeriod.value !== 'custom';
+      if (el.hPeriod.value !== 'custom') renderHistory();
+    });
+    ['hFrom', 'hTo'].forEach(function (id) {
+      if ($(id)) $(id).addEventListener('change', function () { if (el.hPeriod.value === 'custom') renderHistory(); });
+    });
+    if (el.hList) el.hList.addEventListener('click', function (e) {
+      var item = e.target.closest ? e.target.closest('.hitem') : null;
+      if (item) openHistoryItem(Number(item.dataset.i));
+    });
+    if (el.noticeSel) el.noticeSel.addEventListener('change', function () {
+      var n = noticeById(this.value);
+      state.noticeId = n ? n.id : '';
+      if (n) { state.docNo = n.no || ''; state.title = n.title || ''; }
+      saveState(); render();
+    });
+    if ($('fDocNo')) $('fDocNo').addEventListener('input', function () { state.docNo = this.value; saveState(); });
+    if ($('fTitle')) $('fTitle').addEventListener('input', function () { state.title = this.value; saveState(); });
+    if ($('cfgSave')) $('cfgSave').addEventListener('click', saveNoConfig);
+    if ($('apiKeySave')) $('apiKeySave').addEventListener('click', saveApiKey);
+    if ($('apiKeyClear')) $('apiKeyClear').addEventListener('click', function () {
+      if (!confirm('이 기기에서 드라이브 연결을 해제할까요? 저장된 발급은 드라이브에 그대로 있습니다.')) return;
+      setApiKey(''); $('apiKeyState').textContent = '아직 연결하지 않았습니다'; toast('연결을 해제했습니다.');
+    });
   }
 
   /* ------------------------------------------------------------------ 시작 */
@@ -1963,6 +2267,7 @@
       // 개척일·설립일처럼 명단에 있는 값을 빈 칸에 채운다
       fillExtrasFromPerson();
       renderHistory();
+      cloudBoot();
       renderFmtForm();
       renderPeopleList();
       renderPersonForm();
