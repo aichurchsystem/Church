@@ -63,6 +63,46 @@
       url: 'https://www.oecd.org/en/publications/health-at-a-glance-europe-2026_64707ff8-en/full-report/physical-activity-and-screen-time-among-children-and-adolescents_7679da85.html'
     },
     {
+      id: 'policy-mogef-ai-1388-2026',
+      cat: 'policy',
+      title: '성평등가족부, 위기청소년 AI 조기 발굴·1388 상담 연계 강화',
+      desc: '성평등가족부가 과기정통부와 함께 연말까지 SNS 속 위기 신호를 먼저 찾아내는 AI 발굴 체계를 구축하고, 청소년상담1388 온라인 상담원을 99명에서 115명으로 늘립니다. 정신건강복지센터·자살예방센터·가족센터를 청소년안전망 필수 연계기관으로 추가해 상담 이후 의료와 가족 회복 지원까지 잇고, 고위기 집중심리클리닉과 학교밖청소년 원스톱 지원도 확대합니다.',
+      source: '성평등가족부·한국경제 (2026-11-24)',
+      url: 'https://www.hankyung.com/article/2026112460101'
+    },
+    {
+      id: 'edu-moe-exam-smartdevice-2026',
+      cat: 'edu',
+      title: '교육부, 내신 스마트기기 부정행위 시 당일 전과목 0점·최대 퇴학 권고',
+      desc: '교육부가 고등학교 2학기 기말고사부터 스마트기기 활용 부정행위를 막기 위해 모든 전자기기 사전 수거, 타 교실 응시, 금속탐지기·통신신호 점검을 도입합니다. 스마트기기 소지나 사용이 적발되면 당일 모든 과목 성적을 0점 처리하고 최대 퇴학까지 징계하도록 기준을 강화하며, 6명 규모의 수능 부정행위 전담 대응팀도 본격 가동합니다.',
+      source: '교육부·KTV 국민방송 (2026-11-24)',
+      url: 'https://www.ktv.go.kr/news/major/view?content_id=764503'
+    },
+    {
+      id: 'edu-goe-40day-growth-2026',
+      cat: 'edu',
+      title: '경기도교육청, 수능 이후 고3 대상 ‘40일 성장 프로그램’ 운영 지원',
+      desc: '경기도교육청이 수능 이후 종업식까지 고3 학생들이 근로계약서 작성, 금융·전세사기 예방, 신용관리 등 실생활 법률·금융 교육을 받도록 지원합니다. 지자체·종교계·대학을 잇는 지역 협력 프로그램과 교과 융합 자료 ‘잇다 프로젝트’를 통해 건강관리와 자취생활, 진로 설계도 함께 다룹니다.',
+      source: '경기도교육청 (2026-11-23)',
+      url: 'https://www.goe.go.kr/goe/na/ntt/selectNttInfo.do?bbsId=1922&mi=10102&nttSn=2382457'
+    },
+    {
+      id: 'paper-cbe-ai-school-safety-2026',
+      cat: 'paper',
+      title: '충북교육청, AI 서·논술형 평가 협력과 CCTV 학교폭력 감지 모델 실증',
+      desc: '충북교육청이 서울·울산·충청권 교육청과 손잡고 AI 서·논술형 평가 공동 운영 및 교육부 AI 교수학습 공통모듈 시범 적용에 나섭니다. 행안부와 함께 기존 학교 CCTV 영상에서 단순 장난과 실제 폭력을 구분해 조기 개입하는 AI 감지 모델을 개발해 중학교 현장에서 실증하고 있습니다.',
+      source: '충북교육청·연합뉴스 (2026-11-23)',
+      url: 'https://www.yna.co.kr/view/AKR20261123078400064'
+    },
+    {
+      id: 'news-who-europe-youth-inequity-2026',
+      cat: 'news',
+      title: '세계보건기구(WHO), 유럽 아동·청소년 3,500만 명 건강 불평등 경고',
+      desc: 'WHO 유럽지역사무소 보고서에 따르면 유럽·중앙아시아 53개국 아동·청소년 약 3,500만 명이 빈곤과 교육·주거 격차 등 피할 수 있는 건강·사회적 불평등에 놓여 있습니다. 저소득 가정 청소년은 유년기부터 건강과 학업 기회가 뒤처지며 온·오프라인 괴롭힘의 영향도 크게 받아, WHO는 생애 초기 가족 지원과 무상 급식, 학교 괴롭힘 예방 프로그램 도입을 권고했습니다.',
+      source: 'WHO 유럽지역사무소·유로뉴스 (2026-11-24)',
+      url: 'https://www.euronews.com/2026/11/24/growing-health-inequalities-put-millions-of-european-children-at-risk-who-warns'
+    },
+    {
       id: 'benefit-sanitary-voucher-2026',
       cat: 'benefit',
       title: '여성청소년 생리용품 이용권, 12월 24일 신청·연말 사용 마감',
