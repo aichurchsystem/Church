@@ -1110,6 +1110,8 @@
         return;
       }
       if (!hit && people.length && el.nameHint) {
+        // 명단에 없는 이름이면 사진·연결을 끊어 다른 사람 사진이 찍히지 않게 한다
+        if (String(v || '').trim()) state.personId = '';
         el.nameHint.textContent = '명단에 있는 이름을 고르면 직분·생년월일·교회·주소가 저절로 채워집니다.';
         el.nameHint.classList.remove('on');
       }
