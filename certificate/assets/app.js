@@ -1548,9 +1548,11 @@
     Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (b) {
       b.classList.toggle('on', b.dataset.view === name);
     });
+    $('view-cover').hidden = name !== 'cover';
     $('view-issue').hidden = name !== 'issue';
     $('view-history').hidden = name !== 'history';
     $('view-format').hidden = name !== 'format';
+    document.body.classList.toggle('cover-mode', name === 'cover');
     el.actionBar.style.display = name === 'issue' ? '' : 'none';
     if (name === 'format') { renderFmtForm(); renderPeopleList(); renderSealSlots(); }
     if (name === 'issue') { renderPaper(); fitPreview(); }
@@ -1592,6 +1594,15 @@
     Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (b) {
       b.addEventListener('click', function () { switchView(b.dataset.view); });
     });
+
+    /* 표지 */
+    if ($('cvGo')) $('cvGo').addEventListener('click', function () { switchView('issue'); });
+    if ($('cvPeople')) $('cvPeople').addEventListener('click', function () {
+      switchView('format');
+      var card = $('peopleCard');
+      if (card && card.scrollIntoView) card.scrollIntoView({ block: 'start' });
+    });
+    if ($('coverBtn')) $('coverBtn').addEventListener('click', function () { switchView('cover'); });
 
     /* 발급 폼 */
     el.type.addEventListener('change', function () {
@@ -1956,8 +1967,26 @@
       renderPeopleList();
       renderPersonForm();
       fitPreview();
+      renderCoverTypes();
+      switchView('cover');
       registerSW();
     });
+  }
+
+  /* 표지에 적히는 증명서 종류 — 종류 목록(types.json)에서 그대로 만든다 */
+  function renderCoverTypes() {
+    var box = $('cvTypes');
+    if (!box || !TYPES.length) return;
+    var shortNames = {
+      'employment': '재직', 'membership': '소속', 'church-plant': '개척확인', 'church-found': '설립',
+      'assembly-attend': '노회 참석', 'dues': '노회비 납부', 'ordination': '목사 안수'
+    };
+    var names = TYPES.map(function (t) {
+      var n = shortNames[t.id] || String(t.name || '').replace(/\s*(증명서|확인서)$/, '').replace(/^교회\s*/, '');
+      return '<i>' + esc(n) + '</i>';
+    });
+    var half = Math.ceil(names.length / 2);
+    box.innerHTML = names.slice(0, half).join('<em>·</em>') + '<br>' + names.slice(half).join('<em>·</em>');
   }
 
   function fillExtrasFromPerson() {

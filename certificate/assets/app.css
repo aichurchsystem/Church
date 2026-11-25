@@ -555,3 +555,92 @@ body.exporting #paper{transform:none!important;box-shadow:none!important}
 .imgview .modal-bar{background:#111823}
 .imgview .modal-body{padding:0;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .imgview .modal-body img{display:block;width:100%;height:auto;background:#fff}
+
+/* ==========================================================================
+   표지(시작) 화면 — C안(남색 화면 전체) 바탕에 A안 머리글을 A안 크기 그대로,
+   그 아래에 '증명서 발급'을 주인공으로 둔다. 앱의 .band/.sheet/.brand/.note 와
+   겹치지 않게 모든 클래스에 cv- 접두어를 붙였다.
+   ========================================================================== */
+body.cover-mode{background:#0A1B33;padding-bottom:0}
+body.cover-mode .topbar,
+body.cover-mode .tabbar,
+body.cover-mode .actions{display:none!important}
+body.cover-mode main{padding:0;max-width:none;margin:0}
+#view-cover{
+  min-height:100vh;min-height:100dvh;color:#fff;
+  background:
+    radial-gradient(115% 75% at 8% -6%, #2A6E9E 0%, rgba(42,110,158,0) 55%),
+    radial-gradient(120% 90% at 100% 104%, #1B4A72 0%, rgba(27,74,114,0) 60%),
+    linear-gradient(170deg,#0C2138 0%,#0A1B33 55%,#071527 100%);
+}
+.cv-sheet{
+  position:relative;min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;
+  padding:calc(env(safe-area-inset-top) + 26px) 24px calc(env(safe-area-inset-bottom) + 14px);
+}
+/* 머리글 — A안 .band 안의 로고·교단명·노회명과 같은 크기 */
+.cv-head{display:flex;align-items:center;justify-content:center;gap:15px;flex:0 0 auto}
+.cv-mark{width:56px;height:56px;flex:0 0 auto;display:block;opacity:.98}
+.cv-org{display:flex;flex-direction:column;gap:3px;min-width:0}
+.cv-o1{font-size:16px;letter-spacing:1px;color:rgba(255,255,255,.80);font-weight:600;line-height:1.3;white-space:nowrap}
+.cv-o2{font-family:'Nanum Myeongjo Cert',serif;font-weight:700;font-size:25px;letter-spacing:3.5px;line-height:1.15;white-space:nowrap}
+.cv-rule{
+  flex:0 0 auto;margin:20px 4px 0;height:0;
+  border-top:2px solid rgba(46,123,184,.75);
+  border-bottom:1px solid rgba(138,198,232,.30);padding-bottom:2px;
+}
+/* 가운데 — '증명서 발급'이 주인공 */
+.cv-core{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.cv-core .cv-title{
+  margin:0;font-family:'Nanum Myeongjo Cert',serif;font-weight:700;
+  font-size:50px;line-height:1.12;letter-spacing:2px;color:#fff;
+}
+.cv-lede{margin:16px 0 0;font-size:17px;line-height:1.65;color:rgba(255,255,255,.74);letter-spacing:-.1px;word-break:keep-all}
+.cv-cta{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  width:100%;max-width:400px;min-height:64px;margin:30px 0 0;padding:0 20px 0 22px;
+  border:0;border-radius:18px;text-decoration:none;
+  background:linear-gradient(180deg,#9FD4EF 0%,#7BC0E6 100%);
+  color:#0A1B33;font-size:20px;font-weight:800;letter-spacing:-.2px;
+  box-shadow:0 16px 34px rgba(60,150,205,.30), inset 0 1px 0 rgba(255,255,255,.55);
+  transition:transform .1s ease,box-shadow .14s ease,filter .14s ease;
+}
+.cv-cta .go{width:22px;height:22px;flex:0 0 auto;opacity:.7}
+.cv-cta:active{transform:translateY(2px) scale(.995);filter:brightness(.9);
+  box-shadow:0 6px 14px rgba(60,150,205,.26), inset 0 1px 0 rgba(255,255,255,.4)}
+.cv-cta:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.cv-types{margin:16px 0 0;font-size:16px;line-height:1.75;color:rgba(255,255,255,.60);letter-spacing:-.1px}
+.cv-types i{font-style:normal;white-space:nowrap}
+.cv-types em{font-style:normal;color:rgba(255,255,255,.26);padding:0 4px}
+/* 아래 — 보조 링크와 연락처 */
+.cv-foot{flex:0 0 auto;text-align:center}
+.cv-link{
+  display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 12px;
+  border:0;background:none;border-radius:8px;
+  font-size:17px;font-weight:600;color:rgba(255,255,255,.88);
+}
+.cv-link:active{background:rgba(255,255,255,.08)}
+.cv-hair{height:1px;background:rgba(255,255,255,.14);margin:6px 0 11px}
+.cv-foot p{margin:0;font-size:16px;line-height:1.65;color:rgba(255,255,255,.62);letter-spacing:-.3px;white-space:nowrap}
+.cv-foot .d{display:inline-block;margin:0 7px;color:rgba(255,255,255,.3)}
+/* 발급 화면에서 표지로 돌아오는 작은 길 */
+.cv-backrow{margin:0 0 10px}
+.cv-back{
+  border:0;background:none;padding:6px 2px;font-size:14px;font-weight:600;color:var(--dim);
+  letter-spacing:-.1px;
+}
+.cv-back:active{color:var(--navy-2)}
+.cv-back:focus-visible{outline:2px solid var(--navy-2);outline-offset:2px;border-radius:6px}
+@media (max-height:680px){
+  .cv-sheet{padding-top:calc(env(safe-area-inset-top) + 18px)}
+  .cv-mark{width:50px;height:50px}
+  .cv-o2{font-size:23px}
+  .cv-rule{margin-top:14px}
+  .cv-core .cv-title{font-size:44px}
+  .cv-lede{margin-top:12px;font-size:16px;line-height:1.55}
+  .cv-cta{min-height:60px;margin-top:22px;font-size:19px}
+  .cv-types{margin-top:12px;line-height:1.65}
+}
+@media (prefers-reduced-motion:reduce){.cv-cta{transition:none}}
+/* 인쇄물에는 표지가 끼지 않는다 */
+@media print{#view-cover{display:none!important}}

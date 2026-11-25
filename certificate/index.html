@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="증명서 발급">
-<link rel="stylesheet" href="assets/app.css?v=18">
+<link rel="stylesheet" href="assets/app.css?v=19">
 </head>
 <body>
 
@@ -28,8 +28,43 @@
 
   <main>
 
+
+    <!-- ================= 표지 ================= -->
+    <section class="view" id="view-cover" hidden>
+      <div class="cv-sheet">
+        <header class="cv-head">
+          <img class="cv-mark" src="assets/logo-white.svg" alt="대한예수교장로회(백석) 엠블럼">
+          <div class="cv-org">
+            <span class="cv-o1">대한예수교장로회(백석)</span>
+            <span class="cv-o2">서울강동노회</span>
+          </div>
+        </header>
+        <i class="cv-rule" aria-hidden="true"></i>
+
+        <div class="cv-core">
+          <h2 class="cv-title">증명서 발급</h2>
+          <p class="cv-lede">노회가 발행하는 증명서를<br>이 자리에서 바로 뽑습니다</p>
+
+          <button type="button" class="cv-cta" id="cvGo">
+            <span>발급하기</span>
+            <svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6.5 18.5 12 13 17.5"/></svg>
+          </button>
+
+          <p class="cv-types" id="cvTypes"></p>
+        </div>
+
+        <footer class="cv-foot">
+          <button type="button" class="cv-link" id="cvPeople">교인 명단 관리</button>
+          <div class="cv-hair" aria-hidden="true"></div>
+          <p>서울특별시 광진구 구의강변로3가길 33, 2층</p>
+          <p>Tel 02-429-1318<span class="d">·</span>Fax 02-429-1319</p>
+        </footer>
+      </div>
+    </section>
+
     <!-- ================= 발급하기 ================= -->
     <section class="view" id="view-issue">
+      <div class="cv-backrow"><button type="button" class="cv-back" id="coverBtn" aria-label="표지 화면으로">← 표지로</button></div>
       <div class="issue-grid">
 
         <div class="left-col">
@@ -309,7 +344,7 @@
           </div>
         </div>
 
-        <div class="card fmt">
+        <div class="card fmt" id="peopleCard">
           <div class="card-head">
             <h2>사람 명단</h2>
             <button type="button" class="mini" id="peNew">새로 넣기</button>
@@ -492,7 +527,7 @@
 
 <div class="toast" id="toast" hidden></div>
 
-<script src="vendor/html2canvas.min.js?v=18"></script>
-<script src="assets/app.js?v=18"></script>
+<script src="vendor/html2canvas.min.js?v=19"></script>
+<script src="assets/app.js?v=19"></script>
 </body>
 </html>
