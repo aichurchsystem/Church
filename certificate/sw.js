@@ -2,7 +2,7 @@
    이 폴더(certificate/) 범위만 담당한다. 같은 저장소의 다른 페이지는 건드리지 않는다.
    네트워크가 있으면 새 파일을 먼저 받아 두고, 없으면 받아 둔 사본으로 연다. */
 
-const CACHE = 'certificate-app-v5';
+const CACHE = 'certificate-app-v6';
 const SHELL = [
   './',
   './index.html',

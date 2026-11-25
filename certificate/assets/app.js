@@ -306,7 +306,7 @@
       });
       if (saved.fmt.types && typeof saved.fmt.types === 'object') fmt.types = saved.fmt.types;
     }
-    if (saved.mig !== 3) migrateFmt(fmt);
+    migrateFmt(fmt, saved);
     base.fmt = fmt;
     // 예전 '본문 문구 수정' 저장값을 양식 관리 쪽으로 옮긴다
     Object.keys(base.bodies || {}).forEach(function (id) {
@@ -325,16 +325,21 @@
      - 총회 주소는 지면에서 빠졌고, 전화·팩스는 노회 번호(02-429-1318 / 02-429-1319)로 바뀌었다.
      - 목사님이 직접 고쳐 둔 값은 그대로 둔다. */
   var LEGACY_FMT = {
-    hqAddress: ['서울특별시 서초구 남부순환로 2221', ''],
-    tel: ['', 'Tel: 584-6885.9845', 'Tel: 584-6885.9845  Fax: 521-2729'],
-    fax: ['', 'Fax: 521-2729']
+    hqAddress: ['서울특별시 서초구 남부순환로 2221'],
+    tel: ['Tel: 584-6885.9845', 'Tel: 584-6885.9845  Fax: 521-2729'],
+    fax: ['Fax: 521-2729']
   };
-  function migrateFmt(fmt) {
+  function migrateFmt(fmt, saved) {
     var def = defaultFmt();
     Object.keys(LEGACY_FMT).forEach(function (k) {
       var v = String(fmt[k] == null ? '' : fmt[k]).trim();
       if (LEGACY_FMT[k].indexOf(v) > -1) fmt[k] = def[k];
     });
+    // 전화·팩스 기본값이 비어 있던 판을 열었던 기기는 새 번호를 채워 준다
+    if (!saved || saved.mig !== 3) {
+      if (!String(fmt.tel || '').trim()) fmt.tel = def.tel;
+      if (!String(fmt.fax || '').trim()) fmt.fax = def.fax;
+    }
   }
 
   function currentDef() {
@@ -712,10 +717,21 @@
   }
 
   /* ------------------------------------------------------------------ 받기 */
+  /* 받은 뒤에는 다음 번호로 넘어간다(사용자가 번호를 직접 고친 경우는 그대로 둠) */
+  function advanceNo() {
+    if (state.noEdited) return;
+    state.no = nextNo(state.date);
+    el.no.value = state.no;
+    if (!state.inetEdited) { state.inet = makeInet(); el.inet.value = state.inet; }
+    saveState();
+    renderPaper();
+  }
+
   function doPrint() {
     if (!ensure()) return;
     recordIssue();
     window.print();
+    advanceNo();
   }
 
   function doPng() {
@@ -734,6 +750,7 @@
           downloadBlob(blob, typeText(currentDef()).title.replace(/\s/g, '') + '_' + state.name.trim() + '_' + state.date + '.png');
           toast('이미지(PNG)로 저장했습니다.');
           done();
+          advanceNo();
         }, 'image/png');
       }).catch(function (e) {
         console.error(e);
