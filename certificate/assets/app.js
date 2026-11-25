@@ -1,29 +1,42 @@
 /* ==========================================================================
    증명서 발급 앱 (대한예수교장로회(백석) 서울강동노회)
    - 증명서 종류별 정의: data/types.json (제목·항목·본문·추가 입력·워터마크)
-   - 지면에 찍히는 고정 글자: state.fmt (양식 관리 화면에서 고치고 이 기기에 저장)
-   - 사람 명단: data/people.json
-   - 직인 이미지: 이 기기 브라우저(localStorage)에만 저장 — 저장소에는 올리지 않는다
+   - 지면에 찍히는 고정 글자: state.fmt (관리자 화면에서 고치고 이 기기에 저장)
+   - 사람·교회 명단: data/people.json + 이 기기 저장값(cert.v1.people)
+   - 직인 이미지: 기본 직인은 assets/seals/, 바꾼 직인은 이 기기(localStorage)
+   - 증명사진: 이 기기(localStorage)에만 저장 — 저장소에는 올리지 않는다
    ========================================================================== */
 (function () {
   'use strict';
 
   var A4W = 793.7, A4H = 1122.5, MM = 3.7795;
 
+  var SEALS = [
+    { key: 'chair',      name: '노회장 인',    def: 'assets/seals/seal-chair-round.png' },
+    { key: 'secretary',  name: '서기 인',      def: 'assets/seals/seal-secretary-round.png' },
+    { key: 'presbytery', name: '노회 사각 인', def: 'assets/seals/seal-presbytery-square.png' }
+  ];
+  var SEAL_IMG = { chair: 'sealChair', secretary: 'sealSecretary', presbytery: 'sealOrg' };
+  var WM_VARIANTS = ['navy', 'slate', 'ink', 'none'];
+
   var DEFAULTS = {
     church: '글로벌비전교회',
+    churchAddress: '서울특별시 광진구 구의강변로3가길 33, 상가 2층(구의동)',
+    representative: '박재용',
     address: '서울특별시 광진구 구의강변로3가길 33, 상가 2층(구의동)',
-    position: '담임목사'
+    position: '목사'
   };
 
   function defaultFmt() {
     return {
       org: '대한예수교장로회(백석)',
+      presbytery: '서울강동노회',
       hqAddress: '',
+      presbyteryAddress: '서울특별시 광진구 구의강변로3가길 33, 2층',
       tel: 'Tel: 02-429-1318',
       fax: 'Fax: 02-429-1319',
-      presbytery: '서울강동노회',
-      presbyteryAddress: '서울특별시 광진구 구의강변로3가길 33, 2층',
+      chairTitle: '노회장',
+      chairName: '이용동',
       signerTitle: '노회 서기',
       signerName: '박재용',
       noPrefix: '노회(증)',
@@ -36,7 +49,8 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var el = {
-    type: $('fType'), name: $('fName'), birth: $('fBirth'), church: $('fChurch'), addr: $('fAddr'),
+    type: $('fType'), person: $('fPerson'), name: $('fName'), position: $('fPosition'),
+    birth: $('fBirth'), church: $('fChurch'), churchAddr: $('fChurchAddr'), addr: $('fAddr'),
     sender: $('fSender'), recipient: $('fRecipient'),
     date: $('fDate'), no: $('fNo'), inet: $('fInet'),
     extraBox: $('extraBox'), nameLabel: $('nameLabel'),
@@ -45,20 +59,26 @@
     pOrg: $('pOrg'), pHq: $('pHq'), pTel: $('pTel'), pFax: $('pFax'),
     pPresb: $('pPresb'), pNohoeAddr: $('pNohoeAddr'),
     pNo: $('pNo'), pTitle: $('pTitle'), pFields: $('pFields'), pBody: $('pBody'),
-    pDate: $('pDate'), pSignOrg: $('pSignOrg'), pSignTitle: $('pSignTitle'), pSigner: $('pSigner'),
-    pNote1: $('pNote1'), pNote2: $('pNote2'), pInet: $('pInet'),
+    pDate: $('pDate'), pSignOrg: $('pSignOrg'),
+    pSignChairTitle: $('pSignChairTitle'), pSignChair: $('pSignChair'),
+    pSignTitle: $('pSignTitle'), pSigner: $('pSigner'),
+    pNote1: $('pNote1'), pNote2: $('pNote2'), pInet: $('pInet'), pPhoto: $('pPhoto'),
     pFrom: $('pFrom'), pTo: $('pTo'), pFromRow: $('pFromRow'), pToRow: $('pToRow'),
-    sealSlots: $('sealSlots'),
+    sealSlots: $('sealSlots'), sealSlotsAdmin: $('sealSlotsAdmin'),
     hList: $('hList'), hCnt: $('hCnt'), hSearch: $('hSearch'), hMonth: $('hMonth'), hType: $('hType'),
     toast: $('toast'), tabDot: $('tabDot'), actionBar: $('actionBar')
   };
 
   var KEY_STATE = 'cert.v1.state';
   var KEY_HIST = 'cert.v1.history';
+  var KEY_PEOPLE = 'cert.v1.people';
+  var KEY_SEAL = 'cert.v1.seal.';
+  var KEY_PHOTO = 'cert.v1.photo.';
 
   var TYPES = [], TYPE_BY_ID = Object.create(null);
-  var people = [], peopleByKey = Object.create(null);
+  var people = [], basePeople = [];
   var state = null;
+  var pendingSealKey = null, pendingSealInput = null, editingPersonId = null, newPhotoData = null;
 
   /* ------------------------------------------------------------------ 저장 */
   function loadJSON(key, fallback) {
@@ -68,11 +88,18 @@
   function saveState() { try { localStorage.setItem(KEY_STATE, JSON.stringify(state)); } catch (e) {} }
   function loadHistory() { return loadJSON(KEY_HIST, []); }
   function saveHistory(list) { try { localStorage.setItem(KEY_HIST, JSON.stringify(list)); } catch (e) {} }
+  function savePeople() { try { localStorage.setItem(KEY_PEOPLE, JSON.stringify(people)); } catch (e) {} }
 
   /* ------------------------------------------------------------------ 날짜 */
   function todayISO() {
-    var d = new Date(), p = function (n) { return (n < 10 ? '0' : '') + n; };
-    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+    try {
+      return new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit'
+      }).format(new Date());
+    } catch (e) {
+      var d = new Date();
+      return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+    }
   }
   function isoToParts(iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
@@ -117,6 +144,13 @@
   /* ------------------------------------------------------------------ 자료 */
   function normalize(v) { return (v || '').replace(/\s+/g, '').replace(/[·.]/g, ''); }
 
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function deepCopy(o) { return JSON.parse(JSON.stringify(o)); }
+
   function loadTypes() {
     return fetch('data/types.json', { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
@@ -135,95 +169,83 @@
     return fetch('data/people.json', { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
-        people = ((data && data.people) || []).filter(function (p) { return p && p.name; });
-        peopleByKey = Object.create(null);
-        people.forEach(function (p) { peopleByKey[normalize(p.name)] = p; });
-        el.peopleList.innerHTML = people.map(function (p) {
-          return '<option value="' + esc(p.name) + '"></option>';
-        }).join('');
+        basePeople = ((data && data.people) || []).filter(function (p) { return p && p.name; });
+        basePeople.forEach(function (p, i) { if (!p.id) p.id = 'p' + (i + 1); });
+        var saved = loadJSON(KEY_PEOPLE, null);
+        people = Array.isArray(saved) && saved.length ? saved : deepCopy(basePeople);
+        renderPeopleOptions();
       })
-      .catch(function () { people = []; });
+      .catch(function () { basePeople = []; people = []; });
   }
 
-  function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
+  function syncPeople() {
+    people = people.filter(function (p) { return p && p.name; });
+    people.forEach(function (p, i) { if (!p.id) p.id = 'p' + Date.now() + i; });
+    savePeople();
+    renderPeopleOptions();
+    renderPeopleList();
+    renderPaper();
+  }
+
+  function renderPeopleOptions() {
+    var opts = people.map(function (p) {
+      var tail = [p.position, p.church].filter(Boolean).join(' · ');
+      return '<option value="' + esc(p.id) + '">' + esc(p.name + (tail ? ' — ' + tail : '')) + '</option>';
+    }).join('');
+    if (el.person) {
+      el.person.innerHTML = '<option value="">— 직접 입력 —</option>' + opts;
+      el.person.value = state && state.personId ? state.personId : '';
+      if (!el.person.value) el.person.value = '';
+    }
+    if (el.peopleList) {
+      el.peopleList.innerHTML = people.map(function (p) {
+        return '<option value="' + esc(p.name) + '"></option>';
+      }).join('');
+    }
   }
 
   /* --------------------------------------------------------------- 서명부 직인 */
-  var SEALS = [
-    { key: 'secretary',  name: '서기 직인',         short: '서기인' },
-    { key: 'chair',      name: '노회장 직인',       short: '노회장인' },
-    { key: 'presbytery', name: '서울강동노회 직인', short: '노회인' }
-  ];
-  var KEY_SEAL_BASE = 'cert.v1.seal.';
-  var pendingSealKey = null;
-  var WM_VARIANTS = ['navy', 'slate', 'ink', 'none'];
-
-  function getSeal(key) {
-    try { return localStorage.getItem(KEY_SEAL_BASE + key) || null; } catch (e) { return null; }
+  function sealSrc(key) {
+    var own = null;
+    try { own = localStorage.getItem(KEY_SEAL + key); } catch (e) {}
+    if (own) return own;
+    var s = SEALS.filter(function (x) { return x.key === key; })[0];
+    return s ? s.def : '';
+  }
+  function hasOwnSeal(key) {
+    try { return !!localStorage.getItem(KEY_SEAL + key); } catch (e) { return false; }
   }
   function setSeal(key, data) {
     try {
-      if (data) localStorage.setItem(KEY_SEAL_BASE + key, data);
-      else localStorage.removeItem(KEY_SEAL_BASE + key);
+      if (data) localStorage.setItem(KEY_SEAL + key, data);
+      else localStorage.removeItem(KEY_SEAL + key);
       return true;
     } catch (e) { return false; }
   }
 
   function applySeal() {
-    var slot = $('sealSlot');
-    if (!slot) return;
-    var ph = slot.querySelector('.seal-ph');
-    var old = slot.querySelector('img');
-    if (old) old.remove();
-
-    var meta = SEALS.filter(function (s) { return s.key === state.sealChoice; })[0];
-    if (state.sealChoice === 'none') { slot.style.display = 'none'; return; }
-    slot.style.display = '';
-
-    var data = getSeal(state.sealChoice);
-    if (data) {
-      var img = document.createElement('img');
-      img.alt = '';
-      img.src = data;
-      img.onload = function () { if (ph) ph.style.display = 'none'; };
-      slot.appendChild(img);
-      if (ph) ph.style.display = 'none';
-    } else if (ph) {
-      ph.style.display = '';
-      ph.textContent = meta ? meta.short : '직인';
-    }
+    SEALS.forEach(function (s) {
+      var img = $(SEAL_IMG[s.key]);
+      if (!img) return;
+      if (!state.sealsOn) { img.hidden = true; return; }
+      img.hidden = false;
+      var src = sealSrc(s.key);
+      if (img.getAttribute('src') !== src) img.setAttribute('src', src);
+    });
   }
 
   function renderSealSlots() {
-    if (!el.sealSlots) return;
-    el.sealSlots.innerHTML = SEALS.map(function (s) {
-      var data = getSeal(s.key);
+    var html = SEALS.map(function (s) {
+      var own = hasOwnSeal(s.key);
       return '<div class="seal-slot">' +
-        '<div class="st">' + (data ? '<img src="' + data + '" alt="">' : '없음') + '</div>' +
-        '<div class="sn">' + esc(s.name) + '<small>' + (data ? '넣었습니다' : '아직 없습니다') + '</small></div>' +
-        '<button type="button" class="mini" data-pick="' + s.key + '">' + (data ? '바꾸기' : '넣기') + '</button>' +
-        (data ? '<button type="button" class="mini" data-drop="' + s.key + '">지우기</button>' : '') +
+        '<div class="st"><img src="' + esc(sealSrc(s.key)) + '" alt=""></div>' +
+        '<div class="sn">' + esc(s.name) + '<small>' + (own ? '내가 넣은 직인' : '기본 직인') + '</small></div>' +
+        '<button type="button" class="mini" data-pick="' + s.key + '">' + (own ? '바꾸기' : '넣기') + '</button>' +
+        (own ? '<button type="button" class="mini" data-drop="' + s.key + '">지우기</button>' : '') +
         '</div>';
     }).join('');
-  }
-
-  function loadSeal() {
-    try {
-      var legacy = localStorage.getItem('cert.v1.seal');
-      if (legacy) {
-        if (!getSeal('secretary')) setSeal('secretary', legacy);
-        localStorage.removeItem('cert.v1.seal');
-      }
-    } catch (e) {}
-    if (!state.sealChoice) state.sealChoice = 'secretary';
-    Array.prototype.forEach.call(document.querySelectorAll('input[name="sealChoice"]'), function (r) {
-      r.checked = r.value === state.sealChoice;
-    });
-    renderSealSlots();
-    applySeal();
+    if (el.sealSlots) el.sealSlots.innerHTML = html;
+    if (el.sealSlotsAdmin) el.sealSlotsAdmin.innerHTML = html;
   }
 
   function saveSealFromFile(key, file) {
@@ -240,11 +262,6 @@
         cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
         var data = cv.toDataURL('image/png');
         if (!setSeal(key, data)) { toast('저장 공간이 부족해 직인을 저장하지 못했습니다.'); return; }
-        state.sealChoice = key;
-        saveState();
-        Array.prototype.forEach.call(document.querySelectorAll('input[name="sealChoice"]'), function (r) {
-          r.checked = r.value === state.sealChoice;
-        });
         renderSealSlots();
         applySeal();
         toast('직인을 넣었습니다. 이 기기에만 저장됩니다.');
@@ -255,11 +272,50 @@
     reader.readAsDataURL(file);
   }
 
+  /* --------------------------------------------------------------- 증명사진 */
+  function photoKey(id) { return KEY_PHOTO + (id || ''); }
+  function photoFor(id) {
+    if (!id) return '';
+    try { return localStorage.getItem(photoKey(id)) || ''; } catch (e) { return ''; }
+  }
+  function setPhoto(id, data) {
+    if (!id) return false;
+    try {
+      if (data) localStorage.setItem(photoKey(id), data);
+      else localStorage.removeItem(photoKey(id));
+      return true;
+    } catch (e) { return false; }
+  }
+  function savePhotoFromFile(id, file) {
+    if (!file) return;
+    if (file.type.indexOf('image/') !== 0) { toast('이미지 파일을 골라 주세요.'); return; }
+    var reader = new FileReader();
+    reader.onload = function () {
+      var im = new Image();
+      im.onload = function () {
+        // 3:4 증명사진 비율로 가운데를 잘라 360×480으로 줄인다
+        var tw = 360, th = 480, ratio = tw / th;
+        var sw = im.width, sh = im.height, cw = sw, ch = sh;
+        if (sw / sh > ratio) { cw = sh * ratio; } else { ch = sw / ratio; }
+        var sx = (sw - cw) / 2, sy = (sh - ch) / 2;
+        var cv = document.createElement('canvas');
+        cv.width = tw; cv.height = th;
+        cv.getContext('2d').drawImage(im, sx, sy, cw, ch, 0, 0, tw, th);
+        var data = cv.toDataURL('image/jpeg', 0.82);
+        if (!setPhoto(id, data)) { toast('저장 공간이 부족해 사진을 저장하지 못했습니다.'); return; }
+        newPhotoData = data;
+        renderPersonForm();
+        renderPaper();
+        renderPeopleList();
+        toast('사진을 넣었습니다. 이 기기에만 저장됩니다.');
+      };
+      im.onerror = function () { toast('이미지를 읽지 못했습니다.'); };
+      im.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
   /* --------------------------------------------------------------- 양식 글자 */
-  function fmtOf() { return state.fmt; }
-
-  function deepCopy(o) { return JSON.parse(JSON.stringify(o)); }
-
   function typeText(def) {
     var o = (state.fmt.types && state.fmt.types[def.id]) || {};
     return {
@@ -277,55 +333,29 @@
     return state.fmt.types[id];
   }
 
-  /* ------------------------------------------------------------------ 상태 */
+  /* --------------------------------------------------------------- 상태 */
   function blankState() {
     var iso = todayISO();
+    var p = people[0] || null;
     return {
       typeId: 'membership',
-      name: '', birth: '', church: DEFAULTS.church, address: DEFAULTS.address, position: DEFAULTS.position,
+      personId: p ? p.id : '',
+      name: p ? (p.name || '') : '',
+      position: (p && p.position) || DEFAULTS.position,
+      birth: (p && p.birth) || '',
+      church: (p && p.church) || DEFAULTS.church,
+      churchAddress: (p && p.churchAddress) || DEFAULTS.churchAddress,
+      representative: (p && p.representative) || DEFAULTS.representative,
+      address: (p && p.address) || DEFAULTS.address,
       sender: '서울강동노회', recipient: '',
       date: iso, no: '', inet: makeInet(),
       noEdited: false, inetEdited: false,
-      sealChoice: 'secretary',
+      sealsOn: true,
       extras: {}, bodies: {}, fmt: defaultFmt()
     };
   }
 
-  function initState() {
-    var saved = loadJSON(KEY_STATE, {});
-    var base = blankState();
-    Object.keys(base).forEach(function (k) {
-      if (saved[k] !== undefined && saved[k] !== null) base[k] = saved[k];
-    });
-    if (!isoToParts(base.date)) base.date = todayISO();
-    base.extras = base.extras || {};
-    base.bodies = base.bodies || {};
-    // 양식 글자는 기본값 위에 저장값을 덮는다
-    var fmt = defaultFmt();
-    if (saved.fmt && typeof saved.fmt === 'object') {
-      Object.keys(fmt).forEach(function (k) {
-        if (k !== 'types' && saved.fmt[k] !== undefined && saved.fmt[k] !== null) fmt[k] = saved.fmt[k];
-      });
-      if (saved.fmt.types && typeof saved.fmt.types === 'object') fmt.types = saved.fmt.types;
-    }
-    migrateFmt(fmt, saved);
-    base.fmt = fmt;
-    // 예전 '본문 문구 수정' 저장값을 양식 관리 쪽으로 옮긴다
-    Object.keys(base.bodies || {}).forEach(function (id) {
-      if (base.bodies[id] && base.bodies[id].length) {
-        var o = fmt.types[id] || (fmt.types[id] = {});
-        if (!o.body) o.body = base.bodies[id].slice();
-      }
-    });
-    state = base;
-    state.mig = 3;
-    state.no = state.no || nextNo(state.date);
-    saveState();
-  }
-
-  /* 지면 머리글 기본값이 바뀐 것을 이 기기 저장값에도 반영한다(한 번만)
-     - 총회 주소는 지면에서 빠졌고, 전화·팩스는 노회 번호(02-429-1318 / 02-429-1319)로 바뀌었다.
-     - 목사님이 직접 고쳐 둔 값은 그대로 둔다. */
+  /* 이 기기에 남은 예전 기본값을 새 기본값으로 옮긴다(한 번만) */
   var LEGACY_FMT = {
     hqAddress: ['서울특별시 서초구 남부순환로 2221'],
     tel: ['Tel: 584-6885.9845', 'Tel: 584-6885.9845  Fax: 521-2729'],
@@ -337,19 +367,56 @@
       var v = String(fmt[k] == null ? '' : fmt[k]).trim();
       if (LEGACY_FMT[k].indexOf(v) > -1) fmt[k] = def[k];
     });
-    // 전화·팩스 기본값이 비어 있던 판을 열었던 기기는 새 번호를 채워 준다
-    if (!saved || saved.mig !== 3) {
+    if (!saved || saved.mig !== 4) {
       if (!String(fmt.tel || '').trim()) fmt.tel = def.tel;
       if (!String(fmt.fax || '').trim()) fmt.fax = def.fax;
+      if (!String(fmt.chairTitle || '').trim() && !String(fmt.chairName || '').trim()) {
+        fmt.chairTitle = def.chairTitle; fmt.chairName = def.chairName;
+      }
     }
+  }
+
+  function initState() {
+    var saved = loadJSON(KEY_STATE, {});
+    var base = blankState();
+    Object.keys(base).forEach(function (k) {
+      if (saved[k] !== undefined && saved[k] !== null) base[k] = saved[k];
+    });
+    // 발급일은 열 때마다 오늘(한국 시간)로 다시 계산한다
+    base.date = todayISO();
+    base.extras = base.extras || {};
+    base.bodies = base.bodies || {};
+    base.fmt = base.fmt || defaultFmt();
+    var fmt = defaultFmt();
+    if (saved.fmt && typeof saved.fmt === 'object') {
+      Object.keys(fmt).forEach(function (k) {
+        if (k !== 'types' && saved.fmt[k] !== undefined && saved.fmt[k] !== null) fmt[k] = saved.fmt[k];
+      });
+      if (saved.fmt.types && typeof saved.fmt.types === 'object') fmt.types = saved.fmt.types;
+    }
+    migrateFmt(fmt, saved);
+    base.fmt = fmt;
+    // 예전 '본문 문구 수정' 저장값을 종류별 문구로 옮긴다
+    Object.keys(base.bodies || {}).forEach(function (id) {
+      if (base.bodies[id] && base.bodies[id].length) {
+        var o = fmt.types[id] || (fmt.types[id] = {});
+        if (!o.body) o.body = base.bodies[id].slice();
+      }
+    });
+    if (typeof saved.sealsOn === 'boolean') base.sealsOn = saved.sealsOn;
+    else if (saved.sealChoice === 'none') base.sealsOn = false;
+    state = base;
+    state.mig = 4;
+    state.no = state.no || nextNo(state.date);
+    saveState();
   }
 
   function currentDef() {
     return TYPE_BY_ID[state.typeId] || TYPES[0] || {
       id: 'membership', name: '소속증명서', kind: 'church', title: '소속증명서',
-      rows: [{ label: '교회명', src: 'church' }, { label: '주소', src: 'address' },
-             { label: '대표자', src: 'name' }, { label: '생년월일', src: 'birth' }],
-      body: ['위의 교회는 대한예수교장로회(백석) 서울강동노회에', '소속한 교회임을 증명함.'], extra: []
+      rows: [{ label: '교회명', src: 'church' }, { label: '주소', src: 'churchAddress' },
+             { label: '대표자', src: 'rep' }, { label: '직분', src: 'position' }],
+      body: ['위 교회는 대한예수교장로회(백석) 서울강동노회 산하에', '속한 교회임을 증명합니다.'], extra: []
     };
   }
   function extraOf(typeId) {
@@ -357,20 +424,90 @@
     return state.extras[typeId];
   }
 
+  function personById(id) {
+    return people.filter(function (p) { return p.id === id; })[0] || null;
+  }
+  function personByName(q) {
+    var n = normalize(q);
+    if (!n) return null;
+    var exact = people.filter(function (p) { return normalize(p.name) === n; })[0];
+    if (exact) return exact;
+    if (n.length >= 2) {
+      var cands = people.filter(function (p) { return normalize(p.name).indexOf(n) > -1; });
+      if (cands.length === 1) return cands[0];
+    }
+    return null;
+  }
+  function personByPosition(pos) {
+    var n = normalize(pos);
+    if (!n) return null;
+    var cands = people.filter(function (p) { return normalize(p.position) === n; });
+    return cands.length === 1 ? cands[0] : null;
+  }
+
+  function applyPerson(p, keepTypedName) {
+    if (!p) return;
+    state.personId = p.id || '';
+    if (!keepTypedName) state.name = p.name || '';
+    state.position = p.position || '';
+    state.birth = p.birth || '';
+    state.church = p.church || '';
+    state.churchAddress = p.churchAddress || '';
+    state.representative = p.representative || '';
+    state.address = p.address || '';
+    if (p.plantDate) extraOf('church-plant').plantDate = p.plantDate;
+    if (p.foundDate) extraOf('church-found').foundDate = p.foundDate;
+    saveState();
+    render();
+    if (el.person) el.person.value = state.personId;
+  }
+
   /* --------------------------------------------------------------- 값 채우기 */
-  function fill(text) {
+  /* 받침에 맞춰 조사를 고른다: {name:은} → 박재용은 / 이용동은 */
+  function josa(word, kind) {
+    var w = String(word || '');
+    var c = w.charCodeAt(w.length - 1);
+    var hasJong = false;
+    if (c >= 0xAC00 && c <= 0xD7A3) hasJong = ((c - 0xAC00) % 28) !== 0;
+    var jong = (c >= 0xAC00 && c <= 0xD7A3) ? ((c - 0xAC00) % 28) : 0;
+    switch (kind) {
+      case '은': case '는': return hasJong ? '은' : '는';
+      case '이': case '가': return hasJong ? '이' : '가';
+      case '을': case '를': return hasJong ? '을' : '를';
+      case '과': case '와': return hasJong ? '과' : '와';
+      case '으로': case '로': return (!hasJong || jong === 8) ? '로' : '으로';
+      default: return '';
+    }
+  }
+
+  function fillMap() {
     var ex = extraOf(currentDef().id);
-    var map = {
-      church: state.church, name: state.name, address: state.address, position: state.position,
+    var m = {
+      church: state.church,
+      churchAddress: state.churchAddress,
+      rep: state.representative,
+      representative: state.representative,
+      position: state.position,
+      name: state.name,
+      birth: fmtDate(state.birth),
+      address: state.address,
       presbytery: state.fmt.presbytery,
-      birth: fmtDate(state.birth), date: fmtDate(state.date)
+      date: fmtDate(state.date)
     };
     Object.keys(ex).forEach(function (k) {
       var v = ex[k];
-      map[k] = /\d{4}-\d{2}-\d{2}/.test(v || '') ? fmtDate(v) : (v || '');
+      m[k] = /^\d{4}-\d{2}-\d{2}$/.test(v || '') ? fmtDate(v) : (v || '');
     });
-    return String(text).replace(/\{(\w+)\}/g, function (m, k) {
-      return map[k] !== undefined ? map[k] : m;
+    return m;
+  }
+
+  function fill(text) {
+    var map = fillMap();
+    return String(text).replace(/\{(\w+)(?::([가-힣]+))?\}/g, function (m, k, j) {
+      var v = map[k];
+      if (v === undefined || v === null) return m;
+      v = String(v);
+      return j ? v + josa(v, j) : v;
     });
   }
 
@@ -401,13 +538,20 @@
   }
 
   function rowValue(row) {
-    if (row.src === 'birth') return fmtDate(state.birth);
-    if (row.src === 'church') return state.church;
-    if (row.src === 'address') return state.address;
-    if (row.src === 'name') return state.name;
-    if (row.src === 'position') return state.position;
+    var map = {
+      birth: fmtDate(state.birth),
+      church: state.church,
+      churchAddress: state.churchAddress,
+      address: state.address,
+      name: state.name,
+      position: state.position,
+      rep: state.representative,
+      representative: state.representative,
+      presbytery: state.fmt.presbytery
+    };
+    if (map[row.src] !== undefined) return map[row.src];
     var v = extraOf(currentDef().id)[row.src] || '';
-    if (row.fmt === 'date' || /\d{4}-\d{2}-\d{2}/.test(v)) return fmtDate(v);
+    if (row.fmt === 'date' || /^\d{4}-\d{2}-\d{2}$/.test(v)) return fmtDate(v);
     return v;
   }
 
@@ -415,7 +559,6 @@
     var F = state.fmt, def = currentDef(), T = typeText(def);
 
     el.pOrg.textContent = F.org || '';
-    // 비어 있는 머리글 줄은 빈 줄을 남기지 않고 빠진다
     el.pPresb.textContent = F.presbytery || '';
     el.pPresb.hidden = !String(F.presbytery || '').trim();
     $('pOrgGap').hidden = el.pPresb.hidden || !String(F.org || '').trim();
@@ -430,11 +573,14 @@
     el.pFax.hidden = !fax;
     $('pTelGap').hidden = !(tel && fax);
     $('pTelRow').hidden = !tel && !fax;
+
     el.pNo.textContent = state.no || '';
     el.pTitle.textContent = T.title;
     layoutTitle();
     el.pDate.textContent = fmtDateWide(state.date);
-    el.pSignOrg.textContent = F.org + ' ' + F.presbytery;
+    el.pSignOrg.textContent = F.org + ' ' + (F.presbytery || '');
+    el.pSignChairTitle.textContent = F.chairTitle || '';
+    el.pSignChair.textContent = F.chairName || '';
     el.pSignTitle.textContent = T.signTitle;
     el.pSigner.textContent = T.signerName;
     el.pNote1.textContent = F.note1;
@@ -452,6 +598,18 @@
         if (wm.getAttribute('src') !== src) wm.setAttribute('src', src);
       }
       wm.style.display = (def.watermark === false || wmVariant === 'none') ? 'none' : '';
+    }
+
+    // 증명사진 (있을 때만 자리를 차지한다)
+    var photo = photoFor(state.personId);
+    if (photo) {
+      el.pPhoto.src = photo;
+      el.pPhoto.hidden = false;
+      el.paper.classList.add('has-photo');
+    } else {
+      el.pPhoto.hidden = true;
+      el.pPhoto.removeAttribute('src');
+      el.paper.classList.remove('has-photo');
     }
 
     // 발신처 · 수신처 (빈 줄은 찍지 않는다)
@@ -494,7 +652,8 @@
       }).join('');
     }
     el.type.value = def.id;
-    el.nameLabel.textContent = def.kind === 'church' ? '대표자' : '이름';
+    var isChurch = def.kind === 'church';
+    el.nameLabel.textContent = isChurch ? '대표자' : '성명';
 
     if (!def.extra.length) {
       el.extraBox.innerHTML = '';
@@ -515,20 +674,32 @@
       });
     }
 
-    if (el.name.value !== state.name) el.name.value = state.name;
+    var mainVal = isChurch ? state.representative : state.name;
+    if (el.name.value !== mainVal) el.name.value = mainVal || '';
+    if (el.position.value !== state.position) el.position.value = state.position || '';
     if (el.birth.value !== state.birth) el.birth.value = state.birth || '';
     if (el.church.value !== state.church) el.church.value = state.church;
+    if (el.churchAddr.value !== state.churchAddress) el.churchAddr.value = state.churchAddress;
     if (el.addr.value !== state.address) el.addr.value = state.address;
     if (el.sender.value !== state.sender) el.sender.value = state.sender;
     if (el.recipient.value !== state.recipient) el.recipient.value = state.recipient;
     if (el.date.value !== state.date) el.date.value = state.date;
     if (el.no.value !== state.no) el.no.value = state.no;
     if (el.inet.value !== state.inet) el.inet.value = state.inet;
+    if (el.person) el.person.value = state.personId || '';
+    Array.prototype.forEach.call(document.querySelectorAll('input[name="sealOnOff"]'), function (r) {
+      r.checked = (r.value === 'on') === !!state.sealsOn;
+    });
   }
 
   function render() { renderForm(); renderPaper(); }
 
-  /* 양식 관리 화면 채우기 */
+  function typeNameOf(id) {
+    var t = TYPE_BY_ID[id];
+    return t ? t.name : (id || '증명서');
+  }
+
+  /* 관리자 화면 채우기 */
   function renderFmtForm() {
     var F = state.fmt;
     Array.prototype.forEach.call(document.querySelectorAll('[data-fmt]'), function (inp) {
@@ -560,6 +731,84 @@
     }).join('');
   }
 
+  /* 사람 명단 (관리자) */
+  function renderPeopleList() {
+    var box = $('peList');
+    if (!box) return;
+    if (!people.length) {
+      box.innerHTML = '<p class="empty">명단이 비어 있습니다. ‘새로 넣기’로 사람을 더해 두세요.</p>';
+      return;
+    }
+    box.innerHTML = people.map(function (p) {
+      var sub = [p.position, p.church].filter(Boolean).join(' · ');
+      var sub2 = [p.birth, p.address].filter(Boolean).join(' · ');
+      return '<div class="hitem" data-person="' + esc(p.id) + '">' +
+        '<div class="who"><b>' + esc(p.name) + '</b>' +
+        '<small>' + esc(sub) + (sub2 ? ' · ' + esc(sub2) : '') + '</small></div>' +
+        '<button type="button" class="mini" data-pedit="' + esc(p.id) + '">고치기</button>' +
+        '<button type="button" class="del" data-pdel="' + esc(p.id) + '" aria-label="명단에서 지우기">✕</button>' +
+        '</div>';
+    }).join('');
+  }
+
+  var PE_FIELDS = ['Name', 'Position', 'Birth', 'Church', 'ChurchAddr', 'Address', 'Rep', 'Plant', 'Found'];
+
+  function renderPersonForm() {
+    var f = $('peForm');
+    if (!f) return;
+    var p = editingPersonId ? personById(editingPersonId) : null;
+    f.hidden = false;
+    $('peName').value = p ? (p.name || '') : '';
+    $('pePosition').value = p ? (p.position || '') : '';
+    $('peBirth').value = p ? (p.birth || '') : '';
+    $('peChurch').value = p ? (p.church || '') : '';
+    $('peChurchAddr').value = p ? (p.churchAddress || '') : '';
+    $('peAddress').value = p ? (p.address || '') : '';
+    $('peRep').value = p ? (p.representative || '') : '';
+    $('pePlant').value = p ? (p.plantDate || '') : '';
+    $('peFound').value = p ? (p.foundDate || '') : '';
+    newPhotoData = p ? photoFor(p.id) : '';
+    var thumb = $('pePhotoThumb');
+    thumb.innerHTML = newPhotoData ? '<img src="' + newPhotoData + '" alt="">' : '없음';
+  }
+
+  function savePersonFromForm() {
+    var name = $('peName').value.trim();
+    if (!name) { toast('이름을 먼저 적어 주세요.'); return; }
+    var rec = {
+      id: editingPersonId || '',
+      name: name,
+      position: $('pePosition').value.trim(),
+      birth: $('peBirth').value,
+      church: $('peChurch').value.trim(),
+      churchAddress: $('peChurchAddr').value.trim(),
+      representative: $('peRep').value.trim(),
+      address: $('peAddress').value.trim(),
+      plantDate: $('pePlant').value,
+      foundDate: $('peFound').value
+    };
+    var idx = -1;
+    if (rec.id) idx = people.map(function (p) { return p.id; }).indexOf(rec.id);
+    if (idx < 0) {
+      var same = people.map(function (p) { return normalize(p.name); }).indexOf(normalize(name));
+      if (same > -1) idx = same;
+    }
+    if (idx > -1) {
+      rec.id = people[idx].id;
+      people[idx] = rec;
+    } else {
+      rec.id = 'p' + Date.now();
+      people.push(rec);
+    }
+    if (newPhotoData) setPhoto(rec.id, newPhotoData);
+    if (rec.id === state.personId) { state.name = rec.name; state.position = rec.position; state.birth = rec.birth; state.church = rec.church; state.churchAddress = rec.churchAddress; state.representative = rec.representative; state.address = rec.address; }
+    editingPersonId = rec.id;
+    syncPeople();
+    renderPersonForm();
+    render();
+    toast('명단에 저장했습니다.');
+  }
+
   /* --------------------------------------------------------------- 미리보기 배율 */
   function fitPreview() {
     var w = el.host.clientWidth;
@@ -588,13 +837,14 @@
   function ensure() {
     var def = currentDef();
     el.name.classList.remove('bad');
-    if (!state.name.trim()) {
-      warnForm((def.kind === 'church' ? '대표자 이름' : '이름') + '을 먼저 적어 주세요.');
+    var mainVal = def.kind === 'church' ? state.representative : state.name;
+    if (!String(mainVal || '').trim()) {
+      warnForm((def.kind === 'church' ? '대표자 이름' : '성명') + '을 먼저 적어 주세요.');
       el.name.classList.add('bad');
       el.name.focus();
       return false;
     }
-    var missing = def.extra.filter(function (f) {
+    var missing = (def.extra || []).filter(function (f) {
       return f.required && !String(extraOf(def.id)[f.key] || '').trim();
     });
     if (missing.length) {
@@ -609,17 +859,20 @@
 
   /* ------------------------------------------------------------------ 이력 */
   function recordIssue() {
-    if (!state.name.trim()) return false;
-    var def = currentDef(), list = loadHistory(), last = list[0];
-    if (last && last.no === state.no && last.name === state.name && last.typeId === def.id &&
+    var def = currentDef();
+    var who = def.kind === 'church' ? state.representative : state.name;
+    if (!String(who || '').trim()) return false;
+    var list = loadHistory(), last = list[0];
+    if (last && last.no === state.no && last.name === who && last.typeId === def.id &&
         (Date.now() - new Date(last.at).getTime()) < 60000) return true;
     var ex = {};
     Object.keys(extraOf(def.id)).forEach(function (k) { ex[k] = extraOf(def.id)[k]; });
     list.unshift({
       id: 'c' + Date.now() + Math.random().toString(36).slice(2, 6),
       at: new Date().toISOString(),
+      date: state.date,
       no: state.no, typeId: def.id, type: typeText(def).title || def.name,
-      name: state.name.trim(), birth: state.birth, address: state.address,
+      name: who, birth: state.birth, address: state.address,
       church: state.church, position: state.position,
       sender: state.sender, recipient: state.recipient, inet: state.inet, extras: ex
     });
@@ -628,18 +881,13 @@
     return true;
   }
 
-  function typeNameOf(h) {
-    if (h.typeId && TYPE_BY_ID[h.typeId]) return TYPE_BY_ID[h.typeId].name;
-    return h.type || '증명서';
-  }
-
   function renderHistory() {
     var list = loadHistory();
     var q = normalize(el.hSearch.value);
     var curType = el.hType.value, curMonth = el.hMonth.value;
 
     var typesInList = {};
-    list.forEach(function (h) { typesInList[typeNameOf(h)] = true; });
+    list.forEach(function (h) { typesInList[typeNameOf(h.typeId) || h.type] = true; });
     el.hType.innerHTML = '<option value="">전체 종류</option>' +
       Object.keys(typesInList).map(function (n) { return '<option value="' + esc(n) + '">' + esc(n) + '</option>'; }).join('');
     el.hType.value = typesInList[curType] ? curType : '';
@@ -656,7 +904,7 @@
     el.hMonth.value = months[curMonth] ? curMonth : '';
 
     var rows = list.filter(function (h) {
-      if (el.hType.value && typeNameOf(h) !== el.hType.value) return false;
+      if (el.hType.value && (typeNameOf(h.typeId) || h.type) !== el.hType.value) return false;
       if (el.hMonth.value) {
         var d = new Date(h.at);
         var k = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2);
@@ -679,8 +927,10 @@
 
     el.hList.innerHTML = rows.map(function (h) {
       return '<div class="hitem" data-id="' + h.id + '">' +
-        '<div class="who"><b>' + esc(h.name) + ' <em class="badge">' + esc(typeNameOf(h)) + '</em></b>' +
-        '<small>' + esc(h.no) + ' · ' + esc(h.church) + (h.recipient ? ' · 수신 ' + esc(h.recipient) : '') + '</small></div>' +
+        '<div class="who"><b>' + esc(h.name) + ' <em class="badge">' + esc(typeNameOf(h.typeId) || h.type) + '</em></b>' +
+        '<small>' + esc(h.no) + ' · ' + esc(h.church || '') +
+        (h.date ? ' · 발급일 ' + esc(fmtDate(h.date)) : '') +
+        (h.recipient ? ' · 수신 ' + esc(h.recipient) : '') + '</small></div>' +
         '<div class="when">' + fmtStamp(h.at) + '</div>' +
         '<button type="button" class="del" data-del="' + h.id + '" aria-label="기록 삭제">✕</button>' +
         '</div>';
@@ -694,26 +944,28 @@
     state.name = h.name;
     state.birth = h.birth || '';
     state.address = h.address || '';
-    state.church = h.church || DEFAULTS.church;
-    state.position = h.position || DEFAULTS.position;
+    state.church = h.church || state.church;
+    state.position = h.position || state.position;
     state.sender = h.sender || state.sender;
     state.recipient = h.recipient || '';
     state.no = h.no; state.noEdited = true;
-    state.date = todayISO();
+    state.date = h.date || todayISO();
     state.inet = makeInet();
+    var p = personByName(h.name);
+    state.personId = p ? p.id : '';
     extraOf(state.typeId);
     state.extras[state.typeId] = Object.assign({}, h.extras || {});
     saveState(); render(); switchView('issue'); fitPreview();
-    toast('이력의 ' + typeNameOf(h) + '를 불러왔습니다. 그대로 다시 받을 수 있습니다.');
+    toast('이력의 ' + (typeNameOf(state.typeId)) + '를 불러왔습니다. 그대로 다시 받을 수 있습니다.');
   }
 
   function csvDownload() {
     var list = loadHistory();
     if (!list.length) { toast('내려받을 이력이 없습니다.'); return; }
-    var head = ['발급일시', '증명서 종류', '증명서 번호', 'Internet No.', '이름', '생년월일', '주소', '교회명', '직위', '발신처', '수신처'];
+    var head = ['발급일시', '발급일', '증명서 종류', '증명서 번호', 'Internet No.', '이름', '생년월일', '주소', '교회명', '직분', '발신처', '수신처'];
     var lines = [head.join(',')];
     list.forEach(function (h) {
-      lines.push([fmtStampFull(h.at), typeNameOf(h), h.no, h.inet || '', h.name, h.birth || '', h.address || '',
+      lines.push([fmtStampFull(h.at), h.date || '', typeNameOf(h.typeId) || h.type, h.no, h.inet || '', h.name, h.birth || '', h.address || '',
                   h.church || '', h.position || '', h.sender || '', h.recipient || ''].map(csvCell).join(','));
     });
     var blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
@@ -724,6 +976,7 @@
     var s = String(v == null ? '' : v);
     return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
   }
+
   function downloadBlob(blob, filename) {
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
@@ -733,7 +986,7 @@
   }
 
   /* ------------------------------------------------------------------ 받기 */
-  /* 받은 뒤에는 다음 번호로 넘어간다(사용자가 번호를 직접 고친 경우는 그대로 둠) */
+  /* 받은 뒤에는 다음 번호로 넘어간다(번호를 직접 고친 경우는 그대로 둠) */
   function advanceNo() {
     if (state.noEdited) return;
     state.no = nextNo(state.date);
@@ -763,7 +1016,8 @@
         windowWidth: Math.round(A4W), windowHeight: Math.round(A4H)
       }).then(function (canvas) {
         canvas.toBlob(function (blob) {
-          downloadBlob(blob, typeText(currentDef()).title.replace(/\s/g, '') + '_' + state.name.trim() + '_' + state.date + '.png');
+          var who = currentDef().kind === 'church' ? state.representative : state.name;
+          downloadBlob(blob, typeText(currentDef()).title.replace(/\s/g, '') + '_' + (who || '').trim() + '_' + state.date + '.png');
           toast('이미지(PNG)로 저장했습니다.');
           done();
           advanceNo();
@@ -785,18 +1039,48 @@
     $('view-history').hidden = name !== 'history';
     $('view-format').hidden = name !== 'format';
     el.actionBar.style.display = name === 'issue' ? '' : 'none';
-    window.scrollTo(0, 0);
-    if (name === 'history') renderHistory();
-    if (name === 'format') renderFmtForm();
-    if (name === 'issue') setTimeout(fitPreview, 30);
+    if (name === 'format') { renderFmtForm(); renderPeopleList(); renderSealSlots(); }
+    if (name === 'issue') fitPreview();
   }
 
-  /* ------------------------------------------------------------------ 이벤트 */
+  /* ------------------------------------------------------------------ 설정 파일 */
+  function exportSettings() {
+    var data = { app: 'certificate', version: 1, exported: new Date().toISOString(), fmt: state.fmt, people: people };
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    downloadBlob(blob, '증명서-설정-' + todayISO() + '.json');
+    toast('설정과 명단을 내려받았습니다. (사진은 기기에만 남습니다)');
+  }
+  function importSettings(file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var data = JSON.parse(reader.result);
+        if (data && data.fmt) {
+          state.fmt = data.fmt;
+          state.fmt.types = state.fmt.types || {};
+        }
+        if (data && Array.isArray(data.people) && data.people.length) {
+          people = data.people;
+          savePeople();
+          renderPeopleOptions();
+          renderPeopleList();
+        }
+        saveState(); render(); renderFmtForm();
+        toast('설정을 가져왔습니다.');
+      } catch (e) { toast('파일을 읽지 못했습니다. JSON 파일인지 확인해 주세요.'); }
+    };
+    reader.readAsText(file);
+  }
+
+  /* ------------------------------------------------------------------ 연결 */
   function bind() {
+    /* 탭 */
     Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (b) {
       b.addEventListener('click', function () { switchView(b.dataset.view); });
     });
 
+    /* 발급 폼 */
     el.type.addEventListener('change', function () {
       state.typeId = el.type.value;
       if (!state.noEdited) state.no = nextNo(state.date);
@@ -804,18 +1088,29 @@
       saveState(); render(); fitPreview();
     });
 
-    el.name.addEventListener('input', function () {
-      state.name = el.name.value;
-      var hit = peopleByKey[normalize(state.name)];
-      if (hit) {
-        if (hit.birth) state.birth = hit.birth;
-        if (hit.address) state.address = hit.address;
-        if (hit.church) state.church = hit.church;
-        if (hit.position) state.position = hit.position;
-        el.nameHint.textContent = '명단에서 불러왔습니다 — 생년월일·주소까지 채웠어요.';
+    el.person.addEventListener('change', function () {
+      var p = personById(el.person.value);
+      if (!p) { state.personId = ''; saveState(); render(); return; }
+      applyPerson(p);
+      if (el.nameHint) {
+        el.nameHint.textContent = p.name + ' 님의 정보를 불러왔습니다.';
         el.nameHint.classList.add('on');
-      } else if (people.length) {
-        el.nameHint.textContent = '명단에 있는 이름을 고르면 생년월일·주소가 저절로 채워집니다.';
+      }
+    });
+
+    el.name.addEventListener('input', function () {
+      var def = currentDef();
+      var v = el.name.value;
+      if (def.kind === 'church') state.representative = v; else state.name = v;
+      var hit = personByName(v);
+      if (hit && hit.id !== state.personId) {
+        applyPerson(hit, true);
+        el.nameHint.textContent = hit.name + ' 님의 정보를 불러왔습니다.';
+        el.nameHint.classList.add('on');
+        return;
+      }
+      if (!hit && people.length && el.nameHint) {
+        el.nameHint.textContent = '명단에 있는 이름을 고르면 직분·생년월일·교회·주소가 저절로 채워집니다.';
         el.nameHint.classList.remove('on');
       }
       if (!state.noEdited) state.no = nextNo(state.date);
@@ -823,8 +1118,23 @@
       saveState(); render();
     });
 
+    el.position.addEventListener('input', function () {
+      state.position = el.position.value;
+      if (!state.personId) {
+        var p = personByPosition(el.position.value);
+        if (p && !String(state.name || '').trim()) {
+          applyPerson(p);
+          el.nameHint.textContent = p.name + ' 님의 정보를 불러왔습니다.';
+          el.nameHint.classList.add('on');
+          return;
+        }
+      }
+      saveState(); renderPaper();
+    });
+
     el.birth.addEventListener('change', function () { state.birth = el.birth.value; saveState(); render(); });
     el.church.addEventListener('input', function () { state.church = el.church.value; saveState(); renderPaper(); });
+    el.churchAddr.addEventListener('input', function () { state.churchAddress = el.churchAddr.value; saveState(); renderPaper(); });
     el.addr.addEventListener('input', function () { state.address = el.addr.value; saveState(); renderPaper(); });
     el.sender.addEventListener('input', function () { state.sender = el.sender.value; saveState(); renderPaper(); });
     el.recipient.addEventListener('input', function () { state.recipient = el.recipient.value; saveState(); renderPaper(); });
@@ -837,32 +1147,38 @@
     el.inet.addEventListener('input', function () { state.inet = el.inet.value; state.inetEdited = true; saveState(); renderPaper(); });
 
     /* 직인 */
-    Array.prototype.forEach.call(document.querySelectorAll('input[name="sealChoice"]'), function (r) {
+    Array.prototype.forEach.call(document.querySelectorAll('input[name="sealOnOff"]'), function (r) {
       r.addEventListener('change', function () {
         if (!r.checked) return;
-        state.sealChoice = r.value;
+        state.sealsOn = r.value === 'on';
         saveState(); applySeal();
       });
     });
-    el.sealSlots.addEventListener('click', function (e) {
+    function sealClick(e, inputId) {
       var pick = e.target.closest('[data-pick]');
-      if (pick) { pendingSealKey = pick.dataset.pick; $('sealFile').click(); return; }
+      if (pick) { pendingSealKey = pick.dataset.pick; pendingSealInput = inputId; $(inputId).click(); return; }
       var drop = e.target.closest('[data-drop]');
       if (drop) {
         var key = drop.dataset.drop;
         var meta = SEALS.filter(function (s) { return s.key === key; })[0];
-        if (!confirm((meta ? meta.name : '직인') + ' 이미지를 이 기기에서 지울까요?')) return;
+        if (!confirm((meta ? meta.name : '직인') + '을(를) 기본 직인으로 되돌릴까요?')) return;
         setSeal(key, null);
         renderSealSlots(); applySeal();
-        toast('지웠습니다.');
+        toast('기본 직인으로 되돌렸습니다.');
       }
-    });
-    $('sealFile').addEventListener('change', function () {
-      saveSealFromFile(pendingSealKey || state.sealChoice, this.files && this.files[0]);
-      this.value = '';
+    }
+    if (el.sealSlots) el.sealSlots.addEventListener('click', function (e) { sealClick(e, 'sealFile'); });
+    if (el.sealSlotsAdmin) el.sealSlotsAdmin.addEventListener('click', function (e) { sealClick(e, 'sealFileAdmin'); });
+    ['sealFile', 'sealFileAdmin'].forEach(function (id) {
+      var inp = $(id);
+      if (!inp) return;
+      inp.addEventListener('change', function () {
+        saveSealFromFile(pendingSealKey || 'secretary', this.files && this.files[0]);
+        this.value = '';
+      });
     });
 
-    /* 양식 관리 */
+    /* 관리자: 양식 글자 */
     Array.prototype.forEach.call(document.querySelectorAll('input[name="wmChoice"]'), function (r) {
       r.addEventListener('change', function () {
         if (!r.checked) return;
@@ -877,13 +1193,12 @@
         state.fmt[key] = inp.value;
         if (key === 'noPrefix' && !state.noEdited) state.no = nextNo(state.date);
         saveState(); renderPaper();
-        if (key === 'signerTitle' || key === 'signerName') renderFmtForm();
+        if (key === 'signerTitle' || key === 'signerName' || key === 'chairTitle' || key === 'chairName') renderFmtForm();
         if (key === 'noPrefix') el.no.value = state.no;
       });
     });
 
     $('fmType').addEventListener('change', function () {
-      // 양식 관리에서 고른 종류를 미리보기에도 그대로 띄운다
       state.typeId = $('fmType').value;
       if (!state.noEdited) state.no = nextNo(state.date);
       saveState(); render(); renderFmtForm();
@@ -929,20 +1244,77 @@
       toast('기본 문구로 되돌렸습니다.');
     });
     $('fmtReset').addEventListener('click', function () {
-      if (!confirm('양식 글자를 모두 처음 상태로 되돌릴까요?\n(발급 이력과 직인 이미지는 그대로 남습니다)')) return;
+      if (!confirm('양식 글자를 모두 처음 상태로 되돌릴까요?\n(발급 이력·직인·명단은 그대로 남습니다)')) return;
       state.fmt = defaultFmt();
       if (!state.noEdited) state.no = nextNo(state.date);
       saveState(); renderFmtForm(); render(); el.no.value = state.no;
       toast('기본값으로 복원했습니다.');
     });
 
+    /* 관리자: 사람 명단 */
+    $('peNew').addEventListener('click', function () {
+      editingPersonId = null; newPhotoData = null;
+      renderPersonForm();
+      $('peName').focus();
+    });
+    $('peSave').addEventListener('click', savePersonFromForm);
+    $('peReset').addEventListener('click', function () {
+      if (!confirm('이 기기에 저장한 명단을 지우고 기본 명단으로 돌아갈까요?')) return;
+      try { localStorage.removeItem(KEY_PEOPLE); } catch (e) {}
+      people = deepCopy(basePeople);
+      editingPersonId = null; newPhotoData = null;
+      syncPeople(); renderPersonForm(); render();
+      toast('기본 명단으로 돌아갔습니다.');
+    });
+    $('peList').addEventListener('click', function (e) {
+      var ed = e.target.closest('[data-pedit]');
+      if (ed) { editingPersonId = ed.dataset.pedit; newPhotoData = null; renderPersonForm(); return; }
+      var del = e.target.closest('[data-pdel]');
+      if (del) {
+        var id = del.dataset.pdel;
+        var p = personById(id);
+        if (!p) return;
+        if (!confirm('명단에서 ' + p.name + ' 님을 지울까요?')) return;
+        people = people.filter(function (x) { return x.id !== id; });
+        try { localStorage.removeItem(photoKey(id)); } catch (err) {}
+        if (state.personId === id) state.personId = '';
+        if (editingPersonId === id) editingPersonId = null;
+        syncPeople(); renderPersonForm(); render();
+        toast('명단에서 지웠습니다.');
+      }
+    });
+    $('pePhotoBtn').addEventListener('click', function () { $('pePhotoFile').click(); });
+    $('pePhotoFile').addEventListener('change', function () {
+      var id = editingPersonId || 'tmp';
+      savePhotoFromFile(id, this.files && this.files[0]);
+      this.value = '';
+      if (!editingPersonId) toast('먼저 명단에 저장하면 사진이 그 사람 것으로 남습니다.');
+    });
+    $('pePhotoDel').addEventListener('click', function () {
+      if (!editingPersonId) { newPhotoData = null; $('pePhotoThumb').innerHTML = '없음'; return; }
+      if (!confirm('이 사람의 증명사진을 지울까요?')) return;
+      setPhoto(editingPersonId, null);
+      newPhotoData = null;
+      $('pePhotoThumb').innerHTML = '없음';
+      renderPaper();
+      toast('사진을 지웠습니다.');
+    });
+
+    /* 설정 백업 */
+    $('expBtn').addEventListener('click', exportSettings);
+    $('impBtn').addEventListener('click', function () { $('impFile').click(); });
+    $('impFile').addEventListener('change', function () {
+      importSettings(this.files && this.files[0]);
+      this.value = '';
+    });
+
     $('resetBtn').addEventListener('click', function () {
-      if (!confirm('입력한 값을 지우고 처음 상태로 돌아갈까요?\n(발급 이력과 양식 설정은 지워지지 않습니다)')) return;
-      var keepFmt = state.fmt, keepSeal = state.sealChoice;
+      if (!confirm('입력한 값을 지우고 처음 상태로 돌아갈까요?\n(발급 이력·양식·명단은 지워지지 않습니다)')) return;
+      var keepFmt = state.fmt, keepSeals = state.sealsOn;
       state = blankState();
-      state.fmt = keepFmt; state.sealChoice = keepSeal;
+      state.fmt = keepFmt; state.sealsOn = keepSeals;
       state.no = nextNo(state.date);
-      el.nameHint.textContent = '명단에 있는 이름을 고르면 생년월일·주소가 저절로 채워집니다.';
+      el.nameHint.textContent = '명단에 있는 이름을 고르면 직분·생년월일·교회·주소가 저절로 채워집니다.';
       el.nameHint.classList.remove('on');
       warnForm('');
       saveState(); render(); fitPreview();
@@ -959,14 +1331,14 @@
         var id = del.dataset.del;
         var row = loadHistory().filter(function (x) { return x.id === id; })[0];
         if (!row) return;
-        if (!confirm('이 발급 기록을 지울까요?\n\n' + typeNameOf(row) + ' · ' + row.name + ' · ' + row.no)) return;
+        if (!confirm('이 발급 기록을 지울까요?\n\n' + (typeNameOf(row.typeId) || row.type) + ' · ' + row.name + ' · ' + row.no)) return;
         saveHistory(loadHistory().filter(function (x) { return x.id !== id; }));
         renderHistory();
         toast('기록을 지웠습니다.');
         return;
       }
       var item = e.target.closest('.hitem');
-      if (item) loadFromHistory(item.dataset.id);
+      if (item && item.dataset.id) loadFromHistory(item.dataset.id);
     });
 
     $('csvBtn').addEventListener('click', csvDownload);
@@ -1029,34 +1401,56 @@
   function boot() {
     initState();
     bind();
-    loadSeal();
+    renderSealSlots();
 
     Promise.all([loadTypes(), loadPeople()]).then(function () {
       if (!TYPE_BY_ID[state.typeId]) state.typeId = (TYPES[0] && TYPES[0].id) || 'membership';
-      if (!state.name && people.length) {
-        var p = people[0];
-        state.name = p.name || '';
-        state.birth = p.birth || '';
-        state.address = p.address || state.address;
-        state.church = p.church || state.church;
-        state.position = p.position || state.position;
-        state.no = nextNo(state.date);
-        saveState();
+
+      // 앱을 열면 관리자에 들어가지 않아도 기본 사람·교회 정보로 채워 둔다
+      var savedPerson = personById(state.personId);
+      var mainVal = currentDef().kind === 'church' ? state.representative : state.name;
+      if (!String(mainVal || '').trim() && people.length) {
+        applyPerson(people[0]);
+      } else if (savedPerson) {
+        state.personId = savedPerson.id;
+      } else if (people.length) {
+        var hit = personByName(state.name) || personByPosition(state.position);
+        if (hit) state.personId = hit.id;
+        else state.personId = '';
       }
       state.no = state.no || nextNo(state.date);
+      saveState();
       render();
+      // 개척일·설립일처럼 명단에 있는 값을 빈 칸에 채운다
+      fillExtrasFromPerson();
       renderHistory();
       renderFmtForm();
+      renderPeopleList();
+      renderPersonForm();
       fitPreview();
-      setTimeout(fitPreview, 120);
+      registerSW();
     });
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw.js').catch(function () {});
-      });
-    }
   }
 
-  document.addEventListener('DOMContentLoaded', boot);
+  function fillExtrasFromPerson() {
+    var p = personById(state.personId);
+    if (!p) return;
+    if (p.plantDate && !extraOf('church-plant').plantDate) extraOf('church-plant').plantDate = p.plantDate;
+    if (p.foundDate && !extraOf('church-found').foundDate) extraOf('church-found').foundDate = p.foundDate;
+    saveState();
+    renderForm();
+  }
+
+  function registerSW() {
+    if (!('serviceWorker' in navigator)) return;
+    try {
+      navigator.serviceWorker.register('sw.js');
+    } catch (e) {}
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
 })();

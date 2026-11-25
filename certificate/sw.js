@@ -2,7 +2,7 @@
    이 폴더(certificate/) 범위만 담당한다. 같은 저장소의 다른 페이지는 건드리지 않는다.
    네트워크가 있으면 새 파일을 먼저 받아 두고, 없으면 받아 둔 사본으로 연다. */
 
-const CACHE = 'certificate-app-v7';
+const CACHE = 'certificate-app-v8';
 const SHELL = [
   './',
   './index.html',
@@ -11,6 +11,9 @@ const SHELL = [
   './assets/emblem-navy.png',
   './assets/emblem-slate.png',
   './assets/emblem-ink.png',
+  './assets/seals/seal-chair-round.png',
+  './assets/seals/seal-secretary-round.png',
+  './assets/seals/seal-presbytery-square.png',
   './assets/band.png',
   './assets/icons/icon-192.png',
   './assets/icons/icon-512.png',
