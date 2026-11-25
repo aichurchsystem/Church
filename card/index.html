@@ -264,7 +264,7 @@
     </a>
     <button class="row" id="faxrow" type="button">
       <span class="k">팩스</span>
-      <span class="v">02-419-1319</span>
+      <span class="v">02-429-1319</span>
       <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6.5" y="3.5" width="11" height="5"/><rect x="3.5" y="8.5" width="17" height="8" rx="1.8"/><path d="M6.5 14.5h11v6h-11z"/></svg></span>
     </button>
   </section>
@@ -312,7 +312,7 @@
     "ROLE:Senior Pastor",
     "TEL;TYPE=CELL,VOICE:+821053283683",
     "TEL;TYPE=WORK,VOICE:+8224291318",
-    "TEL;TYPE=WORK,FAX:+8224191319",
+    "TEL;TYPE=WORK,FAX:+8224291319",
     "EMAIL;TYPE=WORK,INTERNET:pjy53283683@gmail.com",
     "ADR;TYPE=WORK:;;서울 광진구 구의강변로3가길 33 상가 2층;서울특별시;;;대한민국",
     "URL:https://aichurchsystem.github.io/Church/card/",
@@ -353,7 +353,7 @@
   });
 
   document.getElementById("faxrow").addEventListener("click", function(){
-    var num = "02-419-1319";
+    var num = "02-429-1319";
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(num).then(function(){ showToast("팩스 번호를 복사했습니다"); },
         function(){ showToast("팩스 " + num); });
