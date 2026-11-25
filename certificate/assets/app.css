@@ -188,6 +188,9 @@ main{padding:14px 14px 0}
 .gap-tel{display:inline-block;width:6mm}
 .gap-tel[hidden]{display:none}
 .p-rule{display:block;height:0;margin:3.2mm 0 0;border-top:.55mm solid #2E7BB8}
+/* 총회 주소까지 세 줄이 되면 그만큼 줄 간격을 좁혀 아래 괘선 자리를 지킨다 */
+.paper.has-hq .p-sub{padding-top:1.8mm}
+.paper.has-hq .p-sub .hl2{line-height:1.35}
 
 .cno{position:absolute;z-index:1;left:22.4mm;top:50mm;font-size:3.15mm;letter-spacing:.12mm;line-height:4mm}
 

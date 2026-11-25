@@ -1703,8 +1703,9 @@
     if (!('serviceWorker' in navigator)) return;
     /* 새 버전이 이 기기를 넘겨받으면 한 번만 새로 고쳐 옛 화면·새 화면이 섞이지 않게 한다 */
     var reloading = false;
+    var hadController = !!navigator.serviceWorker.controller;   /* 첫 설치 때는 새로 고치지 않는다 */
     navigator.serviceWorker.addEventListener('controllerchange', function () {
-      if (reloading) return;
+      if (reloading || !hadController) return;
       try { if (sessionStorage.getItem('cert.reloadedFor') === '1') return; sessionStorage.setItem('cert.reloadedFor', '1'); } catch (e) {}
       reloading = true;
       location.reload();
