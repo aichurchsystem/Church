@@ -138,7 +138,7 @@ main{padding:14px 14px 0}
 .wm{
   position:absolute;z-index:0;left:50%;top:96.5mm;width:107.5mm;
   transform:translateX(-50%);
-  opacity:.10;pointer-events:none;user-select:none;
+  opacity:.2;pointer-events:none;user-select:none;
 }
 .hl{position:absolute;z-index:1;left:0;right:0;text-align:center;white-space:nowrap}
 .hl1{top:12.6mm;font-size:5.35mm;letter-spacing:5.95mm;padding-left:5.95mm;line-height:6.6mm;font-weight:600}

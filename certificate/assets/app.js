@@ -24,6 +24,8 @@
       fax: 'Fax: 521-2729',
       presbytery: '서울강동노회',
       presbyteryAddress: '서울특별시 광진구 구의강변로3가길 33, 2층',
+      headChair: '노회장 이용동목사',
+      headSecretary: '서기 박재용목사',
       signerTitle: '노회 서기',
       signerName: '박재용',
       noPrefix: '노회(증)',
@@ -307,6 +309,7 @@
       });
       if (saved.fmt.types && typeof saved.fmt.types === 'object') fmt.types = saved.fmt.types;
     }
+    migrateHead(fmt);
     base.fmt = fmt;
     // 예전 '본문 문구 수정' 저장값을 양식 관리 쪽으로 옮긴다
     Object.keys(base.bodies || {}).forEach(function (id) {
@@ -317,6 +320,18 @@
     });
     state = base;
     state.no = state.no || nextNo(state.date);
+  }
+
+  /* 지면 머리글의 노회장·서기 표기
+     - 이 기기에 예전 기본값('노회 서기' / '박재용')만 저장돼 있으면 새 표기로 바꿔 준다.
+     - 목사님이 직접 고쳐 둔 값은 그대로 둔다. */
+  var LEGACY_HEAD = ['노회 서기', '박재용', '노회 서기 박재용', '노회 서기박재용'];
+  function migrateHead(fmt) {
+    var def = defaultFmt();
+    ['headChair', 'headSecretary'].forEach(function (k) {
+      var v = String(fmt[k] == null ? '' : fmt[k]).trim();
+      if (LEGACY_HEAD.indexOf(v) > -1) fmt[k] = def[k];
+    });
   }
 
   function currentDef() {
@@ -395,8 +410,8 @@
     el.pFax.textContent = F.fax;
     el.pPresb.textContent = F.presbytery;
     el.pNohoeAddr.textContent = F.presbyteryAddress;
-    el.pSignTitleHead.textContent = F.signerTitle;
-    el.pSignerHead.textContent = F.signerName;
+    el.pSignTitleHead.textContent = F.headChair || '';
+    el.pSignerHead.textContent = F.headSecretary || '';
     el.pNo.textContent = state.no || '';
     el.pTitle.textContent = T.title;
     layoutTitle();
