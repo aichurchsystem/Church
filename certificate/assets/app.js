@@ -1409,14 +1409,14 @@
       // 앱을 열면 관리자에 들어가지 않아도 기본 사람·교회 정보로 채워 둔다
       var savedPerson = personById(state.personId);
       var mainVal = currentDef().kind === 'church' ? state.representative : state.name;
-      if (!String(mainVal || '').trim() && people.length) {
+      if (savedPerson) {
+        // 이름은 그대로 두고 명단에 있는 직분·생년월일·교회·주소를 다시 맞춘다
+        applyPerson(savedPerson, true);
+      } else if (!String(mainVal || '').trim() && people.length) {
         applyPerson(people[0]);
-      } else if (savedPerson) {
-        state.personId = savedPerson.id;
       } else if (people.length) {
         var hit = personByName(state.name) || personByPosition(state.position);
         if (hit) state.personId = hit.id;
-        else state.personId = '';
       }
       state.no = state.no || nextNo(state.date);
       saveState();

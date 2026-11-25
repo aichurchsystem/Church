@@ -197,11 +197,11 @@ main{padding:14px 14px 0}
 .sign{position:absolute;z-index:1;left:0;right:0;top:196.2mm;text-align:center}
 .sg1{font-size:4.05mm;letter-spacing:.95mm;padding-left:.95mm;font-weight:600;line-height:1.15}
 .sg2{font-size:4.35mm;letter-spacing:.35mm;line-height:1.15}
-.sg2.first{margin-top:9.4mm}
-.sg2 + .sg2{margin-top:4.2mm}
+.sg2.first{margin-top:7.6mm}
+.sg2 + .sg2{margin-top:3.4mm}
 .gap-sign{display:inline-block;width:9mm}
-.seal-org{width:9.2mm;height:9.2mm;object-fit:contain;vertical-align:-2mm;margin-left:2.2mm;margin-right:-11.4mm;display:inline-block}
-.seal-name{width:7.2mm;height:7.2mm;object-fit:contain;vertical-align:-1.5mm;margin-left:1.4mm;margin-right:-8.6mm;display:inline-block}
+.seal-org{width:10mm;height:10mm;object-fit:contain;vertical-align:-2.4mm;margin-left:2.2mm;margin-right:-12.2mm;display:inline-block}
+.seal-name{width:8.6mm;height:8.6mm;object-fit:contain;vertical-align:-2.2mm;margin-left:1.6mm;margin-right:-10.2mm;display:inline-block}
 .sign img[hidden]{display:none}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
 .seg label{position:relative;display:block}
