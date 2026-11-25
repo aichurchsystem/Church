@@ -12,6 +12,14 @@
 | `favicon-32.png` | 브라우저 탭 | 원본 왼쪽 심볼만 정사각으로 크롭 |
 | `favicon-192.png` | 안드로이드 홈 화면 | 위와 같음(흰 배경) |
 | `apple-touch-icon-180.png` | iOS 홈 화면 | 위와 같음(흰 배경) |
+| `app-icon-192.png` | 웹 앱 매니페스트 192 | 심볼을 남색(#0a1f44) 바탕 가운데에 72% 크기로 |
+| `app-icon-512.png` | 웹 앱 매니페스트 512 | 위와 같음 |
+| `app-icon-maskable-512.png` | 안드로이드 적응형 아이콘 | 위와 같음, 안전영역을 위해 심볼을 52%로 줄임 |
+
+`app-icon-*.png` 세 개는 `manifest.webmanifest`가 가리키는 홈 화면 설치용 아이콘입니다.
+심볼은 원본에서 왼쪽 심볼 영역(0~195px)만 잘라 투명 여백을 지운 뒤 남색 위에 얹었고,
+로고의 색·모양은 바꾸지 않았습니다. `manifest.webmanifest`의 theme_color·background_color도
+같은 남색 `#0a1f44`입니다.
 
 ## 태그라인을 지운 이유
 

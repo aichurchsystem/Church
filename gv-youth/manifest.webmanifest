@@ -1,0 +1,54 @@
+{
+  "id": "./",
+  "name": "GV청소년선교회",
+  "short_name": "GV청소년",
+  "description": "청소년 뉴스·정책·정부혜택과 동아리·캠프·상담·강의 사역을 한곳에 모은 GV청소년선교회 홈페이지",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0a1f44",
+  "background_color": "#0a1f44",
+  "icons": [
+    {
+      "src": "assets/logo/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/logo/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/logo/app-icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "청소년 정보",
+      "short_name": "청소년 정보",
+      "url": "./archive.html",
+      "icons": [{ "src": "assets/logo/app-icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "사역 안내",
+      "short_name": "사역 안내",
+      "url": "./education.html",
+      "icons": [{ "src": "assets/logo/app-icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "바이블컨퍼런스",
+      "short_name": "컨퍼런스",
+      "url": "./bible-conference.html",
+      "icons": [{ "src": "assets/logo/app-icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}
