@@ -65,14 +65,14 @@ h1,h2,h3,p{margin:0}
 
 /* ---------------- 본문 ---------------- */
 main{padding:14px 14px 0}
-.view{display:block}
+.view{display:block;min-width:0}
 .view[hidden]{display:none!important}
 .issue-grid{display:grid;gap:12px}
 .left-col{display:block;min-width:0}
 
 .card{
   background:var(--card);border:1px solid var(--line);border-radius:16px;
-  padding:14px;box-shadow:var(--sh);
+  padding:14px;box-shadow:var(--sh);min-width:0;
 }
 .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
 .card-head h2{font-size:15px;font-weight:700;letter-spacing:-.2px;display:flex;align-items:center;gap:8px}
@@ -130,8 +130,10 @@ main{padding:14px 14px 0}
 .pv-foot{margin:8px 2px 0;font-size:11px;color:var(--faint);text-align:center}
 
 /* ---------------- 지면(A4) ----------------
-   A4 210×297mm 실측. 공문서(관공서 발급 문서)의 격식에 맞춰
-   머리글은 자간을 좁혀 한 덩어리로, 괘선·제목·서명부는 축을 맞춰 정돈한다. */
+   A4 210×297mm 실측. 3단 고정 조판:
+   위(.p-top: 머리글 띠)는 지면 위에 붙어 아래로만 자라고,
+   아래(.p-bottom: 괘선·Internet No·진위 문구)는 바닥에 붙어 위로 쌓인다.
+   가운데(번호·제목·항목·본문·날짜·서명부)만 늘고 준다. */
 .paper{
   position:relative;
   width:210mm;height:297mm;
@@ -143,90 +145,110 @@ main{padding:14px 14px 0}
   overflow:hidden;
   -webkit-font-smoothing:antialiased;
 }
+/* 워터마크는 머리글 띠 아래 본문 영역에만 깔린다 */
 .wm{
-  position:absolute;z-index:0;left:50%;top:94mm;width:106mm;
+  position:absolute;z-index:0;left:50%;top:106mm;width:96mm;
   transform:translateX(-50%);
   opacity:.45;pointer-events:none;user-select:none;
 }
 .paper[data-wm="slate"] .wm{opacity:.38}
-.paper[data-wm="ink"] .wm{opacity:.32}
+.paper[data-wm="ink"] .wm{opacity:.30}
 .paper[data-wm="none"] .wm{display:none}
 
-/* 머리글 — 1줄: 교단·노회 / 2줄: 주소·전화·팩스(같은 줄, 같은 기준선) */
-.head{position:absolute;z-index:1;left:16.6mm;right:17.8mm;top:8.6mm;text-align:center}
-/* 총회 주소 줄을 채운 경우에만 머리글을 조금 위로 모아 괘선과 겹치지 않게 한다 */
-.paper.has-hq .head{top:5.4mm}
-.paper.has-hq .hl1{line-height:6.6mm}
-.head .hl{white-space:nowrap}
-.head [hidden]{display:none}
-.hl1{font-size:5.3mm;letter-spacing:1.15mm;padding-left:1.15mm;line-height:7.1mm;font-weight:700}
+/* ---- 위: 머리글 띠 ---- */
+.p-top{position:absolute;z-index:1;left:0;right:0;top:0}
+.p-band{
+  position:relative;height:30mm;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(100deg,#12344F 0%,#16456A 58%,#1E5C86 100%);
+  color:#fff;
+}
+.p-band:after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:.8mm;
+  background:linear-gradient(90deg,#2E7BB8,#8AC6E8 50%,#2E7BB8);
+}
+.p-mark{
+  position:absolute;left:16.6mm;top:50%;transform:translateY(-50%);
+  width:16mm;height:16mm;display:block;
+}
+.hl1{
+  font-size:5.2mm;letter-spacing:.9mm;padding-left:.9mm;
+  line-height:1.6;font-weight:700;white-space:nowrap;
+}
+.hl1 [hidden]{display:none}
 .gap-org{display:inline-block;width:5.5mm}
 .gap-org[hidden]{display:none}
-.hl2{font-size:3mm;letter-spacing:.1mm;line-height:4.3mm;margin-top:1mm;color:#222}
-/* 주소와 전화·팩스를 한 줄에: 넘치면 스크립트가 이 줄만 살짝 줄인다 */
-.hl2line{display:flex;align-items:baseline;justify-content:center;gap:7mm;
-  margin-top:1.9mm;font-size:3mm;letter-spacing:.08mm;line-height:4.3mm;white-space:nowrap}
-.hl2line .addr,.hl2line .contact{white-space:nowrap}
-.hl2line [hidden]{display:none}
-.gap-tel{display:inline-block;width:7mm}
+.p-sub{padding:3.6mm 17.8mm 0 16.6mm;text-align:center}
+.p-sub .hl2{
+  font-size:2.95mm;letter-spacing:.06mm;line-height:1.6;color:#333;
+  white-space:nowrap;overflow:hidden;
+}
+.p-sub .hl2[hidden]{display:none}
+.p-sub .hl2 span[hidden]{display:none}
+.gap-tel{display:inline-block;width:6mm}
 .gap-tel[hidden]{display:none}
+.p-rule{display:block;height:0;margin:3.2mm 0 0;border-top:.55mm solid #2E7BB8}
 
-/* 위 괘선: 가는 선 위에 굵은 선 */
-.rules{position:absolute;z-index:1;left:16.6mm;right:17.8mm;top:26mm}
-.rules i{display:block;height:0;border-top:.26mm solid #111}
-.rules i+i{margin-top:1.15mm;border-top-width:.95mm}
-
-.cno{position:absolute;z-index:1;left:22.4mm;top:32.9mm;font-size:3.15mm;letter-spacing:.12mm;line-height:4mm}
+.cno{position:absolute;z-index:1;left:22.4mm;top:50mm;font-size:3.15mm;letter-spacing:.12mm;line-height:4mm}
 
 /* 공문 머리: 발신처·수신처 */
-.mailhead{position:absolute;z-index:1;right:17.8mm;top:33.1mm;max-width:118mm;display:flex;justify-content:flex-end;
+.mailhead{position:absolute;z-index:1;right:17.8mm;top:50.1mm;max-width:118mm;display:flex;justify-content:flex-end;
   gap:7mm;align-items:baseline;font-size:3mm;line-height:4mm}
 .mailhead .mrow{white-space:nowrap}
 .mailhead .mrow[hidden]{display:none}
 .mailhead .mk{color:#333;margin-right:1.6mm}
 .mailhead .mv{font-weight:700}
 
-/* 제목: 넓은 자간 + 이중 밑줄(가는 선·굵은 선) */
-.title{position:absolute;z-index:1;left:0;right:0;top:43.0mm;text-align:center;line-height:0}
+/* 제목: 괘선 없이 여백으로 나눈다. 자간은 0.8mm로 절제 */
+.title{position:absolute;z-index:1;left:0;right:0;top:60.5mm;text-align:center;line-height:0}
 .title span{
-  position:relative;display:inline-block;font-size:10.9mm;font-weight:700;letter-spacing:2.9mm;padding-left:2.9mm;
-  line-height:1.02;padding-bottom:2.7mm;border-bottom:.95mm solid #111;
+  display:inline-block;font-size:10.9mm;font-weight:700;
+  letter-spacing:.8mm;padding-left:.8mm;line-height:1.05;
 }
-.title span:after{content:'';position:absolute;left:0;right:0;bottom:1.55mm;height:.26mm;background:#111}
 
-.fields{position:absolute;z-index:1;left:22.4mm;right:18mm;top:64.6mm}
+.fields{position:absolute;z-index:1;left:22.4mm;right:18mm;top:84mm}
 .paper.has-photo .fields{right:52mm}
-.photo{position:absolute;z-index:1;right:18mm;top:65.2mm;width:30mm;height:40mm;object-fit:cover;
+.photo{position:absolute;z-index:1;right:18mm;top:84.6mm;width:30mm;height:40mm;object-fit:cover;
   border:.3mm solid #333;background:#fff}
 .photo[hidden]{display:none}
-.fld{display:flex;align-items:baseline;height:9.1mm;font-size:4.2mm;line-height:1}
-.lb{width:20.4mm;flex:0 0 20.4mm;display:flex;justify-content:space-between}
+.fld{display:flex;align-items:baseline;height:9.6mm;font-size:4.3mm;line-height:1}
+.lb{width:21mm;flex:0 0 21mm;display:flex;justify-content:space-between}
 .lb i{font-style:normal}
 .cl{flex:0 0 5.6mm;text-align:left;padding-left:.4mm}
 .vl{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden}
 
-.body{position:absolute;z-index:1;left:22.2mm;right:16mm;top:119.0mm;font-size:4.2mm;line-height:11.2mm;letter-spacing:.02mm}
+.body{position:absolute;z-index:1;left:22.2mm;right:16mm;top:136mm;font-size:4.3mm;line-height:13mm;letter-spacing:.02mm}
 .bl{display:block}
 .bl.first{text-indent:26.2mm}
 
-.date{position:absolute;z-index:1;left:0;right:0;top:185.6mm;text-align:center;font-size:4.75mm;letter-spacing:.75mm;padding-left:.75mm}
+.date{position:absolute;z-index:1;left:0;right:0;top:221.5mm;text-align:center;font-size:4.8mm;letter-spacing:.9mm;padding-left:.9mm}
 
-/* 서명부 — 발급기관 + 노회 직인, 노회장·서기 두 줄은 축을 맞춰 정렬 */
-.sign{position:absolute;z-index:1;left:0;right:0;top:197.2mm;text-align:center}
-.sg1{font-size:4.25mm;letter-spacing:1.2mm;padding-left:1.2mm;font-weight:700;line-height:5mm}
-.sg2wrap{margin-top:10.2mm;display:flex;justify-content:center}
-.sg2{display:grid;grid-template-columns:max-content max-content;column-gap:9mm;row-gap:8.2mm;text-align:left}
-.sg2 .st{font-size:4.4mm;letter-spacing:.3mm;line-height:1.12;text-align:right}
-.sg2 .sn{font-size:4.55mm;letter-spacing:.5mm;line-height:1.12;white-space:nowrap}
+/* 서명부 — 바닥에서 위로 쌓는다. 두 이름 줄은 같은 리듬(줄 간격 100%)으로 */
+.sign{position:absolute;z-index:1;left:0;right:0;bottom:32mm;text-align:center}
+.sg1{font-size:4.3mm;letter-spacing:.9mm;padding-left:.9mm;font-weight:700;line-height:1;white-space:nowrap}
+.sg2wrap{margin-top:7.6mm;display:flex;justify-content:center}
+.sg2{display:grid;grid-template-columns:max-content max-content;column-gap:9mm;row-gap:5.6mm;text-align:left;
+  align-items:center}
+.sg2 .st{font-size:4.4mm;letter-spacing:.3mm;line-height:1;text-align:right}
+.sg2 .sn{font-size:4.55mm;letter-spacing:.5mm;line-height:1;white-space:nowrap}
 /* 직인은 자리만 차지하고 줄 높이를 늘리지 않는다(글줄 축을 흔들지 않게) */
-.seal-hold{position:relative;display:inline-block;vertical-align:baseline}
-.seal-hold-org{width:23.4mm;height:5mm}
-.seal-hold-name{width:11mm;height:5mm}
+.seal-hold{position:relative;display:inline-block;vertical-align:middle}
+.seal-hold-org{width:23.4mm;height:4.3mm}
+.seal-hold-name{width:11mm;height:4.3mm}
 .seal-hold img{position:absolute;left:0;top:50%;transform:translateY(-50%);object-fit:contain;display:block}
 .seal-hold[hidden]{display:none}
-.seal-org{width:20mm;height:20mm;margin-left:3.4mm}
-.seal-name{width:8.8mm;height:8.8mm;margin-left:2.2mm}
+.seal-org{width:20mm;height:20mm;margin-left:3.2mm;transform:translateY(calc(-50% + 3.2mm))}
+.seal-name{width:9mm;height:9mm;margin-left:2.2mm}
 .sign img[hidden]{display:none}
+
+/* ---- 아래: 지면 바닥에 붙는 블록 ---- */
+.p-bottom{position:absolute;z-index:1;left:0;right:0;bottom:8.5mm;
+  display:flex;flex-direction:column;justify-content:flex-end}
+.p-bottom .band{margin:0 17.8mm 0 22.2mm;height:8.4mm;border:.26mm solid #111;overflow:hidden}
+.p-bottom .band img{width:100%;height:100%;object-fit:cover;display:block}
+.p-bottom .inet{margin:2.6mm 0 0 22.2mm;font-size:2.6mm;letter-spacing:0;line-height:1}
+.p-bottom .note{margin:1.8mm 10mm 0 22mm;font-size:2.55mm;letter-spacing:.02mm;line-height:1.55;color:#1b1b1b;
+  white-space:nowrap}
 
 /* ---------------- 화면 쪽 조작 요소(직인·워터마크 고르기) ---------------- */
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
@@ -254,10 +276,6 @@ label.mini{cursor:pointer}
   color:rgba(176,58,52,.75);font-size:2.5mm;display:flex;align-items:center;justify-content:center;
   font-family:-apple-system,"Malgun Gothic",sans-serif;letter-spacing:0}
 
-.note{position:absolute;z-index:1;left:22mm;right:10mm;top:239.2mm;font-size:2.5mm;line-height:4.5mm;letter-spacing:.02mm;color:#222}
-.band{position:absolute;z-index:1;left:22.2mm;width:161.5mm;top:249.2mm;height:8.7mm;border:.28mm solid #111;overflow:hidden}
-.band img{width:100%;height:100%;object-fit:cover;display:block}
-.inet{position:absolute;z-index:1;left:22.2mm;top:265.7mm;font-size:2.65mm;letter-spacing:.05mm}
 
 /* ---------------- 하단 버튼 ----------------
    받기 버튼은 한 손으로 누르기 좋게 화면 아래에 붙여 둔다. */
@@ -302,10 +320,10 @@ label.mini{cursor:pointer}
   width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid #e2dfd5;background:#fcfbf7;font-size:15px;
 }
 .hfilter input:focus,.hfilter select:focus{outline:none;border-color:var(--navy-2);background:#fff}
-.hlist{display:flex;flex-direction:column}
+.hlist{display:flex;flex-direction:column;min-width:0}
 .hitem{
   display:flex;align-items:center;gap:10px;padding:11px 2px;border-bottom:1px solid var(--line-2);
-  width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left;
+  width:100%;min-width:0;background:none;border-left:0;border-right:0;border-top:0;text-align:left;
 }
 .hitem:last-child{border-bottom:0}
 .hitem .who{flex:1;min-width:0}
@@ -381,61 +399,17 @@ label.mini{cursor:pointer}
   .paper-host{display:block!important;width:210mm!important;height:297mm!important;min-height:0!important;
     background:#fff!important;border-radius:0!important;overflow:visible!important;position:static!important}
   #paper{transform:none!important;box-shadow:none!important;margin:0!important;position:relative!important}
-  .seg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
-.seg label{position:relative;display:block}
-.seg input{position:absolute;opacity:0;pointer-events:none}
-.seg span{display:block;text-align:center;padding:9px 6px;border:1.5px solid #e2dfd5;border-radius:10px;
-  background:#fcfbf7;font-size:13px;font-weight:600;color:#4a5262;white-space:nowrap}
-.seg input:checked + span{background:var(--navy);border-color:var(--navy);color:#fff}
-.seal-slots{display:flex;flex-direction:column;gap:8px;margin-bottom:9px}
-.seal-slot{display:flex;align-items:center;gap:10px}
-.seal-slot .st{width:44px;height:44px;flex:0 0 44px;border:1.5px dashed #ddd6c6;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;background:#fbf9f3;overflow:hidden;font-size:10px;color:#b3ab99}
-.seal-slot .st img{width:100%;height:100%;object-fit:contain}
-.seal-slot .sn{flex:1;min-width:0;font-size:12.5px;font-weight:600;color:#4a5262}
-.seal-slot .sn small{display:block;font-weight:500;color:var(--faint);font-size:11px;margin-top:2px}
-.seal-slot .mini{padding:5px 9px;font-size:11.5px}
-.seal-row{display:flex;align-items:center;gap:12px}
-.seal-thumb{width:74px;height:74px;flex:0 0 74px;border:1.5px dashed #ddd6c6;border-radius:50%;display:flex;
-  align-items:center;justify-content:center;background:#fbf9f3;overflow:hidden;color:#b3ab99;font-size:11px}
-.seal-thumb img{width:100%;height:100%;object-fit:contain}
-.seal-acts{display:flex;flex-direction:column;gap:7px}
-.seal-acts .mini{text-align:center}
-label.mini{cursor:pointer}
-.seal-ph{display:none!important}
-  .paper,.wm,.sign img,.photo,.band img{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .seal-ph{display:none!important}
+  .paper,.wm,.sign img,.photo,.band img,.p-band,.p-mark,.p-rule{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 
 /* 이미지 저장 중에는 지면을 원래 크기로 잠깐 펼쳐 둔다 */
 body.exporting #paperHost{position:fixed!important;left:-3000mm;top:0;width:210mm!important;height:297mm!important;
   overflow:visible!important;background:#fff!important;border-radius:0}
 body.exporting #paper{transform:none!important;box-shadow:none!important}
-body.exporting .seg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
-.seg label{position:relative;display:block}
-.seg input{position:absolute;opacity:0;pointer-events:none}
-.seg span{display:block;text-align:center;padding:9px 6px;border:1.5px solid #e2dfd5;border-radius:10px;
-  background:#fcfbf7;font-size:13px;font-weight:600;color:#4a5262;white-space:nowrap}
-.seg input:checked + span{background:var(--navy);border-color:var(--navy);color:#fff}
-.seal-slots{display:flex;flex-direction:column;gap:8px;margin-bottom:9px}
-.seal-slot{display:flex;align-items:center;gap:10px}
-.seal-slot .st{width:44px;height:44px;flex:0 0 44px;border:1.5px dashed #ddd6c6;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;background:#fbf9f3;overflow:hidden;font-size:10px;color:#b3ab99}
-.seal-slot .st img{width:100%;height:100%;object-fit:contain}
-.seal-slot .sn{flex:1;min-width:0;font-size:12.5px;font-weight:600;color:#4a5262}
-.seal-slot .sn small{display:block;font-weight:500;color:var(--faint);font-size:11px;margin-top:2px}
-.seal-slot .mini{padding:5px 9px;font-size:11.5px}
-.seal-row{display:flex;align-items:center;gap:12px}
-.seal-thumb{width:74px;height:74px;flex:0 0 74px;border:1.5px dashed #ddd6c6;border-radius:50%;display:flex;
-  align-items:center;justify-content:center;background:#fbf9f3;overflow:hidden;color:#b3ab99;font-size:11px}
-.seal-thumb img{width:100%;height:100%;object-fit:contain}
-.seal-acts{display:flex;flex-direction:column;gap:7px}
-.seal-acts .mini{text-align:center}
-label.mini{cursor:pointer}
-.seal-ph{display:none!important}
-
 
 /* ---------------- 양식 관리 ---------------- */
-.fmt-wrap{display:grid;gap:12px}
+.fmt-wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
 .fmt-h{
   font-size:12.5px;font-weight:700;color:var(--gold);letter-spacing:.2px;
   margin:16px 0 9px;padding-top:12px;border-top:1px dashed var(--line);
@@ -452,3 +426,37 @@ label.mini{cursor:pointer}
 @media (min-width:900px){
   .fmt-wrap{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;max-width:1100px;margin:0 auto}
 }
+
+/* ---------------- 저장 결과 시트 ----------------
+   PDF·이미지를 만들면 이 시트에서 바로 저장하거나 새 창으로 연다.
+   (휴대폰 브라우저·앱 안 브라우저에서 '아무 반응 없이 끝나는' 일을 막는다) */
+#saveModal{align-items:stretch;justify-content:flex-end}
+.sheet{
+  background:#fff;border-radius:18px 18px 0 0;
+  padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));
+  max-height:92vh;display:flex;flex-direction:column;
+  box-shadow:0 -10px 30px rgba(0,0,0,.28);
+}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.sheet-head h3{font-size:17px;font-weight:700}
+.sheet-body{overflow:auto;-webkit-overflow-scrolling:touch}
+.sheet-body p{font-size:13.5px;color:#4b5262;line-height:1.6}
+.sheet-prev{margin:11px 0 2px;border:1px solid var(--line);border-radius:12px;background:#f3f1ea;padding:8px;text-align:center}
+.sheet-prev img{max-width:100%;max-height:42vh;border:1px solid #ddd;background:#fff;
+  box-shadow:0 4px 14px rgba(0,0,0,.14);cursor:zoom-in}
+.sheet-file{display:flex;align-items:center;gap:10px;margin:12px 0 2px;padding:12px;border:1px solid var(--line);
+  border-radius:12px;background:#f8f7f2}
+.sheet-file b{display:block;font-size:13.5px;word-break:break-all}
+.sheet-file small{display:block;color:var(--faint);font-size:11.5px;margin-top:3px}
+.sheet-file .ico{width:38px;height:38px;flex:0 0 38px;border-radius:9px;background:#e9e6dc;color:#8a7f68;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;letter-spacing:.3px}
+.sheet-acts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}
+.sheet-acts .btn{padding:14px 6px;font-size:14.5px}
+.sheet-more{display:block;width:100%;margin-top:9px;padding:9px 6px;border:0;background:none;
+  color:var(--dim);font-size:12.5px;font-weight:600;text-decoration:underline}
+.sheet-prev[hidden],.sheet-file[hidden],.sheet-warn[hidden],
+#saveShare[hidden],#savePrint[hidden],#saveModal[hidden]{display:none!important}
+.sheet-hint{margin-top:11px;font-size:11.8px;color:var(--faint);line-height:1.55;word-break:keep-all}
+.sheet-hint b{color:#5c6474}
+.sheet-warn{margin-top:10px;padding:9px 11px;border-radius:10px;background:#fdf4f2;border:1px solid #f0d8d4;
+  color:#8f3a33;font-size:12px;line-height:1.55}

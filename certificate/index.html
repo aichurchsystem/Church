@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="증명서 발급">
-<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/app.css?v=16">
 </head>
 <body>
 
@@ -150,19 +150,23 @@
           <div class="paper-host" id="paperHost">
             <!-- ===== A4 지면 ===== -->
             <div class="paper" id="paper">
-              <img class="wm" id="pWm" src="assets/emblem-navy.png" alt="">
+              <img class="wm" id="pWm" src="assets/logo-sky.svg" alt="">
 
-              <div class="head" id="pHead">
-                <div class="hl hl1" id="pOrgLine"><span id="pOrg">대한예수교장로회(백석)</span><span class="gap-org" id="pOrgGap"></span><span id="pPresb">서울강동노회</span></div>
-                <div class="hl hl2" id="pHq"></div>
-                <div class="hl hl2line" id="pAddrRow">
-                  <span class="addr" id="pNohoeAddr">서울특별시 광진구 구의강변로3가길 33, 2층</span>
-                  <span class="contact" id="pTelRow"><span id="pTel">Tel: 02-429-1318</span><span class="gap-tel" id="pTelGap"></span><span id="pFax">Fax: 02-429-1319</span></span>
+              <!-- ===== 위: 머리글 띠 (지면 위에 고정) ===== -->
+              <div class="p-top">
+                <div class="p-band">
+                  <img class="p-mark" id="pMark" src="assets/logo-white.svg" alt="">
+                  <div class="hl1" id="pOrgLine"><span id="pOrg">대한예수교장로회(백석)</span><span class="gap-org" id="pOrgGap"></span><span id="pPresb">서울강동노회</span></div>
+                </div>
+                <div class="p-sub">
+                  <div class="hl2" id="pHq"></div>
+                  <div class="hl2" id="pNohoeAddrRow"><span id="pNohoeAddr">서울특별시 광진구 구의강변로3가길 33, 2층</span></div>
+                  <div class="hl2" id="pTelRow"><span id="pTel">Tel: 02-429-1318</span><span class="gap-tel" id="pTelGap"></span><span id="pFax">Fax: 02-429-1319</span></div>
+                  <i class="p-rule"></i>
                 </div>
               </div>
 
-              <div class="rules"><i></i><i></i></div>
-
+              <!-- ===== 가운데: 번호·제목·항목·본문·날짜·서명부 ===== -->
               <div class="cno" id="pNo">노회(증) 제26-00001호</div>
 
               <!-- 공문 발신처·수신처 (비어 있으면 그 줄은 찍지 않는다) -->
@@ -177,7 +181,7 @@
 
               <div class="body" id="pBody"></div>
 
-              <div class="date" id="pDate">2026. 11. 25.</div>
+              <div class="date" id="pDate">2026년 11월 25일</div>
 
               <img class="photo" id="pPhoto" alt="">
 
@@ -191,13 +195,12 @@
                 </div>
               </div>
 
-              <div class="note">
-                <div id="pNote1">본 증명서의 진위는 대한예수교장로회(백석) 서울강동노회로 문의하시기 바랍니다.</div>
-                <div id="pNote2">발급일로부터 90일까지만 효력이 있습니다.</div>
+              <!-- ===== 아래: 지면 바닥에 고정 ===== -->
+              <div class="p-bottom">
+                <div class="band"><img src="assets/band.png" alt=""></div>
+                <div class="inet">(Internet No) <span id="pInet">NBDF191948314</span></div>
+                <div class="note" id="pNoteLine">본 증명서의 진위 여부는 대한예수교장로회(백석) 서울강동노회로 문의하시기 바랍니다 발급일로부터 90일까지 유효합니다</div>
               </div>
-
-              <div class="band"><img src="assets/band.png" alt=""></div>
-              <div class="inet">(Internet No) <span id="pInet">NBDF191948314</span></div>
             </div>
             <!-- ===== /A4 지면 ===== -->
           </div>
@@ -261,10 +264,10 @@
           </div>
 
           <h3 class="fmt-h">워터마크</h3>
-          <div class="seg" id="wmSeg" role="radiogroup" aria-label="워터마크 진하기">
-            <label><input type="radio" name="wmChoice" value="navy" checked><span>네이비 45%</span></label>
-            <label><input type="radio" name="wmChoice" value="slate"><span>회청 38%</span></label>
-            <label><input type="radio" name="wmChoice" value="ink"><span>먹색 32%</span></label>
+          <div class="seg" id="wmSeg" role="radiogroup" aria-label="워터마크 진하기(하늘색)">
+            <label><input type="radio" name="wmChoice" value="navy" checked><span>하늘 45%</span></label>
+            <label><input type="radio" name="wmChoice" value="slate"><span>하늘 38%</span></label>
+            <label><input type="radio" name="wmChoice" value="ink"><span>하늘 30%</span></label>
             <label><input type="radio" name="wmChoice" value="none"><span>없음</span></label>
           </div>
 
@@ -392,21 +395,35 @@
   <div class="modal-body" id="zoomBody"></div>
 </div>
 
-<!-- PDF 안내 -->
-<div class="modal" id="pdfModal" hidden>
-  <div class="dialog">
-    <h3>PDF로 저장</h3>
-    <p>인쇄 창이 열리면 <b>대상(프린터)</b>에서 <b>PDF로 저장</b>을 고르세요.<br>용지 크기는 A4, 여백은 ‘없음’으로 두면 지면 그대로 한 장에 담깁니다.</p>
-    <div class="dialog-actions">
-      <button type="button" class="btn" id="pdfCancel">취소</button>
-      <button type="button" class="btn primary" id="pdfGo">인쇄 창 열기</button>
+<!-- 저장 결과(이미지·PDF) -->
+<div class="modal" id="saveModal" hidden>
+  <div class="sheet">
+    <div class="sheet-head">
+      <h3 id="saveTitle">저장</h3>
+      <button type="button" class="mini" id="saveClose">닫기</button>
+    </div>
+    <div class="sheet-body">
+      <p id="saveMsg"></p>
+      <div class="sheet-prev" id="savePrev" hidden></div>
+      <div class="sheet-file" id="saveFile" hidden>
+        <span class="ico">PDF</span>
+        <span><b id="saveFileName">증명서.pdf</b><small>A4 한 장 · 인쇄용</small></span>
+      </div>
+      <p class="sheet-warn" id="saveWarn" hidden></p>
+      <div class="sheet-acts">
+        <button type="button" class="btn primary" id="saveDl">저장</button>
+        <button type="button" class="btn" id="saveNew">새 창에서 열기</button>
+      </div>
+      <button type="button" class="btn" id="saveShare" hidden style="width:100%;margin-top:9px">공유해서 저장</button>
+      <button type="button" class="sheet-more" id="savePrint" hidden>인쇄 창에서 PDF로 저장(글자가 살아 있는 PDF)</button>
+      <p class="sheet-hint" id="saveHint"></p>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast" hidden></div>
 
-<script src="vendor/html2canvas.min.js"></script>
-<script src="assets/app.js"></script>
+<script src="vendor/html2canvas.min.js?v=16"></script>
+<script src="assets/app.js?v=16"></script>
 </body>
 </html>

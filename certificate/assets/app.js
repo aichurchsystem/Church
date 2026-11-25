@@ -10,6 +10,7 @@
   'use strict';
 
   var A4W = 793.7, A4H = 1122.5, MM = 3.7795;
+  var FIELDS_TOP = 84, DATE_TOP = 221.5;   /* 지면 조판 기준점(mm) */
 
   var SEALS = [
     { key: 'chair',      name: '노회장 인',    def: 'assets/seals/seal-chair-round.png' },
@@ -41,8 +42,8 @@
       signerName: '박재용',
       noPrefix: '노회(증)',
       watermark: 'slate',
-      note1: '본 증명서의 진위는 대한예수교장로회(백석) 서울강동노회로 문의하시기 바랍니다.',
-      note2: '발급일로부터 90일까지만 효력이 있습니다.',
+      note1: '본 증명서의 진위 여부는 대한예수교장로회(백석) 서울강동노회로 문의하시기 바랍니다',
+      note2: '발급일로부터 90일까지 유효합니다',
       types: {}
     };
   }
@@ -59,6 +60,7 @@
     pOrg: $('pOrg'), pHq: $('pHq'), pTel: $('pTel'), pFax: $('pFax'),
     pPresb: $('pPresb'), pNohoeAddr: $('pNohoeAddr'),
     pNo: $('pNo'), pTitle: $('pTitle'), pFields: $('pFields'), pBody: $('pBody'),
+    pNohoeAddrRow: $('pNohoeAddrRow'), pTelRow: $('pTelRow'), pNoteLine: $('pNoteLine'), pMark: $('pMark'),
     pDate: $('pDate'), pSignOrg: $('pSignOrg'),
     pSignChairTitle: $('pSignChairTitle'), pSignChair: $('pSignChair'),
     pSignTitle: $('pSignTitle'), pSigner: $('pSigner'),
@@ -107,11 +109,10 @@
   }
   function fmtDate(iso) {
     var p = isoToParts(iso);
-    return p ? p.y + '. ' + p.m + '. ' + p.d + '.' : '';
+    return p ? p.y + '년 ' + p.m + '월 ' + p.d + '일' : '';
   }
   function fmtDateWide(iso) {
-    var p = isoToParts(iso);
-    return p ? p.y + '.   ' + p.m + '.   ' + p.d + '.' : '';
+    return fmtDate(iso);
   }
   function fmtStamp(isoTs) {
     var d = new Date(isoTs), p = function (n) { return (n < 10 ? '0' : '') + n; };
@@ -370,6 +371,13 @@
       if (LEGACY_FMT[k].indexOf(v) > -1) fmt[k] = def[k];
     });
     /* 새 지면(2026-11-25)에서 한 번만 옮긴다 — 이후에 관리자에서 고른 값은 그대로 둔다 */
+    if (saved && saved.mig !== 6) {
+      /* 옛 기본 안내문은 새 문구로 옮긴다(직접 고친 값은 그대로 둔다) */
+      if (String(fmt.note1 || '').trim() === '본 증명서의 진위는 대한예수교장로회(백석) 서울강동노회로 문의하시기 바랍니다.')
+        fmt.note1 = def.note1;
+      if (String(fmt.note2 || '').trim() === '발급일로부터 90일까지만 효력이 있습니다.')
+        fmt.note2 = def.note2;
+    }
     if (!saved || saved.mig !== 5) {
       if (String(fmt.signerTitle || '').trim() === '노회 서기') fmt.signerTitle = def.signerTitle;
       if (String(fmt.watermark || '').trim() === 'navy') fmt.watermark = def.watermark;
@@ -416,7 +424,7 @@
     if (typeof saved.sealsOn === 'boolean') base.sealsOn = saved.sealsOn;
     else if (saved.sealChoice === 'none') base.sealsOn = false;
     state = base;
-    state.mig = 5;
+    state.mig = 6;
     state.no = state.no || nextNo(state.date);
     saveState();
   }
@@ -470,6 +478,21 @@
     saveState();
     render();
     if (el.person) el.person.value = state.personId;
+  }
+
+  /* 사람 종류(재직·노회 참석·노회비)로 바꿨을 때 성명이 비어 있으면 명단에서 채운다 */
+  function fillPersonName() {
+    if (currentDef().kind === 'church') return;
+    if (String(state.name || '').trim()) return;
+    var p = personById(state.personId) || personByName(state.representative) || (people.length === 1 ? people[0] : null);
+    if (!p || !p.name) return;
+    state.name = p.name;
+    /* 비어 있는 칸만 명단 값으로 함께 채운다 */
+    if (!String(state.birth || '').trim()) state.birth = p.birth || '';
+    if (!String(state.address || '').trim()) state.address = p.address || '';
+    if (!String(state.church || '').trim()) state.church = p.church || '';
+    if (!String(state.position || '').trim()) state.position = p.position || '';
+    saveState();
   }
 
   /* --------------------------------------------------------------- 값 채우기 */
@@ -546,22 +569,20 @@
   }
   function fitHead() {
     fitOneLine($('pOrgLine'), 3.6);
-    fitOneLine($('pAddrRow'), 2.2);
+    fitOneLine($('pNohoeAddrRow'), 2.2);
+    fitOneLine($('pTelRow'), 2.2);
+    fitOneLine(el.pNoteLine, 1.8);
   }
 
   function layoutTitle() {
-    var t = el.pTitle, n = t.textContent.replace(/\s/g, '').length || 1;
-    t.style.letterSpacing = '0mm'; t.style.paddingLeft = '0mm'; t.style.fontSize = '';
+    var t = el.pTitle;
+    t.style.letterSpacing = ''; t.style.paddingLeft = ''; t.style.fontSize = '';
     if (!t.offsetWidth) return;          /* 지면이 화면에 없을 때는 폭을 재지 않는다(다시 그릴 때 계산) */
-    var targetPx = Math.min(n * 12.9, 158) * MM;
-    if (t.offsetWidth > targetPx) {
+    /* 제목이 지면 폭을 넘을 때만 글자를 조금 줄인다(자간은 0.8mm로 고정) */
+    var maxPx = 166 * MM;
+    if (t.offsetWidth > maxPx) {
       var fs = parseFloat(getComputedStyle(t).fontSize);
-      while (t.offsetWidth > targetPx && fs > 20) { fs -= 0.5; t.style.fontSize = (fs / MM).toFixed(2) + 'mm'; }
-    }
-    var ls = n > 1 ? (targetPx - t.offsetWidth) / (n - 1) : 0;
-    if (ls > 0) {
-      t.style.letterSpacing = (ls / MM).toFixed(2) + 'mm';
-      t.style.paddingLeft = (ls / MM).toFixed(2) + 'mm';
+      while (t.offsetWidth > maxPx && fs > 20) { fs -= 0.5; t.style.fontSize = (fs / MM).toFixed(2) + 'mm'; }
     }
   }
 
@@ -594,14 +615,14 @@
     el.pHq.hidden = !String(F.hqAddress || '').trim();
     el.paper.classList.toggle('has-hq', !el.pHq.hidden);
     el.pNohoeAddr.textContent = F.presbyteryAddress || '';
-    el.pNohoeAddr.hidden = !String(F.presbyteryAddress || '').trim();
+    el.pNohoeAddrRow.hidden = !String(F.presbyteryAddress || '').trim();
     var tel = String(F.tel || '').trim(), fax = String(F.fax || '').trim();
     el.pTel.textContent = tel;
     el.pFax.textContent = fax;
     el.pTel.hidden = !tel;
     el.pFax.hidden = !fax;
     $('pTelGap').hidden = !(tel && fax);
-    $('pTelRow').hidden = !tel && !fax;
+    el.pTelRow.hidden = !tel && !fax;
 
     el.pNo.textContent = state.no || '';
     el.pTitle.textContent = T.title;
@@ -612,20 +633,19 @@
     el.pSignChair.textContent = F.chairName || '';
     el.pSignTitle.textContent = T.signTitle;
     el.pSigner.textContent = T.signerName;
-    el.pNote1.textContent = F.note1;
-    el.pNote2.textContent = F.note2;
+    /* 안내문 두 줄을 한 줄로 이어 찍는다(폭이 모자라면 fitHead가 그 줄만 줄인다) */
+    var n1 = String(F.note1 || '').trim(), n2 = String(F.note2 || '').trim();
+    if (n1 && n2 && !/[.!?]$/.test(n1)) n1 += '.';
+    el.pNoteLine.textContent = [n1, n2].filter(Boolean).join(' ');
     el.pInet.textContent = state.inet || '';
 
     // 엠블럼 워터마크: 종류별 켜기·끄기 + 지면 전체 시안(네이비·회청·먹색·없음)
-    var wmVariant = F.watermark || 'navy';
-    if (WM_VARIANTS.indexOf(wmVariant) < 0) wmVariant = 'navy';
+    var wmVariant = WM_VARIANTS.indexOf(F.watermark) < 0 ? 'slate' : F.watermark;
     var wm = el.paper.querySelector('.wm');
     if (wm) {
       el.paper.dataset.wm = wmVariant;
-      if (wmVariant !== 'none') {
-        var src = 'assets/emblem-' + wmVariant + '.png';
-        if (wm.getAttribute('src') !== src) wm.setAttribute('src', src);
-      }
+      var wsrc = 'assets/logo-sky.svg';
+      if (wm.getAttribute('src') !== wsrc) wm.setAttribute('src', wsrc);
       wm.style.display = (def.watermark === false || wmVariant === 'none') ? 'none' : '';
     }
 
@@ -658,15 +678,22 @@
              '<span class="cl">:</span><span class="vl">' + esc(rowValue(r)) + '</span></div>';
     }).join('');
     var n = def.rows.length || 4;
-    var rowH = n >= 5 ? 8.9 : 9.1;
+    var rowH = n >= 5 ? 9.2 : 9.6;            /* 항목이 많은 종은 조금 좁혀 한 장에 담는다 */
     Array.prototype.forEach.call(el.pFields.children, function (f) { f.style.height = rowH + 'mm'; });
-    el.pBody.style.top = Math.max(119.0, 64.6 + n * rowH + 7.4).toFixed(1) + 'mm';
+    el.pBody.style.top = (FIELDS_TOP + n * rowH + 12).toFixed(1) + 'mm';   /* 제목 ↔ 첫 항목 12mm */
 
     // 본문
     el.pBody.innerHTML = T.body.map(fill).map(function (l, i) {
       return '<span class="bl' + (i === 0 ? ' first' : '') + '">' + esc(l) + '</span>';
     }).join('');
     setFit(el.pBody, 12);
+    /* 본문이 길어 날짜 줄을 침범하면 그 종만 줄 간격을 조금 줄인다(한 장 유지) */
+    var lh = 13, guard = 0;
+    el.pBody.style.lineHeight = lh + 'mm';
+    while (el.pBody.getBoundingClientRect().height > (DATE_TOP - 8) * MM - (parseFloat(el.pBody.style.top) * MM) && guard < 12) {
+      lh -= 0.4; guard++;
+      el.pBody.style.lineHeight = lh.toFixed(1) + 'mm';
+    }
 
     Array.prototype.forEach.call(el.pFields.querySelectorAll('.vl'), function (v) { setFit(v, 9.5); });
     applySeal();
@@ -783,11 +810,12 @@
 
   var PE_FIELDS = ['Name', 'Position', 'Birth', 'Church', 'ChurchAddr', 'Address', 'Rep', 'Plant', 'Found'];
 
-  function renderPersonForm() {
+  function renderPersonForm(open) {
     var f = $('peForm');
     if (!f) return;
     var p = editingPersonId ? personById(editingPersonId) : null;
-    f.hidden = false;
+    if (open === true) f.hidden = false;      /* '새로 넣기'·'고치기'로 열 때만 펼친다 */
+    else if (open === false) f.hidden = true;
     $('peName').value = p ? (p.name || '') : '';
     $('pePosition').value = p ? (p.position || '') : '';
     $('peBirth').value = p ? (p.birth || '') : '';
@@ -1028,36 +1056,232 @@
 
   function doPrint() {
     if (!ensure()) return;
+    if (typeof window.print !== 'function') {
+      toast('이 브라우저에서는 인쇄 창을 열 수 없습니다. 크롬에서 열어 주세요.');
+      return;
+    }
     recordIssue();
     window.print();
     advanceNo();
   }
 
+  /* ------------------------------------------------------------ 파일 만들기
+     지면을 그림으로 떠서 PNG·PDF 파일을 직접 만든다.
+     인쇄 대화상자를 거치지 않으므로 앱 안 브라우저에서도 파일이 남는다. */
+  function exportScale() {
+    var w = Math.max(window.innerWidth, window.innerHeight);
+    if (window.matchMedia('(min-width:900px)').matches) return 3;
+    return w >= 800 ? 2.5 : 2;
+  }
+
+  function paperCanvas() {
+    if (typeof html2canvas !== 'function') return Promise.reject(new Error('이미지 도구를 불러오지 못했습니다.'));
+    document.body.classList.add('exporting');
+    return new Promise(function (resolve, reject) {
+      setTimeout(function () {
+        html2canvas(el.paper, {
+          scale: exportScale(), backgroundColor: '#ffffff', useCORS: true, logging: false,
+          width: Math.round(A4W), height: Math.round(A4H),
+          windowWidth: Math.round(A4W), windowHeight: Math.round(A4H)
+        }).then(resolve, reject);
+      }, 140);
+    });
+  }
+
+  function endExport() {
+    document.body.classList.remove('exporting');
+    fitPreview();
+  }
+
+  function dataUrlBytes(url) {
+    var b = atob(url.split(',')[1]);
+    var arr = new Uint8Array(b.length);
+    for (var i = 0; i < b.length; i++) arr[i] = b.charCodeAt(i);
+    return arr;
+  }
+
+  /* JPEG 한 장을 A4 한 쪽짜리 PDF 파일로 묶는다(다른 라이브러리 없이) */
+  function buildPdf(jpeg, imgW, imgH) {
+    var enc = new TextEncoder();
+    var parts = [], offsets = {}, size = 0, PW = '595.28', PH = '841.89';
+    function put(x) {
+      var b = (typeof x === 'string') ? enc.encode(x) : x;
+      parts.push(b); size += b.length;
+    }
+    function obj(n, body) { offsets[n] = size; put(n + ' 0 obj\n' + body + '\nendobj\n'); }
+    function pad(n) { var s = String(n); while (s.length < 10) s = '0' + s; return s; }
+
+    put('%PDF-1.4\n');
+    obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
+    obj(2, '<< /Type /Pages /Kids [3 0 R] /Count 1 >>');
+    obj(3, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + PW + ' ' + PH + '] ' +
+            '/Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>');
+    offsets[4] = size;
+    put('4 0 obj\n<< /Type /XObject /Subtype /Image /Width ' + imgW + ' /Height ' + imgH +
+        ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + jpeg.length + ' >>\nstream\n');
+    put(jpeg);
+    put('\nendstream\nendobj\n');
+    var content = 'q ' + PW + ' 0 0 ' + PH + ' 0 0 cm /Im0 Do Q\n';
+    obj(5, '<< /Length ' + content.length + ' >>\nstream\n' + content + 'endstream');
+    var xref = size;
+    var table = 'xref\n0 6\n0000000000 65535 f \n';
+    for (var i = 1; i <= 5; i++) table += pad(offsets[i]) + ' 00000 n \n';
+    put(table);
+    put('trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF\n');
+
+    var out = new Uint8Array(size), pos = 0;
+    parts.forEach(function (b) { out.set(b, pos); pos += b.length; });
+    return out;
+  }
+
+  function exportName(ext) {
+    var who = currentDef().kind === 'church' ? state.representative : state.name;
+    return typeText(currentDef()).title.replace(/\s/g, '') + '_' + String(who || '').trim() + '_' + state.date + '.' + ext;
+  }
+
+  /* 앱(카카오톡·네이버 등) 안 브라우저에서는 파일 내려받기가 막히는 경우가 많다 */
+  function inAppBrowser() {
+    var ua = navigator.userAgent || '';
+    if (/KAKAOTALK|NAVER|DaumApps|Instagram|FBAN|FBAV|Line\//i.test(ua)) return true;
+    return /; wv\)/.test(ua);   /* 안드로이드 WebView */
+  }
+
+  var sheet = { blob: null, url: null, name: '' };
+
+  function openSheet(o) {
+    if (sheet.url) { try { URL.revokeObjectURL(sheet.url); } catch (e) {} }
+    sheet = { blob: o.blob || null, url: o.url || '', name: o.name || '' };
+    $('saveTitle').textContent = o.title;
+    $('saveMsg').textContent = o.msg;
+
+    var prev = $('savePrev');
+    prev.innerHTML = '';
+    prev.hidden = !o.preview;
+    if (o.preview) {
+      var img = document.createElement('img');
+      img.src = o.url; img.alt = '저장할 지면 미리보기';
+      prev.appendChild(img);
+    }
+    $('saveFile').hidden = !o.file;
+    if (o.file) $('saveFileName').textContent = o.name;
+    $('saveFile').querySelector('small').textContent = o.fileNote || 'A4 한 장';
+
+    var warn = $('saveWarn');
+    warn.hidden = !o.warn;
+    warn.textContent = o.warn || '';
+
+    var share = $('saveShare');
+    share.hidden = !(o.blob && canShareFile(o.name));
+    share.onclick = function () { shareFile(o.name); };
+
+    $('savePrint').hidden = !o.print;
+    $('saveHint').innerHTML = o.hint || '';
+    el.toast.hidden = true;            /* 시트 위에 알림이 겹치지 않게 */
+    $('saveModal').hidden = false;
+  }
+
+  function closeSheet() {
+    $('saveModal').hidden = true;
+  }
+
+  function addSheetHandlers() {
+    $('saveClose').addEventListener('click', closeSheet);
+    $('saveDl').addEventListener('click', function () {
+      if (!sheet.blob) { toast('저장할 파일이 없습니다.'); return; }
+      try {
+        downloadBlob(sheet.blob, sheet.name);
+        toast('다운로드 폴더로 내려받았습니다. 안 보이면 [새 창에서 열기]를 눌러 주세요.');
+      } catch (e) {
+        toast('저장하지 못했습니다. [새 창에서 열기]로 열어 저장해 주세요.');
+      }
+    });
+    $('saveNew').addEventListener('click', function () {
+      if (!sheet.url) return;
+      var w = null;
+      try { w = window.open(sheet.url, '_blank'); } catch (e) { w = null; }
+      if (!w) toast('새 창이 막혔습니다. 크롬에서 열어 주세요.');
+    });
+    $('savePrint').addEventListener('click', function () { closeSheet(); doPrint(); });
+  }
+
+  function canShareFile(name) {
+    if (!navigator.canShare || typeof File !== 'function' || !sheet.blob) return false;
+    try { return navigator.canShare({ files: [new File([sheet.blob], name, { type: sheet.blob.type })] }); }
+    catch (e) { return false; }
+  }
+
+  function shareFile(name) {
+    if (!sheet.blob) return;
+    var file = new File([sheet.blob], name, { type: sheet.blob.type });
+    navigator.share({ files: [file], title: name }).catch(function () {
+      toast('공유가 취소되었습니다. [저장]을 눌러 주세요.');
+    });
+  }
+
   function doPng() {
     if (!ensure()) return;
-    recordIssue();
     if (typeof html2canvas !== 'function') { toast('이미지 저장 도구를 불러오지 못했습니다.'); return; }
-    document.body.classList.add('exporting');
-    var done = function () { document.body.classList.remove('exporting'); fitPreview(); };
-    setTimeout(function () {
-      html2canvas(el.paper, {
-        scale: 3, backgroundColor: '#ffffff', useCORS: true, logging: false,
-        width: Math.round(A4W), height: Math.round(A4H),
-        windowWidth: Math.round(A4W), windowHeight: Math.round(A4H)
-      }).then(function (canvas) {
-        canvas.toBlob(function (blob) {
-          var who = currentDef().kind === 'church' ? state.representative : state.name;
-          downloadBlob(blob, typeText(currentDef()).title.replace(/\s/g, '') + '_' + (who || '').trim() + '_' + state.date + '.png');
-          toast('이미지(PNG)로 저장했습니다.');
-          done();
-          advanceNo();
-        }, 'image/png');
-      }).catch(function (e) {
-        console.error(e);
-        toast('이미지 저장에 실패했습니다. 인쇄 창에서 PDF로 받아 주세요.');
-        done();
+    var btn = $('btnPng');
+    btn.disabled = true;
+    toast('이미지를 만드는 중…');
+    paperCanvas().then(function (canvas) {
+      canvas.toBlob(function (blob) {
+        btn.disabled = false;
+        endExport();
+        if (!blob || blob.size < 8000) {
+          toast('이미지를 만들지 못했습니다. 잠시 뒤 다시 눌러 주세요.');
+          return;
+        }
+        var url = URL.createObjectURL(blob);
+        openSheet({
+          title: '이미지 저장',
+          msg: '지면을 그림(PNG)으로 만들었습니다.',
+          blob: blob, url: url, name: exportName('png'), preview: true,
+          warn: inAppBrowser() ? '앱 안의 브라우저에서 열려 있어 파일 내려받기가 막힐 수 있습니다. 오른쪽 위 ⋮ → ‘다른 브라우저로 열기’로 크롬에서 열면 확실합니다.' : '',
+          hint: '<b>저장</b>을 누르면 휴대폰의 ‘다운로드’ 폴더에 들어갑니다. 아무 일도 없으면 <b>위 그림을 손가락으로 길게 눌러</b> ‘이미지 저장’을 고르세요.'
+        });
+        recordIssue();
+        advanceNo();
+      }, 'image/png');
+    }).catch(function (e) {
+      console.error(e);
+      btn.disabled = false;
+      endExport();
+      toast('이미지를 만들지 못했습니다. [인쇄]에서 PDF로 받아 주세요.');
+    });
+  }
+
+  function doPdf() {
+    if (!ensure()) return;
+    if (typeof html2canvas !== 'function') { toast('PDF 저장 도구를 불러오지 못했습니다.'); return; }
+    var btn = $('btnPdf');
+    btn.disabled = true;
+    toast('PDF를 만드는 중…');
+    paperCanvas().then(function (canvas) {
+      var jpeg = dataUrlBytes(canvas.toDataURL('image/jpeg', 0.92));
+      var bytes = buildPdf(jpeg, canvas.width, canvas.height);
+      var blob = new Blob([bytes], { type: 'application/pdf' });
+      btn.disabled = false;
+      endExport();
+      if (!blob.size) { toast('PDF를 만들지 못했습니다. 잠시 뒤 다시 눌러 주세요.'); return; }
+      var url = URL.createObjectURL(blob);
+      openSheet({
+        title: 'PDF 저장',
+        msg: 'A4 한 장짜리 PDF 파일을 만들었습니다.',
+        blob: blob, url: url, name: exportName('pdf'), file: true,
+        fileNote: 'A4 한 장 · ' + Math.round(blob.size / 1024) + 'KB',
+        print: true,
+        warn: inAppBrowser() ? '앱 안의 브라우저에서 열려 있어 파일 내려받기가 막힐 수 있습니다. 오른쪽 위 ⋮ → ‘다른 브라우저로 열기’로 크롬에서 열면 확실합니다.' : '',
+        hint: '<b>저장</b>을 누르면 휴대폰의 ‘다운로드’ 폴더에 들어갑니다. 안 되면 <b>새 창에서 열기</b>로 크롬 PDF 화면을 띄운 뒤 오른쪽 위 내려받기를 누르세요.'
       });
-    }, 120);
+      recordIssue();
+      advanceNo();
+    }).catch(function (e) {
+      console.error(e);
+      btn.disabled = false;
+      endExport();
+      toast('PDF를 만들지 못했습니다. [인쇄]를 눌러 ‘PDF로 저장’을 골라 주세요.');
+    });
   }
 
   /* ------------------------------------------------------------------ 화면 */
@@ -1113,6 +1337,7 @@
     /* 발급 폼 */
     el.type.addEventListener('change', function () {
       state.typeId = el.type.value;
+      fillPersonName();
       if (!state.noEdited) state.no = nextNo(state.date);
       if (!state.inetEdited) state.inet = makeInet();
       saveState(); render(); fitPreview();
@@ -1286,7 +1511,8 @@
     /* 관리자: 사람 명단 */
     $('peNew').addEventListener('click', function () {
       editingPersonId = null; newPhotoData = null;
-      renderPersonForm();
+      renderPersonForm(true);
+      $('peForm').scrollIntoView({ block: 'center', behavior: 'smooth' });
       $('peName').focus();
     });
     $('peSave').addEventListener('click', savePersonFromForm);
@@ -1300,7 +1526,7 @@
     });
     $('peList').addEventListener('click', function (e) {
       var ed = e.target.closest('[data-pedit]');
-      if (ed) { editingPersonId = ed.dataset.pedit; newPhotoData = null; renderPersonForm(); return; }
+      if (ed) { editingPersonId = ed.dataset.pedit; newPhotoData = null; renderPersonForm(true); $('peForm').scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
       var del = e.target.closest('[data-pdel]');
       if (del) {
         var id = del.dataset.pdel;
@@ -1376,9 +1602,8 @@
     $('csvBtn').addEventListener('click', csvDownload);
     $('btnPrint').addEventListener('click', doPrint);
     $('btnPng').addEventListener('click', doPng);
-    $('btnPdf').addEventListener('click', function () { if (ensure()) $('pdfModal').hidden = false; });
-    $('pdfCancel').addEventListener('click', function () { $('pdfModal').hidden = true; });
-    $('pdfGo').addEventListener('click', function () { $('pdfModal').hidden = true; doPrint(); });
+    $('btnPdf').addEventListener('click', doPdf);
+    addSheetHandlers();
 
     $('zoomBtn').addEventListener('click', function () {
       var body = $('zoomBody');
@@ -1404,7 +1629,7 @@
 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
-        $('zoomModal').hidden = true; $('pdfModal').hidden = true; $('zoomBody').innerHTML = '';
+        $('zoomModal').hidden = true; $('saveModal').hidden = true; $('zoomBody').innerHTML = '';
       }
     });
 
@@ -1450,6 +1675,7 @@
         var hit = personByName(state.name) || personByPosition(state.position);
         if (hit) state.personId = hit.id;
       }
+      fillPersonName();
       state.no = state.no || nextNo(state.date);
       saveState();
       render();
@@ -1475,8 +1701,18 @@
 
   function registerSW() {
     if (!('serviceWorker' in navigator)) return;
+    /* 새 버전이 이 기기를 넘겨받으면 한 번만 새로 고쳐 옛 화면·새 화면이 섞이지 않게 한다 */
+    var reloading = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (reloading) return;
+      try { if (sessionStorage.getItem('cert.reloadedFor') === '1') return; sessionStorage.setItem('cert.reloadedFor', '1'); } catch (e) {}
+      reloading = true;
+      location.reload();
+    });
     try {
-      navigator.serviceWorker.register('sw.js');
+      navigator.serviceWorker.register('sw.js').then(function (reg) {
+        try { reg.update(); } catch (e) {}
+      });
     } catch (e) {}
   }
 
