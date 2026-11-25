@@ -179,7 +179,7 @@ main{padding:14px 14px 0}
 
 .fields{position:absolute;z-index:1;left:22.4mm;right:18mm;top:69.4mm}
 .paper.has-photo .fields{right:52mm}
-.photo{position:absolute;z-index:1;right:18mm;top:59.6mm;width:30mm;height:40mm;object-fit:cover;
+.photo{position:absolute;z-index:1;right:18mm;top:70mm;width:30mm;height:40mm;object-fit:cover;
   border:.32mm solid #333;background:#fff}
 .photo[hidden]{display:none}
 .fld{display:flex;align-items:baseline;height:8.75mm;font-size:4.15mm;line-height:1}
