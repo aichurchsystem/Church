@@ -4,11 +4,17 @@
 
 | 파일 이름 | 파일 | 연결된 페이지 | 상태 |
 |---|---|---|---|
-| `bible-conference-application.hwp` | 2027 제46차 바이블컨퍼런스 **교회**참가신청서 (2쪽, 8.1MB) | `bible-conference.html` | 2026-11-25 게시 |
-| `bible-conference-staff-application.hwp` | 2027 제46차 바이블컨퍼런스 **스탭**참가신청서 (1쪽, 1.0MB) | `bible-conference.html` | 2026-11-25 게시 |
+| `bible-conference-application.hwpx` | 2027 제46차 바이블컨퍼런스 **교회**참가신청서 (1쪽, 20명 칸, 0.3MB) | `bible-conference.html` | 2026-11-25 게시 → 같은 날 밤 목사님 최신본(HWPX)으로 교체 |
+| `bible-conference-staff-application.hwpx` | 2027 제46차 바이블컨퍼런스 **스탭**참가신청서 (1쪽, 0.3MB) | `bible-conference.html` | 2026-11-25 게시 → 같은 날 밤 목사님 최신본(HWPX)으로 교체 |
 | `vision-conference-application.hwp` | 비전컨퍼런스 참가신청서 | `vision-conference.html` | 아직 없음 (준비 중) |
 
-원본은 `documents/bible-conference-46-forms/`에서 온 파일이고, 웹에 올린 사본은 바이트까지 같습니다(md5 일치).
+교회용은 처음 올린 HWP(2쪽·26명 칸·8.1MB)를 걷어 내고, 목사님이 보내신 HWPX(1쪽·20명 칸)로 바꿨습니다.
+20명이 넘는 교회는 같은 신청서를 한 장 더 작성한다는 안내가 신청서 안에 들어 있습니다.
+스탭용도 HWP(1쪽·1.0MB)에서 HWPX(1쪽·0.3MB)로 바뀌었습니다.
+
+웹에 올린 사본은 목사님이 보내신 원본과 바이트까지 같습니다(md5 일치).
+- 교회용 `57f3a51662da6ea0fddcd59d5062ffd9`
+- 스탭용 `b199a60b131db7cfb18bc05ca7f73ba9`
 
 ## 카드가 '준비 중'으로 잠겨 있을 때
 
@@ -19,4 +25,4 @@
 그러면 카드가 링크로 동작하고 `download` 속성으로 바로 내려받힙니다.
 
 > `download="…"` 값에 한글 파일 이름을 넣어 두어서, 내려받으면
-> `2027_제46차_바이블컨퍼런스_교회참가신청서.hwp` 처럼 원래 이름으로 저장됩니다.
+> `2027_제46차_바이블컨퍼런스_교회참가신청서.hwpx` 처럼 원래 이름으로 저장됩니다.
