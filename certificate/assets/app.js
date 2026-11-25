@@ -19,9 +19,9 @@
   function defaultFmt() {
     return {
       org: '대한예수교장로회(백석)',
-      hqAddress: '서울특별시 서초구 남부순환로 2221',
-      tel: 'Tel: 584-6885.9845',
-      fax: 'Fax: 521-2729',
+      hqAddress: '',
+      tel: '',
+      fax: '',
       presbytery: '서울강동노회',
       presbyteryAddress: '서울특별시 광진구 구의강변로3가길 33, 2층',
       headChair: '노회장 이용동목사',
@@ -309,7 +309,7 @@
       });
       if (saved.fmt.types && typeof saved.fmt.types === 'object') fmt.types = saved.fmt.types;
     }
-    migrateHead(fmt);
+    if (saved.mig !== 2) migrateFmt(fmt);
     base.fmt = fmt;
     // 예전 '본문 문구 수정' 저장값을 양식 관리 쪽으로 옮긴다
     Object.keys(base.bodies || {}).forEach(function (id) {
@@ -319,18 +319,28 @@
       }
     });
     state = base;
+    state.mig = 2;
     state.no = state.no || nextNo(state.date);
+    saveState();
   }
 
-  /* 지면 머리글의 노회장·서기 표기
-     - 이 기기에 예전 기본값('노회 서기' / '박재용')만 저장돼 있으면 새 표기로 바꿔 준다.
+  /* 지면 머리글의 노회장·서기 표기와 총회 주소·전화 줄
+     - 이 기기에 예전 기본값이 남아 있으면 한 번만 새 기본값으로 바꿔 준다.
+       · '노회 서기' / '박재용' → '노회장 이용동목사' / '서기 박재용목사'
+       · 총회 주소·전화·팩스는 지면에서 빠졌으므로 빈값으로
      - 목사님이 직접 고쳐 둔 값은 그대로 둔다. */
-  var LEGACY_HEAD = ['노회 서기', '박재용', '노회 서기 박재용', '노회 서기박재용'];
-  function migrateHead(fmt) {
+  var LEGACY_FMT = {
+    headChair: ['노회 서기', '박재용', '노회 서기 박재용', '노회 서기박재용'],
+    headSecretary: ['노회 서기', '박재용', '노회 서기 박재용', '노회 서기박재용'],
+    hqAddress: ['서울특별시 서초구 남부순환로 2221'],
+    tel: ['Tel: 584-6885.9845', 'Tel: 584-6885.9845  Fax: 521-2729'],
+    fax: ['Fax: 521-2729']
+  };
+  function migrateFmt(fmt) {
     var def = defaultFmt();
-    ['headChair', 'headSecretary'].forEach(function (k) {
+    Object.keys(LEGACY_FMT).forEach(function (k) {
       var v = String(fmt[k] == null ? '' : fmt[k]).trim();
-      if (LEGACY_HEAD.indexOf(v) > -1) fmt[k] = def[k];
+      if (LEGACY_FMT[k].indexOf(v) > -1) fmt[k] = def[k];
     });
   }
 
@@ -405,11 +415,19 @@
     var F = state.fmt, def = currentDef(), T = typeText(def);
 
     el.pOrg.textContent = F.org;
-    el.pHq.textContent = F.hqAddress;
-    el.pTel.textContent = F.tel;
-    el.pFax.textContent = F.fax;
+    // 비어 있는 머리글 줄은 빈 줄을 남기지 않고 빠진다
+    el.pHq.textContent = F.hqAddress || '';
+    el.pHq.hidden = !String(F.hqAddress || '').trim();
+    var tel = String(F.tel || '').trim(), fax = String(F.fax || '').trim();
+    el.pTel.textContent = tel;
+    el.pFax.textContent = fax;
+    el.pTel.hidden = !tel;
+    el.pFax.hidden = !fax;
+    $('pTelGap').hidden = !(tel && fax);
+    $('pTelRow').hidden = !tel && !fax;
     el.pPresb.textContent = F.presbytery;
     el.pNohoeAddr.textContent = F.presbyteryAddress;
+    el.pNohoeAddr.hidden = !String(F.presbyteryAddress || '').trim();
     el.pSignTitleHead.textContent = F.headChair || '';
     el.pSignerHead.textContent = F.headSecretary || '';
     el.pNo.textContent = state.no || '';
