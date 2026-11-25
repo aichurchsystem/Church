@@ -2,12 +2,12 @@
    이 폴더(certificate/) 범위만 담당한다. 같은 저장소의 다른 페이지는 건드리지 않는다.
    네트워크가 있으면 새 파일을 먼저 받아 두고, 없으면 받아 둔 사본으로 연다. */
 
-const CACHE = 'certificate-app-v17';
+const CACHE = 'certificate-app-v18';
 const SHELL = [
   './',
   './index.html',
-  './assets/app.css?v=17',
-  './assets/app.js?v=17',
+  './assets/app.css?v=18',
+  './assets/app.js?v=18',
   './assets/fonts/nm-Regular.woff2',
   './assets/fonts/nm-Bold.woff2',
   './assets/logo-sky.svg',

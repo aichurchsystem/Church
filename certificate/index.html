@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>증명서 발급 · 대한예수교장로회(백석) 서울강동노회</title>
-<meta name="description" content="대한예수교장로회(백석) 서울강동노회 증명서(재직·소속·개척확인·설립·노회 참석·노회비 납부)를 만들어 인쇄·PDF·이미지로 받는 앱입니다.">
+<meta name="description" content="대한예수교장로회(백석) 서울강동노회 증명서(재직·소속·개척확인·설립·노회 참석·노회비 납부·목사 안수)를 만들어 인쇄·PDF·이미지로 받는 앱입니다.">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0e2442">
 <link rel="manifest" href="manifest.webmanifest">
@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="증명서 발급">
-<link rel="stylesheet" href="assets/app.css?v=17">
+<link rel="stylesheet" href="assets/app.css?v=18">
 </head>
 <body>
 
@@ -149,19 +149,20 @@
 
           <div class="paper-host" id="paperHost">
             <!-- ===== A4 지면 ===== -->
-            <div class="paper" id="paper">
+            <div class="paper" id="paper" data-sg="1">
               <img class="wm" id="pWm" src="assets/logo-sky.svg" alt="">
 
               <!-- ===== 위: 머리글 띠 (지면 위에 고정) ===== -->
               <div class="p-top">
                 <div class="p-band">
-                  <img class="p-mark" id="pMark" src="assets/logo-white.svg" alt="">
-                  <div class="hl1" id="pOrgLine"><span id="pOrg">대한예수교장로회(백석)</span><span class="gap-org" id="pOrgGap"></span><span id="pPresb">서울강동노회</span></div>
+                  <div class="p-brand">
+                    <img class="p-mark" id="pMark" src="assets/logo-white.svg" alt="">
+                    <div class="hl1" id="pOrgLine"><span id="pOrg">대한예수교장로회(백석)</span><span class="gap-org" id="pOrgGap"></span><span id="pPresb">서울강동노회</span></div>
+                  </div>
                 </div>
                 <div class="p-sub">
                   <div class="hl2" id="pHq"></div>
-                  <div class="hl2" id="pNohoeAddrRow"><span id="pNohoeAddr">서울특별시 광진구 구의강변로3가길 33, 2층</span></div>
-                  <div class="hl2" id="pTelRow"><span id="pTel">Tel: 02-429-1318</span><span class="gap-tel" id="pTelGap"></span><span id="pFax">Fax: 02-429-1319</span></div>
+                  <div class="hl2" id="pAddrRow"><span id="pPostal">(05048)</span> <span id="pNohoeAddr">서울특별시 광진구 구의강변로3가길 33, 2층</span><span class="gap-tel" id="pTelGap"></span><span id="pTel">Tel: 02-429-1318</span><span class="gap-tel" id="pFaxGap"></span><span id="pFax">Fax: 02-429-1319</span></div>
                   <i class="p-rule"></i>
                 </div>
               </div>
@@ -186,7 +187,7 @@
               <img class="photo" id="pPhoto" alt="">
 
               <div class="sign">
-                <div class="sg1"><span id="pSignOrg">대한예수교장로회(백석) 서울강동노회</span><span class="seal-hold seal-hold-org"><img class="seal-org" id="sealOrg" alt=""></span></div>
+                <div class="sg1wrap"><div class="sg1"><span id="pSignOrg">대한예수교장로회(백석) 서울강동노회</span><span class="seal-hold seal-hold-org"><img class="seal-org" id="sealOrg" alt=""></span></div></div>
                 <div class="sg2wrap">
                   <div class="sg2">
                     <span class="st" id="pSignChairTitle">노회장</span><span class="sn"><span id="pSignChair">이용동</span><span class="seal-hold seal-hold-name"><img class="seal-name" id="sealChair" alt=""></span></span>
@@ -249,15 +250,23 @@
           </div>
           <div class="seal-slots" id="sealSlotsAdmin"></div>
           <input type="file" id="sealFileAdmin" accept="image/*" hidden>
+          <p class="hint" style="margin:10px 2px 4px">직인을 글자 위에 어떻게 놓을지 고릅니다.</p>
+          <div class="seg" id="sgSeg" role="radiogroup" aria-label="서명부 직인 배치">
+            <label><input type="radio" name="signSeal" value="1" checked><span>1안 · 글자 위에</span></label>
+            <label><input type="radio" name="signSeal" value="2"><span>2안 · 어깨에 걸치게</span></label>
+          </div>
 
           <h3 class="fmt-h">지면 머리글</h3>
-          <p class="hint" style="margin:-4px 2px 10px">교단명과 노회명은 한 줄에 나란히 찍히고, 비운 칸의 줄은 지면에서 빠집니다.</p>
+          <p class="hint" style="margin:-4px 2px 10px">교단명과 노회명은 띠 안에서 로고와 함께 가운데에 찍히고, 비운 칸의 줄은 지면에서 빠집니다. 우편번호·주소·전화·팩스는 한 줄에 나란히 찍힙니다.</p>
           <div class="row2">
             <div class="field"><label for="fmOrg">교단명</label><input id="fmOrg" data-fmt="org"></div>
             <div class="field"><label for="fmPresb">노회명</label><input id="fmPresb" data-fmt="presbytery"></div>
           </div>
           <div class="field"><label for="fmHq">총회 주소 <small class="hint-inline">(비우면 빠짐)</small></label><input id="fmHq" data-fmt="hqAddress"></div>
-          <div class="field"><label for="fmNohoeAddr">노회 주소</label><input id="fmNohoeAddr" data-fmt="presbyteryAddress"></div>
+          <div class="row2">
+            <div class="field"><label for="fmPostal">우편번호</label><input id="fmPostal" data-fmt="postalCode" placeholder="05048"></div>
+            <div class="field"><label for="fmNohoeAddr">노회 주소</label><input id="fmNohoeAddr" data-fmt="presbyteryAddress"></div>
+          </div>
           <div class="row2">
             <div class="field"><label for="fmTel">전화</label><input id="fmTel" data-fmt="tel"></div>
             <div class="field"><label for="fmFax">팩스</label><input id="fmFax" data-fmt="fax"></div>
@@ -283,7 +292,7 @@
           <div class="field"><label for="fmType">증명서 종류</label><select id="fmType"></select></div>
           <div class="field"><label for="fmTitle">제목</label><input id="fmTitle"></div>
           <div class="field"><label for="fmBody">본문 <small class="hint-inline">(줄바꿈으로 줄을 나눕니다)</small></label><textarea id="fmBody" rows="3"></textarea></div>
-          <p class="hint" style="margin:-4px 2px 10px">{church} {churchAddress} {rep} {position} {name} {birth} {address} {presbytery} {date} {plantDate} {foundDate} {session} {dues} 가 입력값으로 바뀝니다. 받침에 맞춰 조사를 바꾸려면 {name:은} {position:으로} 처럼 씁니다.</p>
+          <p class="hint" style="margin:-4px 2px 10px">{church} {churchAddress} {rep} {position} {name} {birth} {address} {presbytery} {date} {plantDate} {foundDate} {ordainDate} {session} {dues} 가 입력값으로 바뀝니다. 받침에 맞춰 조사를 바꾸려면 {name:은} {position:으로} 처럼 씁니다.</p>
           <div class="row2">
             <div class="field"><label for="fmTSignTitle">서명부 직함</label><input id="fmTSignTitle"></div>
             <div class="field"><label for="fmTSignName">서명부 성명</label><input id="fmTSignName"></div>
@@ -325,8 +334,11 @@
               <div class="field"><label for="pePlant">개척일</label><input id="pePlant" type="date" min="1900-01-01" max="2100-12-31"></div>
             </div>
             <div class="row2">
-                          <div class="field"><label for="peFound">설립일</label><input id="peFound" type="date" min="1900-01-01" max="2100-12-31"></div>
-              <div class="field"><label>&nbsp;</label><button type="button" class="btn primary" id="peSave">명단에 저장</button></div>
+              <div class="field"><label for="peFound">설립일</label><input id="peFound" type="date" min="1900-01-01" max="2100-12-31"></div>
+              <div class="field"><label for="peOrdain">안수일</label><input id="peOrdain" type="date" min="1900-01-01" max="2100-12-31"></div>
+            </div>
+            <div class="field">
+              <button type="button" class="btn primary" id="peSave" style="width:100%">명단에 저장</button>
             </div>
             <div class="field">
               <label>증명사진 <small class="hint-inline">(넣으면 지면 오른쪽 위에 같이 인쇄됩니다)</small></label>
@@ -480,7 +492,7 @@
 
 <div class="toast" id="toast" hidden></div>
 
-<script src="vendor/html2canvas.min.js?v=17"></script>
-<script src="assets/app.js?v=17"></script>
+<script src="vendor/html2canvas.min.js?v=18"></script>
+<script src="assets/app.js?v=18"></script>
 </body>
 </html>

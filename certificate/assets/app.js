@@ -33,6 +33,7 @@
       org: '대한예수교장로회(백석)',
       presbytery: '서울강동노회',
       hqAddress: '',
+      postalCode: '05048',
       presbyteryAddress: '서울특별시 광진구 구의강변로3가길 33, 2층',
       tel: 'Tel: 02-429-1318',
       fax: 'Fax: 02-429-1319',
@@ -42,6 +43,7 @@
       signerName: '박재용',
       noPrefix: '노회(증)',
       watermark: 'slate',
+      signSeal: '1',
       note1: '본 증명서의 진위 여부는 대한예수교장로회(백석) 서울강동노회로 문의하시기 바랍니다',
       note2: '발급일로부터 90일까지 유효합니다',
       types: {}
@@ -60,7 +62,7 @@
     pOrg: $('pOrg'), pHq: $('pHq'), pTel: $('pTel'), pFax: $('pFax'),
     pPresb: $('pPresb'), pNohoeAddr: $('pNohoeAddr'),
     pNo: $('pNo'), pTitle: $('pTitle'), pFields: $('pFields'), pBody: $('pBody'),
-    pNohoeAddrRow: $('pNohoeAddrRow'), pTelRow: $('pTelRow'), pNoteLine: $('pNoteLine'), pMark: $('pMark'),
+    pNohoeAddrRow: $('pAddrRow'), pTelRow: $('pAddrRow'), pNoteLine: $('pNoteLine'), pMark: $('pMark'),
     pDate: $('pDate'), pSignOrg: $('pSignOrg'),
     pSignChairTitle: $('pSignChairTitle'), pSignChair: $('pSignChair'),
     pSignTitle: $('pSignTitle'), pSigner: $('pSigner'),
@@ -388,6 +390,7 @@
       });
       if (!String(fmt.tel || '').trim()) fmt.tel = def.tel;
       if (!String(fmt.fax || '').trim()) fmt.fax = def.fax;
+      if (!String(fmt.postalCode || '').trim()) fmt.postalCode = def.postalCode;
       if (!String(fmt.chairTitle || '').trim() && !String(fmt.chairName || '').trim()) {
         fmt.chairTitle = def.chairTitle; fmt.chairName = def.chairName;
       }
@@ -475,6 +478,7 @@
     state.address = p.address || '';
     if (p.plantDate) extraOf('church-plant').plantDate = p.plantDate;
     if (p.foundDate) extraOf('church-found').foundDate = p.foundDate;
+    if (p.ordainDate) extraOf('ordination').ordainDate = p.ordainDate;
     saveState();
     render();
     if (el.person) el.person.value = state.personId;
@@ -572,8 +576,7 @@
   }
   function fitHead() {
     fitOneLine($('pOrgLine'), 3.6);
-    fitOneLine($('pNohoeAddrRow'), 2.2);
-    fitOneLine($('pTelRow'), 2.2);
+    fitOneLine($('pAddrRow'), 2.6);
     fitOneLine(el.pNoteLine, 1.8);
   }
 
@@ -618,16 +621,23 @@
     el.pHq.hidden = !String(F.hqAddress || '').trim();
     el.paper.classList.toggle('has-hq', !el.pHq.hidden);
     el.pNohoeAddr.textContent = F.presbyteryAddress || '';
-    el.pNohoeAddrRow.hidden = !String(F.presbyteryAddress || '').trim();
+    el.pNohoeAddr.hidden = !String(F.presbyteryAddress || '').trim();
+    var postal = String(F.postalCode || '').trim();
+    $('pPostal').textContent = postal ? '(' + postal + ')' : '';
+    $('pPostal').hidden = !postal;
     var tel = String(F.tel || '').trim(), fax = String(F.fax || '').trim();
     el.pTel.textContent = tel;
     el.pFax.textContent = fax;
     el.pTel.hidden = !tel;
     el.pFax.hidden = !fax;
-    $('pTelGap').hidden = !(tel && fax);
-    el.pTelRow.hidden = !tel && !fax;
+    /* 주소·전화·팩스는 한 줄 — 값이 빠진 칸 앞의 간격도 함께 빠진다 */
+    $('pTelGap').hidden = !(tel && !el.pNohoeAddr.hidden);
+    $('pFaxGap').hidden = !(fax && tel);
+    el.pNohoeAddrRow.hidden = el.pNohoeAddr.hidden && !tel && !fax;
 
     el.pNo.textContent = state.no || '';
+    /* 서명부 직인 배치: 1안(글자 위) / 2안(이름 어깨) */
+    el.paper.dataset.sg = F.signSeal === '2' ? '2' : '1';
     el.pTitle.textContent = T.title;
     layoutTitle();
     el.pDate.textContent = fmtDateWide(state.date);
@@ -770,6 +780,9 @@
     Array.prototype.forEach.call(document.querySelectorAll('input[name="wmChoice"]'), function (r) {
       r.checked = r.value === wmV;
     });
+    Array.prototype.forEach.call(document.querySelectorAll('input[name="signSeal"]'), function (r) {
+      r.checked = r.value === (F.signSeal === '2' ? '2' : '1');
+    });
 
     if (!TYPES.length) return;
     var sel = $('fmType');
@@ -811,7 +824,7 @@
     }).join('');
   }
 
-  var PE_FIELDS = ['Name', 'Position', 'Birth', 'Church', 'ChurchAddr', 'Address', 'Rep', 'Plant', 'Found'];
+  var PE_FIELDS = ['Name', 'Position', 'Birth', 'Church', 'ChurchAddr', 'Address', 'Rep', 'Plant', 'Found', 'Ordain'];
 
   function renderPersonForm(open) {
     var f = $('peForm');
@@ -828,6 +841,7 @@
     $('peRep').value = p ? (p.representative || '') : '';
     $('pePlant').value = p ? (p.plantDate || '') : '';
     $('peFound').value = p ? (p.foundDate || '') : '';
+    $('peOrdain').value = p ? (p.ordainDate || '') : '';
     newPhotoData = p ? photoFor(p.id) : '';
     var thumb = $('pePhotoThumb');
     thumb.innerHTML = newPhotoData ? '<img src="' + newPhotoData + '" alt="">' : '없음';
@@ -846,7 +860,8 @@
       representative: $('peRep').value.trim(),
       address: $('peAddress').value.trim(),
       plantDate: $('pePlant').value,
-      foundDate: $('peFound').value
+      foundDate: $('peFound').value,
+      ordainDate: $('peOrdain').value
     };
     var idx = -1;
     if (rec.id) idx = people.map(function (p) { return p.id; }).indexOf(rec.id);
@@ -1679,7 +1694,15 @@
       });
     });
 
-    /* 관리자: 양식 글자 */
+    /* 관리자: 서명부 직인 배치(1안·2안) */
+    Array.prototype.forEach.call(document.querySelectorAll('input[name="signSeal"]'), function (r) {
+      r.addEventListener('change', function () {
+        if (!r.checked) return;
+        state.fmt.signSeal = r.value;
+        saveState(); renderPaper();
+      });
+    });
+
     Array.prototype.forEach.call(document.querySelectorAll('input[name="wmChoice"]'), function (r) {
       r.addEventListener('change', function () {
         if (!r.checked) return;
