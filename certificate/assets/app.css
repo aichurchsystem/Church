@@ -138,10 +138,10 @@ main{padding:14px 14px 0}
 .wm{
   position:absolute;z-index:0;left:50%;top:96.5mm;width:107.5mm;
   transform:translateX(-50%);
-  opacity:.4;pointer-events:none;user-select:none;
+  opacity:.45;pointer-events:none;user-select:none;
 }
-.paper[data-wm="slate"] .wm{opacity:.35}
-.paper[data-wm="ink"] .wm{opacity:.3}
+.paper[data-wm="slate"] .wm{opacity:.38}
+.paper[data-wm="ink"] .wm{opacity:.32}
 .paper[data-wm="none"] .wm{display:none}
 .head{position:absolute;z-index:1;left:0;right:0;top:12.6mm;height:26mm;
   display:flex;flex-direction:column;align-items:center;justify-content:space-between;
