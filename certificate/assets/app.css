@@ -642,5 +642,8 @@ body.cover-mode main{padding:0;max-width:none;margin:0}
   .cv-types{margin-top:12px;line-height:1.65}
 }
 @media (prefers-reduced-motion:reduce){.cv-cta{transition:none}}
-/* 인쇄물에는 표지가 끼지 않는다 */
-@media print{#view-cover{display:none!important}}
+/* 인쇄물에는 표지와 '표지로' 줄이 끼지 않는다 */
+@media print{
+  #view-cover{display:none!important}
+  .cv-backrow,.cv-back{display:none!important}
+}
