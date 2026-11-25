@@ -140,20 +140,19 @@ main{padding:14px 14px 0}
   transform:translateX(-50%);
   opacity:.2;pointer-events:none;user-select:none;
 }
-.head{position:absolute;z-index:1;left:0;right:0;top:12.2mm;height:31.6mm;
+.head{position:absolute;z-index:1;left:0;right:0;top:12.6mm;height:26mm;
   display:flex;flex-direction:column;align-items:center;justify-content:space-between;
   text-align:center}
 .head .hl{white-space:nowrap}
 .head [hidden]{display:none}
-.hl1{font-size:5.35mm;letter-spacing:5.95mm;padding-left:5.95mm;line-height:6.6mm;font-weight:600}
+.hl1{font-size:5.35mm;letter-spacing:2.8mm;padding-left:2.8mm;line-height:7.2mm;font-weight:600}
+.gap-org{display:inline-block;width:6mm}
+.gap-org[hidden]{display:none}
 .hl2{font-size:3.95mm;letter-spacing:.42mm;padding-left:.42mm;line-height:4.6mm}
 .hl3{font-size:3.95mm;letter-spacing:.02mm;line-height:4.6mm}
 .gap-tel{display:inline-block;width:9.5mm}
 .gap-tel[hidden]{display:none}
-.hl4{font-size:4.7mm;letter-spacing:1.55mm;padding-left:1.55mm;line-height:5.6mm;font-weight:600}
 .hl4b{font-size:3.15mm;letter-spacing:.16mm;line-height:3.9mm;color:#222}
-.hl5{font-size:3.5mm;letter-spacing:.55mm;padding-left:.55mm;line-height:4.4mm}
-.gap-sec{display:inline-block;width:6.5mm}
 
 .rules{position:absolute;z-index:1;left:16.6mm;right:17.8mm;top:44.8mm}
 .rules i{display:block;height:0;border-top:.32mm solid #111}

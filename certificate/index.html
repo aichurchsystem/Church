@@ -140,12 +140,10 @@
               <img class="wm" src="assets/emblem.png" alt="">
 
               <div class="head" id="pHead">
-                <div class="hl hl1" id="pOrg">대한예수교장로회(백석)</div>
+                <div class="hl hl1" id="pOrgLine"><span id="pOrg">대한예수교장로회(백석)</span><span class="gap-org" id="pOrgGap"></span><span id="pPresb">서울강동노회</span></div>
                 <div class="hl hl2" id="pHq"></div>
-                <div class="hl hl3" id="pTelRow"><span id="pTel"></span><span class="gap-tel" id="pTelGap"></span><span id="pFax"></span></div>
-                <div class="hl hl4" id="pPresb">서울강동노회</div>
                 <div class="hl hl4b" id="pNohoeAddr">서울특별시 광진구 구의강변로3가길 33, 2층</div>
-                <div class="hl hl5"><span id="pSignTitleHead">노회장 이용동목사</span><span class="gap-sec"></span><span id="pSignerHead">서기 박재용목사</span></div>
+                <div class="hl hl3" id="pTelRow"><span id="pTel">Tel: 02-429-1318</span><span class="gap-tel" id="pTelGap"></span><span id="pFax">Fax: 02-429-1319</span></div>
               </div>
 
               <div class="rules"><i></i><i></i></div>
@@ -217,18 +215,14 @@
           <p class="hint" style="margin:-4px 2px 12px">증명서에 찍히는 글자를 여기서 고칩니다. 고치면 미리보기·인쇄·PDF·이미지에 바로 반영되고, 이 기기 브라우저에 저장됩니다.</p>
 
           <h3 class="fmt-h">지면 머리글</h3>
+          <p class="hint" style="margin:-4px 2px 10px">교단명과 노회명은 한 줄에 나란히 찍히고, 비운 칸의 줄은 지면에서 빠집니다.</p>
           <div class="field"><label for="fmOrg">교단명</label><input id="fmOrg" data-fmt="org"></div>
-          <div class="field"><label for="fmHq">총회 주소</label><input id="fmHq" data-fmt="hqAddress"></div>
+          <div class="field"><label for="fmPresb">노회명</label><input id="fmPresb" data-fmt="presbytery"></div>
+          <div class="field"><label for="fmHq">총회 주소 <small class="hint-inline">(비우면 빠짐)</small></label><input id="fmHq" data-fmt="hqAddress"></div>
+          <div class="field"><label for="fmNohoeAddr">노회 주소</label><input id="fmNohoeAddr" data-fmt="presbyteryAddress"></div>
           <div class="row2">
             <div class="field"><label for="fmTel">전화</label><input id="fmTel" data-fmt="tel"></div>
             <div class="field"><label for="fmFax">팩스</label><input id="fmFax" data-fmt="fax"></div>
-          </div>
-          <p class="hint" style="margin:-2px 2px 10px">총회 주소·전화·팩스를 비우면 지면에서 그 줄이 빠집니다.</p>
-          <div class="field"><label for="fmPresb">노회명</label><input id="fmPresb" data-fmt="presbytery"></div>
-          <div class="field"><label for="fmNohoeAddr">노회 주소</label><input id="fmNohoeAddr" data-fmt="presbyteryAddress"></div>
-          <div class="row2">
-            <div class="field"><label for="fmHeadChair">머리글 · 노회장</label><input id="fmHeadChair" data-fmt="headChair"></div>
-            <div class="field"><label for="fmHeadSec">머리글 · 서기</label><input id="fmHeadSec" data-fmt="headSecretary"></div>
           </div>
 
           <h3 class="fmt-h">서명부</h3>
