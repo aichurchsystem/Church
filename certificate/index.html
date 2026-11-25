@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>증명서 발급 · 대한예수교장로회(백석) 서울강동노회</title>
+<meta name="description" content="대한예수교장로회(백석) 서울강동노회 증명서(재직·소속·개척확인·설립·노회 참석·노회비 납부)를 만들어 인쇄·PDF·이미지로 받는 앱입니다.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0e2442">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="증명서 발급">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="eyebrow">대한예수교장로회(백석) · 서울강동노회</span>
+      <h1>증명서 발급</h1>
+    </div>
+    <button type="button" class="ghost" id="installBtn" hidden>앱 설치</button>
+  </header>
+
+  <main>
+
+    <!-- ================= 발급하기 ================= -->
+    <section class="view" id="view-issue">
+      <div class="issue-grid">
+
+        <div class="left-col">
+          <form class="card form" id="certForm" autocomplete="off" novalidate>
+            <div class="card-head">
+              <h2>증명서 정보</h2>
+              <button type="button" class="mini" id="resetBtn">입력 초기화</button>
+            </div>
+
+            <div class="field">
+              <label for="fType">증명서 종류</label>
+              <select id="fType"></select>
+            </div>
+
+            <div class="field">
+              <label for="fName"><span id="nameLabel">이름</span> <span class="req">*</span></label>
+              <input id="fName" list="peopleList" placeholder="이름을 입력하거나 명단에서 고르세요" enterkeyhint="next">
+              <datalist id="peopleList"></datalist>
+              <p class="hint" id="nameHint">명단에 있는 이름을 고르면 생년월일·주소가 저절로 채워집니다.</p>
+            </div>
+
+            <div class="row2">
+              <div class="field">
+                <label for="fBirth">생년월일</label>
+                <input id="fBirth" type="date" min="1900-01-01" max="2100-12-31">
+              </div>
+              <div class="field">
+                <label for="fChurch">교회명</label>
+                <input id="fChurch" value="글로벌비전교회">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="fAddr">주소</label>
+              <input id="fAddr" placeholder="서울특별시 광진구 구의강변로3가길 33, 상가 2층(구의동)">
+            </div>
+
+            <div class="row2">
+              <div class="field">
+                <label for="fSender">발신처</label>
+                <input id="fSender" value="서울강동노회">
+              </div>
+              <div class="field">
+                <label for="fRecipient">수신처</label>
+                <input id="fRecipient" placeholder="받는 곳 (비우면 인쇄 안 됨)">
+              </div>
+            </div>
+
+            <div id="extraBox"></div>
+
+            <details class="adv" id="advBox">
+              <summary>발급일 · 증명서 번호</summary>
+              <div class="adv-body">
+                <div class="row2">
+                  <div class="field">
+                    <label for="fDate">발급일</label>
+                    <input id="fDate" type="date">
+                  </div>
+                  <div class="field">
+                    <label for="fNo">증명서 번호</label>
+                    <input id="fNo" placeholder="노회(증) 제26-00001호">
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="fInet">Internet No.</label>
+                  <input id="fInet" placeholder="자동 생성">
+                </div>
+                <p class="hint">발급일은 오늘 날짜로, 증명서 번호와 Internet No.는 자동으로 채워집니다. 필요하면 고쳐 쓰세요.</p>
+              </div>
+            </details>
+
+            <details class="adv" id="sealBox">
+              <summary>서명부 직인</summary>
+              <div class="adv-body">
+                <div class="seg" id="sealSeg" role="radiogroup" aria-label="서명부 직인">
+                  <label><input type="radio" name="sealChoice" value="secretary" checked><span>서기 직인</span></label>
+                  <label><input type="radio" name="sealChoice" value="chair"><span>노회장 직인</span></label>
+                  <label><input type="radio" name="sealChoice" value="presbytery"><span>서울강동노회 직인</span></label>
+                  <label><input type="radio" name="sealChoice" value="none"><span>직인 없음</span></label>
+                </div>
+                <div class="seal-slots" id="sealSlots"></div>
+                <input type="file" id="sealFile" accept="image/*" hidden>
+                <p class="hint">직인 이미지는 이 기기 브라우저에만 저장되고 사이트에는 올라가지 않습니다. 도장 사진을 받으시면 여기서 한 번씩 넣어 두면 됩니다.</p>
+              </div>
+            </details>
+
+            <p class="warn" id="formWarn" hidden></p>
+          </form>
+
+          <div class="actions" id="actionBar">
+            <button type="button" class="btn primary" id="btnPrint">인쇄</button>
+            <button type="button" class="btn" id="btnPdf">PDF 저장</button>
+            <button type="button" class="btn" id="btnPng">이미지 저장</button>
+          </div>
+        </div>
+
+        <div class="preview-card">
+          <div class="preview-head">
+            <h2>미리보기 <span class="tag">A4 1장</span></h2>
+            <div class="preview-tools">
+              <button type="button" class="mini" id="zoomBtn">크게 보기</button>
+            </div>
+          </div>
+
+          <div class="paper-host" id="paperHost">
+            <!-- ===== A4 지면 ===== -->
+            <div class="paper" id="paper">
+              <img class="wm" src="assets/emblem.png" alt="">
+
+              <div class="hl hl1" id="pOrg">대한예수교장로회(백석)</div>
+              <div class="hl hl2" id="pHq">서울특별시 서초구 남부순환로 2221</div>
+              <div class="hl hl3"><span id="pTel">Tel: 584-6885.9845</span><span class="gap-tel"></span><span id="pFax">Fax: 521-2729</span></div>
+              <div class="hl hl4" id="pPresb">서울강동노회</div>
+              <div class="hl hl4b" id="pNohoeAddr">서울특별시 광진구 구의강변로3가길 33, 2층</div>
+              <div class="hl hl5"><span id="pSignTitleHead">노회 서기</span><span class="gap-sec"></span><span id="pSignerHead">박재용</span></div>
+
+              <div class="rules"><i></i><i></i></div>
+
+              <div class="cno" id="pNo">노회(증) 제26-00001호</div>
+
+              <!-- 공문 발신처·수신처 (비어 있으면 그 줄은 찍지 않는다) -->
+              <div class="mailhead" id="pMail">
+                <div class="mrow" id="pFromRow"><span class="mk">발신처</span><span class="mv" id="pFrom">서울강동노회</span></div>
+                <div class="mrow" id="pToRow"><span class="mk">수신처</span><span class="mv" id="pTo"></span></div>
+              </div>
+
+              <div class="title"><span id="pTitle">소속증명서</span></div>
+
+              <div class="fields" id="pFields"></div>
+
+              <div class="body" id="pBody"></div>
+
+              <div class="date" id="pDate">2026. 11. 25.</div>
+
+              <div class="sign">
+                <div class="sg1" id="pSignOrg">대한예수교장로회(백석) 서울강동노회</div>
+                <div class="sg2"><span id="pSignTitle">노회 서기</span><span class="gap-sign"></span><span id="pSigner">박재용</span></div>
+                <span class="seal" id="sealSlot"><span class="seal-ph">서기인</span></span>
+              </div>
+
+              <div class="note">
+                <div id="pNote1">본 증명서의 진위는 대한예수교장로회(백석) 서울강동노회로 문의하시기 바랍니다.</div>
+                <div id="pNote2">발급일로부터 90일까지만 효력이 있습니다.</div>
+              </div>
+
+              <div class="band"><img src="assets/band.png" alt=""></div>
+              <div class="inet">(Internet No) <span id="pInet">NBDF191948314</span></div>
+            </div>
+            <!-- ===== /A4 지면 ===== -->
+          </div>
+
+          <p class="pv-foot">지면은 인쇄 용지에 맞춰 A4 한 장으로 나옵니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 발급 이력 ================= -->
+    <section class="view" id="view-history" hidden>
+      <div class="card history">
+        <div class="card-head">
+          <h2>발급 이력 <span class="cnt" id="hCnt">0건</span></h2>
+          <button type="button" class="mini" id="csvBtn">CSV로 받기</button>
+        </div>
+
+        <div class="hfilter">
+          <input type="search" id="hSearch" placeholder="이름으로 찾기" enterkeyhint="search">
+          <select id="hType"><option value="">전체 종류</option></select>
+          <select id="hMonth"><option value="">전체 기간</option></select>
+        </div>
+
+        <div class="hlist" id="hList"></div>
+      </div>
+    </section>
+
+    <!-- ================= 양식 관리 ================= -->
+    <section class="view" id="view-format" hidden>
+      <div class="fmt-wrap">
+        <div class="card fmt">
+          <div class="card-head">
+            <h2>양식 관리 <span class="cnt">관리자</span></h2>
+            <button type="button" class="mini" id="fmtReset">기본값 복원</button>
+          </div>
+          <p class="hint" style="margin:-4px 2px 12px">증명서에 찍히는 글자를 여기서 고칩니다. 고치면 미리보기·인쇄·PDF·이미지에 바로 반영되고, 이 기기 브라우저에 저장됩니다.</p>
+
+          <h3 class="fmt-h">지면 머리글</h3>
+          <div class="field"><label for="fmOrg">교단명</label><input id="fmOrg" data-fmt="org"></div>
+          <div class="field"><label for="fmHq">총회 주소</label><input id="fmHq" data-fmt="hqAddress"></div>
+          <div class="row2">
+            <div class="field"><label for="fmTel">전화</label><input id="fmTel" data-fmt="tel"></div>
+            <div class="field"><label for="fmFax">팩스</label><input id="fmFax" data-fmt="fax"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="fmPresb">노회명</label><input id="fmPresb" data-fmt="presbytery"></div>
+            <div class="field"><label for="fmSignTitle">서기 직함</label><input id="fmSignTitle" data-fmt="signerTitle"></div>
+          </div>
+          <div class="field"><label for="fmNohoeAddr">노회 주소</label><input id="fmNohoeAddr" data-fmt="presbyteryAddress"></div>
+          <div class="field"><label for="fmSigner">서기 성명</label><input id="fmSigner" data-fmt="signerName"></div>
+
+          <h3 class="fmt-h">문서 번호</h3>
+          <div class="field"><label for="fmNoPrefix">번호 접두어</label><input id="fmNoPrefix" data-fmt="noPrefix" placeholder="노회(증)"></div>
+
+          <h3 class="fmt-h">하단 안내문</h3>
+          <div class="field"><label for="fmNote1">첫째 줄</label><textarea id="fmNote1" data-fmt="note1" rows="2"></textarea></div>
+          <div class="field"><label for="fmNote2">둘째 줄</label><textarea id="fmNote2" data-fmt="note2" rows="2"></textarea></div>
+        </div>
+
+        <div class="card fmt">
+          <div class="card-head"><h2>종류별 문구</h2></div>
+
+          <div class="field"><label for="fmType">증명서 종류</label><select id="fmType"></select></div>
+          <div class="field"><label for="fmTitle">제목</label><input id="fmTitle"></div>
+          <div class="field"><label for="fmBody">본문 <small class="hint-inline">(줄바꿈으로 줄을 나눕니다)</small></label><textarea id="fmBody" rows="3"></textarea></div>
+          <p class="hint" style="margin:-4px 2px 10px">{church} {name} {birth} {address} {position} {presbytery} 는 입력값으로 바뀝니다.</p>
+          <div class="row2">
+            <div class="field"><label for="fmTSignTitle">서명부 직함</label><input id="fmTSignTitle"></div>
+            <div class="field"><label for="fmTSignName">서명부 성명</label><input id="fmTSignName"></div>
+          </div>
+
+          <div class="field">
+            <label>항목 이름</label>
+            <div class="label-grid" id="fmLabels"></div>
+          </div>
+
+          <div class="fmt-actions">
+            <button type="button" class="btn" id="fmtTypeReset">이 종류 기본값</button>
+            <button type="button" class="btn primary" id="fmtSave">저장</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="tabbar" id="tabbar">
+    <button type="button" class="tab on" data-view="issue">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/><path d="M14 3.5V8h4"/><path d="M9 13h6M9 16.5h4"/></svg>
+      <span>발급하기</span>
+    </button>
+    <button type="button" class="tab" data-view="history">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="8.5"/></svg>
+      <span>발급 이력<i class="dot" id="tabDot" hidden></i></span>
+    </button>
+    <button type="button" class="tab" data-view="format">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h13"/><circle cx="18.5" cy="16" r="2.5"/></svg>
+      <span>양식 관리</span>
+    </button>
+  </nav>
+</div>
+
+<!-- 크게 보기 -->
+<div class="modal" id="zoomModal" hidden>
+  <div class="modal-bar">
+    <span>미리보기</span>
+    <button type="button" class="mini" id="zoomClose">닫기</button>
+  </div>
+  <div class="modal-body" id="zoomBody"></div>
+</div>
+
+<!-- PDF 안내 -->
+<div class="modal" id="pdfModal" hidden>
+  <div class="dialog">
+    <h3>PDF로 저장</h3>
+    <p>인쇄 창이 열리면 <b>대상(프린터)</b>에서 <b>PDF로 저장</b>을 고르세요.<br>용지 크기는 A4, 여백은 ‘없음’으로 두면 지면 그대로 한 장에 담깁니다.</p>
+    <div class="dialog-actions">
+      <button type="button" class="btn" id="pdfCancel">취소</button>
+      <button type="button" class="btn primary" id="pdfGo">인쇄 창 열기</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="vendor/html2canvas.min.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

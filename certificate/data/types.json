@@ -1,0 +1,230 @@
+{
+  "updated": "2026-11-25",
+  "note": "증명서 종류별 정의. 제목(title)·항목(rows)·본문(body)·추가 입력(extra)을 여기서 고치면 앱 화면과 지면이 함께 바뀝니다. body 안의 {church} {name} {birth} {address} {position} {presbytery} 는 입력값으로 바뀌고, extra 항목은 {키}로 넣습니다. watermark(참/거짓)로 종류별 엠블럼 워터마크를 켜고 끌 수 있습니다.",
+  "types": [
+    {
+      "id": "employment",
+      "name": "재직증명서",
+      "kind": "person",
+      "title": "재직증명서",
+      "rows": [
+        {
+          "label": "교회명",
+          "src": "church"
+        },
+        {
+          "label": "성명",
+          "src": "name"
+        },
+        {
+          "label": "생년월일",
+          "src": "birth"
+        },
+        {
+          "label": "주소",
+          "src": "address"
+        },
+        {
+          "label": "직위",
+          "src": "position"
+        }
+      ],
+      "body": [
+        "위 사람은 대한예수교장로회(백석) 서울강동노회 소속 {church}의",
+        "{position}으로 재직하고 있음을 증명합니다."
+      ],
+      "extra": [],
+      "watermark": true
+    },
+    {
+      "id": "membership",
+      "name": "소속증명서",
+      "kind": "church",
+      "title": "소속증명서",
+      "rows": [
+        {
+          "label": "교회명",
+          "src": "church"
+        },
+        {
+          "label": "주소",
+          "src": "address"
+        },
+        {
+          "label": "대표자",
+          "src": "name"
+        },
+        {
+          "label": "생년월일",
+          "src": "birth"
+        }
+      ],
+      "body": [
+        "위의 교회는 대한예수교장로회(백석) 서울강동노회에",
+        "소속한 교회임을 증명함."
+      ],
+      "extra": [],
+      "watermark": true
+    },
+    {
+      "id": "church-plant",
+      "name": "교회 개척확인증명서",
+      "kind": "church",
+      "title": "교회개척확인증명서",
+      "rows": [
+        {
+          "label": "교회명",
+          "src": "church"
+        },
+        {
+          "label": "주소",
+          "src": "address"
+        },
+        {
+          "label": "대표자",
+          "src": "name"
+        },
+        {
+          "label": "개척일",
+          "src": "plantDate",
+          "fmt": "date"
+        }
+      ],
+      "body": [
+        "위 교회는 대한예수교장로회(백석) 서울강동노회 관할 아래",
+        "{plantDate}자로 개척된 교회임을 확인합니다."
+      ],
+      "extra": [
+        {
+          "key": "plantDate",
+          "label": "개척일",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "watermark": true
+    },
+    {
+      "id": "church-found",
+      "name": "교회 설립증명서",
+      "kind": "church",
+      "title": "교회설립증명서",
+      "rows": [
+        {
+          "label": "교회명",
+          "src": "church"
+        },
+        {
+          "label": "주소",
+          "src": "address"
+        },
+        {
+          "label": "대표자",
+          "src": "name"
+        },
+        {
+          "label": "설립일",
+          "src": "foundDate",
+          "fmt": "date"
+        }
+      ],
+      "body": [
+        "위 교회는 대한예수교장로회(백석) 서울강동노회 소속 교회로",
+        "{foundDate} 설립되었음을 증명합니다."
+      ],
+      "extra": [
+        {
+          "key": "foundDate",
+          "label": "설립일",
+          "type": "date",
+          "required": true
+        }
+      ],
+      "watermark": true
+    },
+    {
+      "id": "assembly-attend",
+      "name": "노회 참석 확인서",
+      "kind": "person",
+      "title": "노회참석확인서",
+      "rows": [
+        {
+          "label": "교회명",
+          "src": "church"
+        },
+        {
+          "label": "성명",
+          "src": "name"
+        },
+        {
+          "label": "생년월일",
+          "src": "birth"
+        },
+        {
+          "label": "주소",
+          "src": "address"
+        },
+        {
+          "label": "참석회기",
+          "src": "session"
+        }
+      ],
+      "body": [
+        "위 사람은 대한예수교장로회(백석) 서울강동노회 {session} 정기노회에",
+        "참석하였음을 확인합니다."
+      ],
+      "extra": [
+        {
+          "key": "session",
+          "label": "참석 회기",
+          "type": "text",
+          "placeholder": "예: 제46회",
+          "required": true
+        }
+      ],
+      "watermark": true
+    },
+    {
+      "id": "dues",
+      "name": "노회비 납부증명서",
+      "kind": "person",
+      "title": "노회비납부증명서",
+      "rows": [
+        {
+          "label": "교회명",
+          "src": "church"
+        },
+        {
+          "label": "성명",
+          "src": "name"
+        },
+        {
+          "label": "생년월일",
+          "src": "birth"
+        },
+        {
+          "label": "주소",
+          "src": "address"
+        },
+        {
+          "label": "납부내역",
+          "src": "dues"
+        }
+      ],
+      "body": [
+        "위 사람은 대한예수교장로회(백석) 서울강동노회 노회비를",
+        "{dues}까지 납부하였음을 증명합니다."
+      ],
+      "extra": [
+        {
+          "key": "dues",
+          "label": "납부 내역",
+          "type": "text",
+          "placeholder": "예: 2026년도 연간",
+          "required": true
+        }
+      ],
+      "watermark": true
+    }
+  ]
+}
