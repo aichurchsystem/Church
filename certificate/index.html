@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="증명서 발급">
-<link rel="stylesheet" href="assets/app.css?v=16">
+<link rel="stylesheet" href="assets/app.css?v=17">
 </head>
 <body>
 
@@ -389,10 +389,15 @@
 <!-- 크게 보기 -->
 <div class="modal" id="zoomModal" hidden>
   <div class="modal-bar">
-    <span>미리보기</span>
-    <button type="button" class="mini" id="zoomClose">닫기</button>
+    <span class="zoom-title">미리보기 <small id="zoomPct">100%</small></span>
+    <span class="zoom-tools">
+      <button type="button" class="mini" id="zoomOut" aria-label="작게">−</button>
+      <button type="button" class="mini" id="zoomIn" aria-label="크게">＋</button>
+      <button type="button" class="mini" id="zoomClose">닫기</button>
+    </span>
   </div>
   <div class="modal-body" id="zoomBody"></div>
+  <div class="zoom-hint">위아래로 밀어 내리면 지면 전체를 볼 수 있습니다 · 두 손가락으로 확대</div>
 </div>
 
 <!-- 저장 결과(이미지·PDF) -->
@@ -404,11 +409,29 @@
     </div>
     <div class="sheet-body">
       <p id="saveMsg"></p>
+
+      <p class="save-alert" id="saveAlert" hidden></p>
+      <button type="button" class="sheet-more" id="saveGuideOpen" hidden>크롬에서 여는 방법 보기</button>
+
       <div class="sheet-prev" id="savePrev" hidden></div>
       <div class="sheet-file" id="saveFile" hidden>
         <span class="ico">PDF</span>
         <span><b id="saveFileName">증명서.pdf</b><small>A4 한 장 · 인쇄용</small></span>
       </div>
+
+      <dl class="save-where">
+        <div id="saveNameRow"><dt>파일 이름</dt><dd id="saveNameOut">—</dd></div>        <div><dt>저장 위치</dt><dd>휴대폰 <b>다운로드</b> 폴더<small>내 파일 › Downloads 또는 크롬 › 다운로드</small></dd></div>
+        <div><dt>저장 여부</dt><dd><span class="save-state" id="saveState">아직 저장되지 않았습니다</span></dd></div>
+      </dl>
+
+      <div class="save-check" id="saveCheck" hidden>
+        <p>다운로드 폴더에 파일이 생겼나요?</p>
+        <div class="save-check-acts">
+          <button type="button" class="btn" id="saveYes">있어요</button>
+          <button type="button" class="btn" id="saveNo">없어요</button>
+        </div>
+      </div>
+
       <p class="sheet-warn" id="saveWarn" hidden></p>
       <div class="sheet-acts">
         <button type="button" class="btn primary" id="saveDl">저장</button>
@@ -421,9 +444,43 @@
   </div>
 </div>
 
+<!-- 앱 안 브라우저 안내(한 화면) -->
+<div class="modal" id="guideModal" hidden>
+  <div class="guide">
+    <div class="guide-head">
+      <h3>여기서는 파일이 저장되지 않습니다</h3>
+      <button type="button" class="mini" id="guideClose">닫기</button>
+    </div>
+    <div class="guide-body">
+      <p class="guide-alert">카카오톡·네이버 같은 <b>앱 안의 브라우저</b>에서는<br>파일 저장이 막혀 있습니다.<br><b>크롬에서 열어야 저장됩니다.</b></p>
+      <ol class="guide-steps">
+        <li>화면 <b>오른쪽 위 ⋮</b> (또는 …)를 누릅니다.</li>
+        <li><b>다른 브라우저로 열기</b> 또는 <b>크롬으로 열기</b>를 고릅니다.</li>
+        <li>크롬에서 <b>발급하기 → PDF 저장·이미지 저장</b>을 누릅니다.</li>
+        <li>파일은 <b>다운로드 폴더</b>에 저장됩니다.</li>
+      </ol>
+      <div class="guide-url"><span id="guideUrl">https://aichurchsystem.github.io/Church/certificate/</span></div>
+      <div class="guide-acts">
+        <button type="button" class="btn primary" id="guideCopy">주소 복사</button>
+        <button type="button" class="btn" id="guideAnyway">그래도 여기서 만들기</button>
+      </div>
+      <p class="guide-note" id="guideNote">복사한 주소를 크롬 주소창에 붙여 넣어도 됩니다.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 이미지 크게 보기(길게 눌러 저장) -->
+<div class="modal imgview" id="imgView" hidden>
+  <div class="modal-bar">
+    <span>그림을 길게 눌러 ‘이미지 저장’을 고르세요</span>
+    <button type="button" class="mini" id="imgViewClose">닫기</button>
+  </div>
+  <div class="modal-body" id="imgViewBody"></div>
+</div>
+
 <div class="toast" id="toast" hidden></div>
 
-<script src="vendor/html2canvas.min.js?v=16"></script>
-<script src="assets/app.js?v=16"></script>
+<script src="vendor/html2canvas.min.js?v=17"></script>
+<script src="assets/app.js?v=17"></script>
 </body>
 </html>

@@ -560,11 +560,14 @@
     if (!node) return;
     node.style.fontSize = '';
     node.style.letterSpacing = '';
-    for (var i = 0; i < 30; i++) {
+    for (var i = 0; i < 40; i++) {
       if (node.scrollWidth <= node.clientWidth + 1) return;
       var fs = parseFloat(getComputedStyle(node).fontSize) / MM;   /* mm */
       if (fs <= minMm) return;
-      node.style.fontSize = (fs - 0.06).toFixed(2) + 'mm';
+      /* 넘침 비율만큼 한 번에 줄인다(한 번에 14% 넘게 줄이지 않아 크기가 튀지 않는다) */
+      var ratio = node.clientWidth / node.scrollWidth;
+      var next = Math.max(minMm, fs * Math.max(ratio, 0.86));
+      node.style.fontSize = next.toFixed(2) + 'mm';
     }
   }
   function fitHead() {
@@ -881,6 +884,63 @@
     el.host.style.height = Math.round(A4H * s) + 'px';
   }
 
+  /* ------------------------------------------------------------------ 크게 보기
+     오버레이는 화면(100dvh)을 꽉 채우고, 지면은 화면 너비에 꽉 맞춘다.
+     화면보다 길면 오버레이 안에서 위아래로 스크롤되고, 뒤 화면은 잠근다. */
+  var zoomBase = 1, zoomStep = 1;
+
+  function lockScroll(on) {
+    document.documentElement.classList.toggle('lock', on);
+    document.body.classList.toggle('lock', on);
+  }
+  /* 열린 창이 하나라도 있으면 뒤 화면을 잠근다 */
+  function syncLock() {
+    var any = !$('zoomModal').hidden || !$('saveModal').hidden || !$('guideModal').hidden || !$('imgView').hidden;
+    lockScroll(any);
+  }
+
+  function applyZoom() {
+    var body = $('zoomBody');
+    var stage = body.querySelector('.zoom-stage');
+    if (!stage) return;
+    var clone = stage.firstElementChild;
+    var s = zoomBase * zoomStep;
+    stage.style.width = (A4W * s) + 'px';
+    stage.style.height = (A4H * s) + 'px';
+    clone.style.transform = 'scale(' + s + ')';
+    $('zoomPct').textContent = Math.round(s * 100) + '%';
+  }
+
+  function openZoom() {
+    var body = $('zoomBody');
+    body.innerHTML = '';
+    $('zoomModal').hidden = false;
+    lockScroll(true);
+
+    var stage = document.createElement('div');
+    stage.className = 'zoom-stage';
+    var clone = el.paper.cloneNode(true);
+    Array.prototype.forEach.call(clone.querySelectorAll('[id]'), function (n) { n.removeAttribute('id'); });
+    clone.removeAttribute('id');
+    /* 미리보기에서 쓰던 배율·위치를 지우고 오버레이 안에서 새로 놓는다 */
+    clone.style.position = ''; clone.style.left = ''; clone.style.top = ''; clone.style.transform = '';
+    stage.appendChild(clone);
+    body.appendChild(stage);
+
+    zoomBase = Math.max(0.2, body.clientWidth / A4W);   /* 가로를 꽉 채운다 */
+    zoomStep = 1;
+    applyZoom();
+    syncLock();
+    body.scrollTop = 0;
+  }
+
+  function closeZoom() {
+    $('zoomModal').hidden = true;
+    $('zoomBody').innerHTML = '';
+    syncLock();
+    fitPreview();
+  }
+
   /* ------------------------------------------------------------------ 알림 */
   var toastTimer = null;
   function toast(msg) {
@@ -1038,9 +1098,10 @@
   function downloadBlob(blob, filename) {
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
-    a.href = url; a.download = filename;
+    a.href = url; a.download = filename; a.rel = 'noopener';
     document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 60000);   /* 큰 PDF도 끝까지 내려받게 */
+    return true;
   }
 
   /* ------------------------------------------------------------------ 받기 */
@@ -1056,6 +1117,7 @@
 
   function doPrint() {
     if (!ensure()) return;
+    if (needGuide(doPrint)) return;          /* 앱 안 브라우저는 인쇄 창도 막힌다 */
     if (typeof window.print !== 'function') {
       toast('이 브라우저에서는 인쇄 창을 열 수 없습니다. 크롬에서 열어 주세요.');
       return;
@@ -1139,18 +1201,101 @@
     return typeText(currentDef()).title.replace(/\s/g, '') + '_' + String(who || '').trim() + '_' + state.date + '.' + ext;
   }
 
-  /* 앱(카카오톡·네이버 등) 안 브라우저에서는 파일 내려받기가 막히는 경우가 많다 */
-  function inAppBrowser() {
+  /* ------------------------------------------------------------ 저장 환경 판별
+     카카오톡·네이버·인스타그램·페이스북·라인·틱톡 같은 앱 안 브라우저(WebView)는
+     a[download]·window.print()·blob 새 창을 조용히 막는 경우가 많다.
+     막히면 아무 일도 일어나지 않으므로, 누르기 전에 먼저 알리고 다른 길을 같이 준다. */
+  var APP_URL = 'https://aichurchsystem.github.io/Church/certificate/';
+
+  function envInfo() {
     var ua = navigator.userAgent || '';
-    if (/KAKAOTALK|NAVER|DaumApps|Instagram|FBAN|FBAV|Line\//i.test(ua)) return true;
-    return /; wv\)/.test(ua);   /* 안드로이드 WebView */
+    var name = '';
+    if (/KAKAOTALK/i.test(ua)) name = '카카오톡';
+    else if (/NAVER\(inapp|DaumApps/i.test(ua)) name = '네이버';
+    else if (/Instagram/i.test(ua)) name = '인스타그램';
+    else if (/FBAN|FBAV|FB_IAB/i.test(ua)) name = '페이스북';
+    else if (/Line\//i.test(ua)) name = '라인';
+    else if (/TikTok|musical_ly/i.test(ua)) name = '틱톡';
+    else if (/Snapchat|Pinterest|Discord|MicroMessenger/i.test(ua)) name = '앱';
+    else if (/; ?wv\)|Version\/4\.0 Chrome\/[\d.]+ Mobile Safari/i.test(ua)) name = '앱';
+    return {
+      inApp: !!name,
+      appName: name,
+      hasShare: !!(navigator.share && typeof File === 'function'),
+      hasPicker: typeof window.showSaveFilePicker === 'function'
+    };
+  }
+  function inAppBrowser() { return envInfo().inApp; }
+
+  /* ---- 앱 안 브라우저 안내(한 화면). 확인을 누르면 하려던 일을 그대로 이어 간다 ---- */
+  var pendingAction = null, forceInline = false;
+
+  function needGuide(act) {
+    if (forceInline || !inAppBrowser()) return false;
+    pendingAction = act || null;
+    $('guideAnyway').hidden = !act;
+    $('guideNote').textContent = '복사한 주소를 크롬 주소창에 붙여 넣어도 됩니다.';
+    $('guideModal').hidden = false;
+    syncLock();
+    return true;
   }
 
-  var sheet = { blob: null, url: null, name: '' };
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (res, rej) {
+      try {
+        var t = document.createElement('textarea');
+        t.value = text; t.style.position = 'fixed'; t.style.top = '-1000px'; t.style.opacity = '0';
+        document.body.appendChild(t); t.select();
+        var ok = document.execCommand('copy');
+        t.remove();
+        ok ? res() : rej(new Error('copy'));
+      } catch (e) { rej(e); }
+    });
+  }
+
+  function addGuideHandlers() {
+    $('guideClose').addEventListener('click', function () { $('guideModal').hidden = true; syncLock(); });
+    $('guideCopy').addEventListener('click', function () {
+      copyText(APP_URL).then(function () {
+        $('guideNote').textContent = '주소를 복사했습니다. 크롬 주소창에 붙여 넣어 주세요.';
+        $('guideCopy').textContent = '복사됨 ✓';
+        setTimeout(function () { $('guideCopy').textContent = '주소 복사'; }, 2600);
+      }).catch(function () {
+        $('guideNote').textContent = '복사가 막혔습니다. 위 주소를 손가락으로 길게 눌러 직접 복사해 주세요.';
+      });
+    });
+    $('guideAnyway').addEventListener('click', function () {
+      forceInline = true;
+      $('guideModal').hidden = true;
+      var act = pendingAction; pendingAction = null;
+      if (act) setTimeout(function () { act(); }, 60); else syncLock();
+    });
+  }
+
+  var sheet = { blob: null, url: null, name: '', kind: '' };
+
+  function setSaveState(kind, text) {
+    var n = $('saveState');
+    n.className = 'save-state' + (kind ? ' ' + kind : '');
+    n.textContent = text;
+  }
+  function showSaveAlert(html) {
+    var n = $('saveAlert');
+    n.innerHTML = html || '';
+    n.hidden = !html;
+  }
+  function saveFailed(why) {
+    setSaveState('bad', '저장되지 않았습니다');
+    showSaveAlert('<b>' + why + '</b><small>아래 ‘공유해서 저장’이나 ‘새 창에서 열기’를 써 보세요. 그래도 안 되면 크롬에서 열어야 합니다.</small>');
+    $('saveHint').innerHTML = '‘공유해서 저장’은 카카오톡·드라이브·메일로 보내 파일을 남기는 길입니다. ‘새 창에서 열기’는 크롬 PDF 화면에서 내려받는 길입니다.';
+  }
 
   function openSheet(o) {
     if (sheet.url) { try { URL.revokeObjectURL(sheet.url); } catch (e) {} }
-    sheet = { blob: o.blob || null, url: o.url || '', name: o.name || '' };
+    sheet = { blob: o.blob || null, url: o.url || '', name: o.name || '', kind: o.kind || '' };
     $('saveTitle').textContent = o.title;
     $('saveMsg').textContent = o.msg;
 
@@ -1159,16 +1304,26 @@
     prev.hidden = !o.preview;
     if (o.preview) {
       var img = document.createElement('img');
-      img.src = o.url; img.alt = '저장할 지면 미리보기';
+      img.src = o.url; img.alt = '저장할 지면 미리보기'; img.title = '눌러서 크게 보기';
+      img.addEventListener('click', function () { openImageView(o.url, o.name); });
       prev.appendChild(img);
     }
     $('saveFile').hidden = !o.file;
     if (o.file) $('saveFileName').textContent = o.name;
     $('saveFile').querySelector('small').textContent = o.fileNote || 'A4 한 장';
 
-    var warn = $('saveWarn');
-    warn.hidden = !o.warn;
-    warn.textContent = o.warn || '';
+    $('saveNameOut').textContent = o.name || '—';
+    $('saveNameRow').hidden = !!o.file;      /* PDF는 위 파일 카드가 이름을 보여 준다 */
+    setSaveState('', '아직 저장되지 않았습니다');
+    $('saveCheck').hidden = true;
+
+    var env = envInfo();
+    if (env.inApp) {
+      showSaveAlert('<b>이 브라우저에서는 저장이 막혀 있습니다.</b><small>' + (env.appName || '앱') +
+        ' 안의 브라우저입니다. 크롬에서 열어야 파일이 저장됩니다.</small>');
+    } else {
+      showSaveAlert('');
+    }
 
     var share = $('saveShare');
     share.hidden = !(o.blob && canShareFile(o.name));
@@ -1176,30 +1331,86 @@
 
     $('savePrint').hidden = !o.print;
     $('saveHint').innerHTML = o.hint || '';
+    $('saveGuideOpen').hidden = false;          /* 크롬에서 여는 방법은 언제나 볼 수 있게 */
     el.toast.hidden = true;            /* 시트 위에 알림이 겹치지 않게 */
     $('saveModal').hidden = false;
+    syncLock();
   }
 
   function closeSheet() {
     $('saveModal').hidden = true;
+    syncLock();
+  }
+
+  /* 저장: 실제로 파일이 남았는지까지 확인한다.
+     ① 파일 저장 창을 쓸 수 있는 브라우저면 저장 경로를 받아 ‘저장 완료’를 확인한다.
+     ② 아니면 내려받기를 시작하고, 사용자에게 다운로드 폴더를 확인받는다.
+     ③ 막힌 환경이면 저장을 시작하지 않고 이유를 빨간 글씨로 적는다. */
+  function saveNow() {
+    if (!sheet.blob) { saveFailed('만든 파일이 없습니다.'); return; }
+    var env = envInfo();
+    if (env.inApp) { saveFailed('앱 안 브라우저라 저장이 막혀 있습니다.'); return; }
+
+    if (env.hasPicker) {
+      var types = sheet.kind === 'pdf'
+        ? [{ description: 'PDF 문서', accept: { 'application/pdf': ['.pdf'] } }]
+        : [{ description: 'PNG 그림', accept: { 'image/png': ['.png'] } }];
+      try {
+        window.showSaveFilePicker({ suggestedName: sheet.name, types: types }).then(function (h) {
+          return h.createWritable().then(function (w) {
+            return w.write(sheet.blob).then(function () { return w.close(); });
+          });
+        }).then(function () {
+          setSaveState('ok', '저장 완료');
+          showSaveAlert('');
+          $('saveCheck').hidden = true;
+        }).catch(function (e) {
+          if (e && e.name === 'AbortError') { setSaveState('', '저장을 취소했습니다'); return; }
+          tryDirectDownload();
+        });
+      } catch (e) { tryDirectDownload(); }
+      return;
+    }
+    tryDirectDownload();
+  }
+
+  function tryDirectDownload() {
+    try {
+      downloadBlob(sheet.blob, sheet.name);
+      setSaveState('pending', '다운로드를 시작했습니다');
+      showSaveAlert('');
+      $('saveCheck').hidden = false;
+      $('saveHint').innerHTML = '화면 위쪽에 <b>다운로드</b> 표시가 떠야 정상입니다. 잠시 기다려도 아무 표시가 없으면 <b>없어요</b>를 눌러 주세요.';
+    } catch (e) {
+      saveFailed('저장을 시작하지 못했습니다.');
+    }
+  }
+
+  function openInNewWindow() {
+    if (!sheet.url) { saveFailed('새 창에서 열 파일이 없습니다.'); return; }
+    if (sheet.kind === 'png') { openImageView(sheet.url, sheet.name); return; }
+    var w = null;
+    try { w = window.open(sheet.url, '_blank'); } catch (e) { w = null; }
+    if (!w) { saveFailed('새 창이 막혀 있습니다.'); return; }
+    setSaveState('pending', '새 창에서 열었습니다');
+    showSaveAlert('');
+    $('saveHint').innerHTML = '새 창이 크롬 PDF 보기로 열리면 <b>오른쪽 위 내려받기(↓)</b>를 누르세요. 그래야 다운로드 폴더에 저장됩니다.';
   }
 
   function addSheetHandlers() {
     $('saveClose').addEventListener('click', closeSheet);
-    $('saveDl').addEventListener('click', function () {
-      if (!sheet.blob) { toast('저장할 파일이 없습니다.'); return; }
-      try {
-        downloadBlob(sheet.blob, sheet.name);
-        toast('다운로드 폴더로 내려받았습니다. 안 보이면 [새 창에서 열기]를 눌러 주세요.');
-      } catch (e) {
-        toast('저장하지 못했습니다. [새 창에서 열기]로 열어 저장해 주세요.');
-      }
+    $('saveDl').addEventListener('click', saveNow);
+    $('saveNew').addEventListener('click', openInNewWindow);
+    $('saveShare').addEventListener('click', function () { shareFile(sheet.name); });
+    $('saveGuideOpen').addEventListener('click', function () { needGuide(null); });
+    $('saveYes').addEventListener('click', function () {
+      $('saveCheck').hidden = true;
+      setSaveState('ok', '저장 완료 · 다운로드 폴더');
+      showSaveAlert('');
     });
-    $('saveNew').addEventListener('click', function () {
-      if (!sheet.url) return;
-      var w = null;
-      try { w = window.open(sheet.url, '_blank'); } catch (e) { w = null; }
-      if (!w) toast('새 창이 막혔습니다. 크롬에서 열어 주세요.');
+    $('saveNo').addEventListener('click', function () {
+      $('saveCheck').hidden = true;
+      saveFailed('다운로드 폴더에 파일이 없습니다.');
     });
     $('savePrint').addEventListener('click', function () { closeSheet(); doPrint(); });
   }
@@ -1210,16 +1421,49 @@
     catch (e) { return false; }
   }
 
+  /* 공유 시트로 파일 자체를 넘긴다(카톡 나에게 보내기·드라이브·메일 → 그곳에서 저장) */
   function shareFile(name) {
-    if (!sheet.blob) return;
-    var file = new File([sheet.blob], name, { type: sheet.blob.type });
-    navigator.share({ files: [file], title: name }).catch(function () {
-      toast('공유가 취소되었습니다. [저장]을 눌러 주세요.');
+    if (!sheet.blob) { saveFailed('공유할 파일이 없습니다.'); return; }
+    if (!navigator.share) { saveFailed('이 브라우저는 공유를 지원하지 않습니다.'); return; }
+    var file;
+    try { file = new File([sheet.blob], name, { type: sheet.blob.type }); }
+    catch (e) { saveFailed('공유할 파일을 만들지 못했습니다.'); return; }
+    var data = { files: [file], title: name };
+    if (navigator.canShare && !navigator.canShare(data)) {
+      saveFailed('이 브라우저는 파일 공유를 막고 있습니다.');
+      return;
+    }
+    navigator.share(data).then(function () {
+      setSaveState('ok', '공유 창으로 넘겼습니다');
+      showSaveAlert('');
+      $('saveHint').innerHTML = '카카오톡 ‘나에게 보내기’·드라이브·메일로 보내면 그곳에 파일이 남습니다.';
+    }).catch(function (err) {
+      if (err && err.name === 'AbortError') { setSaveState('', '공유를 취소했습니다'); return; }
+      saveFailed('공유도 막혀 있습니다.');
     });
+  }
+
+  /* 그림을 화면에 꽉 차게 띄우고 ‘길게 눌러 저장’하게 한다 */
+  function openImageView(url, name) {
+    if (!url) return;
+    var body = $('imgViewBody');
+    body.innerHTML = '';
+    var img = document.createElement('img');
+    img.src = url; img.alt = name || '증명서 그림';
+    body.appendChild(img);
+    $('imgView').hidden = false;
+    body.scrollTop = 0;
+    syncLock();
+  }
+  function closeImageView() {
+    $('imgView').hidden = true;
+    $('imgViewBody').innerHTML = '';
+    syncLock();
   }
 
   function doPng() {
     if (!ensure()) return;
+    if (needGuide(doPng)) return;
     if (typeof html2canvas !== 'function') { toast('이미지 저장 도구를 불러오지 못했습니다.'); return; }
     var btn = $('btnPng');
     btn.disabled = true;
@@ -1236,9 +1480,8 @@
         openSheet({
           title: '이미지 저장',
           msg: '지면을 그림(PNG)으로 만들었습니다.',
-          blob: blob, url: url, name: exportName('png'), preview: true,
-          warn: inAppBrowser() ? '앱 안의 브라우저에서 열려 있어 파일 내려받기가 막힐 수 있습니다. 오른쪽 위 ⋮ → ‘다른 브라우저로 열기’로 크롬에서 열면 확실합니다.' : '',
-          hint: '<b>저장</b>을 누르면 휴대폰의 ‘다운로드’ 폴더에 들어갑니다. 아무 일도 없으면 <b>위 그림을 손가락으로 길게 눌러</b> ‘이미지 저장’을 고르세요.'
+          blob: blob, url: url, name: exportName('png'), preview: true, kind: 'png',
+          hint: '<b>저장</b>을 누르면 휴대폰의 <b>다운로드</b> 폴더에 들어갑니다. 아무 일도 없으면 <b>위 그림을 눌러 크게 띄운 뒤 손가락으로 길게 눌러</b> ‘이미지 저장’을 고르세요.'
         });
         recordIssue();
         advanceNo();
@@ -1253,6 +1496,7 @@
 
   function doPdf() {
     if (!ensure()) return;
+    if (needGuide(doPdf)) return;
     if (typeof html2canvas !== 'function') { toast('PDF 저장 도구를 불러오지 못했습니다.'); return; }
     var btn = $('btnPdf');
     btn.disabled = true;
@@ -1268,11 +1512,11 @@
       openSheet({
         title: 'PDF 저장',
         msg: 'A4 한 장짜리 PDF 파일을 만들었습니다.',
-        blob: blob, url: url, name: exportName('pdf'), file: true,
+        blob: blob, url: url, name: exportName('pdf'), file: true, kind: 'pdf',
         fileNote: 'A4 한 장 · ' + Math.round(blob.size / 1024) + 'KB',
         print: true,
         warn: inAppBrowser() ? '앱 안의 브라우저에서 열려 있어 파일 내려받기가 막힐 수 있습니다. 오른쪽 위 ⋮ → ‘다른 브라우저로 열기’로 크롬에서 열면 확실합니다.' : '',
-        hint: '<b>저장</b>을 누르면 휴대폰의 ‘다운로드’ 폴더에 들어갑니다. 안 되면 <b>새 창에서 열기</b>로 크롬 PDF 화면을 띄운 뒤 오른쪽 위 내려받기를 누르세요.'
+        hint: '<b>저장</b>을 누르면 휴대폰의 <b>다운로드</b> 폴더에 들어갑니다. 안 되면 <b>새 창에서 열기</b>로 크롬 PDF 화면을 띄운 뒤 <b>오른쪽 위 내려받기</b>를 누르세요.'
       });
       recordIssue();
       advanceNo();
@@ -1605,36 +1849,39 @@
     $('btnPdf').addEventListener('click', doPdf);
     addSheetHandlers();
 
-    $('zoomBtn').addEventListener('click', function () {
-      var body = $('zoomBody');
-      body.innerHTML = '';
-      $('zoomModal').hidden = false;
-      var clone = el.paper.cloneNode(true);
-      clone.removeAttribute('id');
-      body.appendChild(clone);
-      var s = Math.min((body.clientWidth - 24) / A4W, 1.9);
-      clone.style.position = 'absolute';
-      clone.style.transformOrigin = 'top left';
-      clone.style.left = '12px';
-      clone.style.top = '12px';
-      clone.style.transform = 'scale(' + s + ')';
-      body.style.position = 'relative';
-      body.style.minHeight = (A4H * s + 24) + 'px';
+    $('zoomBtn').addEventListener('click', openZoom);
+    $('zoomClose').addEventListener('click', closeZoom);
+    $('zoomIn').addEventListener('click', function () {
+      zoomStep = Math.min(zoomStep * 1.25, 2.4); applyZoom();
     });
-    $('zoomClose').addEventListener('click', function () {
-      $('zoomModal').hidden = true;
-      $('zoomBody').innerHTML = '';
-      $('zoomBody').style.minHeight = '';
+    $('zoomOut').addEventListener('click', function () {
+      zoomStep = Math.max(zoomStep / 1.25, 0.6); applyZoom();
     });
+    $('imgViewClose').addEventListener('click', closeImageView);
+    addGuideHandlers();
 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
-        $('zoomModal').hidden = true; $('saveModal').hidden = true; $('zoomBody').innerHTML = '';
+        if (!$('zoomModal').hidden) closeZoom();
+        if (!$('saveModal').hidden) closeSheet();
+        $('guideModal').hidden = true;
+        closeImageView();
+        syncLock();
       }
     });
 
     var rt = null;
-    window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(fitPreview, 120); });
+    window.addEventListener('resize', function () {
+      clearTimeout(rt);
+      rt = setTimeout(function () {
+        if (!$('zoomModal').hidden) {
+          var body = $('zoomBody');
+          var old = zoomBase; zoomBase = Math.max(0.2, body.clientWidth / A4W);
+          if (Math.abs(old - zoomBase) > 0.001) applyZoom();
+        }
+        fitPreview();
+      }, 120);
+    });
     window.addEventListener('orientationchange', function () { setTimeout(fitPreview, 220); });
 
     if (document.fonts && document.fonts.ready) {
