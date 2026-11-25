@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>박재용 · 글로벌비전교회 담임목사</title>
+<meta name="description" content="박재용 Th.D · 글로벌비전교회 담임목사 모바일 명함. 연락처 저장과 QR 코드를 지원합니다.">
+<meta name="theme-color" content="#1B3A31">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="박재용 · 글로벌비전교회 담임목사">
+<meta property="og:description" content="글로벌비전교회 담임목사 박재용입니다. 연락처를 저장하거나 QR로 전달하실 수 있습니다.">
+<meta property="og:image" content="https://aichurchsystem.github.io/Church/card/og.jpg">
+<meta property="og:url" content="https://aichurchsystem.github.io/Church/card/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231B3A31'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-size='26' fill='%23F4F1E8' text-anchor='middle'%3EGV%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231B3A31'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-size='26' fill='%23F4F1E8' text-anchor='middle'%3EGV%3C/text%3E%3C/svg%3E">
+<style>
+  @font-face{
+    font-family:"CardSerif";
+    src:url("serif-400.woff2") format("woff2");
+    font-weight:400;font-style:normal;font-display:swap;
+    unicode-range:U+0020-007E,U+00B7,U+2013-2014,U+00AE;
+  }
+  @font-face{
+    font-family:"CardSerifKR";
+    src:url("serif-400.woff2") format("woff2");
+    font-weight:400;font-style:normal;font-display:swap;
+  }
+  @font-face{
+    font-family:"CardSans";
+    src:url("sans-400.woff2") format("woff2");
+    font-weight:400;font-style:normal;font-display:swap;
+  }
+
+  :root{
+    --paper:#EFECE4;
+    --card:#FCFBF7;
+    --ink:#1B1D1B;
+    --ink-2:#3C4039;
+    --muted:#767B70;
+    --hair:#E5E0D4;
+    --green:#1B3A31;
+    --serif:"CardSerifKR","CardSerif","Noto Serif KR","Apple SD Gothic Neo",serif;
+    --sans:"CardSans","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+    --latin:"CardSerif",Georgia,"Times New Roman",serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    min-height:100svh;
+    display:flex;align-items:center;justify-content:center;
+    padding:20px 16px calc(20px + env(safe-area-inset-bottom));
+    background:radial-gradient(120% 90% at 50% 0%, #F6F3EB 0%, #EDE9DF 55%, #E6E1D5 100%);
+    font-family:var(--sans);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+  }
+
+  .card{
+    position:relative;z-index:1;width:100%;max-width:414px;
+    background:var(--card);border-radius:22px;overflow:hidden;
+    box-shadow:0 1px 1px rgba(27,29,27,.04),0 10px 24px rgba(27,29,27,.07),0 34px 70px -20px rgba(27,29,27,.22);
+    animation:rise .7s cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  /* ── 상단 ────────────────────────────────── */
+  .hero{
+    position:relative;overflow:hidden;padding:22px 26px 23px;
+    background:
+      radial-gradient(120% 100% at 8% -10%, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 58%),
+      linear-gradient(158deg,#27503F 0%, #1E4033 46%, #16302A 100%);
+    color:#F6F3EA;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 1px, transparent 1px 7px);
+    opacity:.5;
+  }
+  .hero-side{
+    position:absolute;right:26px;top:50%;transform:translateY(-50%);
+    writing-mode:vertical-rl;text-orientation:mixed;
+    font-size:10.5px;letter-spacing:.34em;color:rgba(248,245,236,.42);
+  }
+  .brandrow{position:relative;display:flex;align-items:center;gap:11px}
+  .mark{
+    flex:0 0 auto;width:36px;height:36px;border-radius:50%;
+    border:1px solid rgba(246,243,234,.4);display:grid;place-items:center;
+    font-family:var(--latin);font-size:15px;letter-spacing:.04em;color:#F2EEE2;
+  }
+  .brand-ko{display:block;font-size:14.5px;letter-spacing:.01em;color:rgba(248,245,236,.94)}
+  .brand-en{display:block;margin-top:4px;font-size:11.5px;letter-spacing:.19em;color:rgba(248,245,236,.5)}
+
+  .nameblock{position:relative;margin-top:26px}
+  .nameline{display:flex;align-items:baseline;gap:10px}
+  h1{
+    margin:0;font-family:var(--serif);font-weight:400;
+    font-size:43px;line-height:1.04;letter-spacing:.005em;color:#FBF9F1;
+  }
+  .degree{
+    font-family:var(--latin);font-size:16px;letter-spacing:.04em;
+    color:rgba(248,245,236,.58);transform:translateY(-2px);
+  }
+  .name-en{margin:10px 0 0;font-size:11.5px;letter-spacing:.26em;color:rgba(248,245,236,.55)}
+  .role{
+    position:relative;margin:14px 0 0;display:flex;align-items:center;gap:9px;
+    font-size:14.5px;letter-spacing:.01em;color:rgba(250,248,240,.92);
+  }
+  .role .bar{width:18px;height:1px;background:rgba(196,214,203,.55)}
+
+  /* ── 연락처 ──────────────────────────────── */
+  .contact{padding:4px 0 2px}
+  .row{
+    display:flex;align-items:center;gap:10px;width:100%;
+    padding:12.5px 26px;border:0;border-bottom:1px solid var(--hair);
+    background:none;font-family:inherit;text-align:left;
+    text-decoration:none;color:inherit;cursor:pointer;
+    transition:background .18s ease;
+  }
+  .row:last-child{border-bottom:0}
+  .row:active{background:#F4F1E8}
+  .k{flex:0 0 64px;font-size:12.5px;color:var(--muted);letter-spacing:.02em}
+  .v{
+    flex:1 1 auto;min-width:0;font-size:15.5px;color:var(--ink);
+    letter-spacing:.005em;font-variant-numeric:tabular-nums;
+    word-break:keep-all;overflow-wrap:anywhere;
+  }
+  .v.small{font-size:14px;line-height:1.5;color:var(--ink-2);text-wrap:pretty}
+  .v.mail{font-size:15px;letter-spacing:0;white-space:nowrap}
+  .ic{flex:0 0 auto;color:#A3A89E;display:grid;place-items:center}
+  .ic svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ── 버튼 ────────────────────────────────── */
+  .actions{display:flex;gap:9px;padding:16px 26px 0}
+  .btn{
+    appearance:none;border:0;cursor:pointer;font-family:var(--sans);
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    height:50px;border-radius:14px;font-size:15px;letter-spacing:.03em;
+    transition:transform .12s ease, box-shadow .2s ease;
+  }
+  .btn:active{transform:scale(.985)}
+  .btn-primary{
+    flex:1 1 auto;color:#F8F5EC;font-family:var(--serif);font-size:16px;letter-spacing:.06em;
+    background:linear-gradient(160deg,#254A3D,#173027);
+    box-shadow:0 1px 0 rgba(255,255,255,.14) inset, 0 10px 20px -10px rgba(23,48,39,.75);
+  }
+  .btn-primary svg{width:16px;height:16px;stroke:#E4E0D2;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+  .btn-ghost{flex:0 0 54px;padding:0;background:#fff;border:1px solid var(--hair);overflow:hidden}
+  .btn-ghost img{width:40px;height:40px;display:block}
+  .hint{margin:9px 26px 0;font-size:11.5px;letter-spacing:.01em;color:#8E9488;text-align:center}
+
+  /* ── 하단 ────────────────────────────────── */
+  footer{
+    display:flex;align-items:center;justify-content:center;
+    margin-top:14px;padding:15px 26px 16px;
+    background:linear-gradient(180deg,#1D3C33,#16302A);
+  }
+  footer img{height:30px;width:auto}
+
+  /* ── QR 모달 ─────────────────────────────── */
+  .modal{
+    position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:24px;
+    background:rgba(16,30,26,.86);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  }
+  .modal[data-open="true"]{display:flex;animation:fade .2s ease both}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .sheet{width:100%;max-width:330px;background:#FCFBF7;border-radius:20px;padding:24px 22px 18px;text-align:center;box-shadow:0 30px 60px rgba(0,0,0,.35)}
+  .sheet h2{margin:0;font-family:var(--serif);font-weight:400;font-size:17px;letter-spacing:.04em}
+  .sheet p{margin:7px 0 14px;font-size:12.5px;line-height:1.5;color:var(--muted)}
+  .sheet img{width:100%;max-width:230px;height:auto;display:block;margin:0 auto;border-radius:6px}
+  .sheet .url{margin:12px 0 0;font-size:12px;letter-spacing:.02em;color:#4A5147;background:#F2EFE6;border-radius:9px;padding:9px 10px;word-break:break-all}
+  .sheet button{
+    margin-top:12px;width:100%;height:44px;border-radius:12px;border:0;cursor:pointer;
+    font-family:var(--sans);font-size:14.5px;letter-spacing:.02em;color:#F8F5EC;background:#1B3A31;
+  }
+  .sheet button.sub{background:#F2EFE6;color:#2A3A32;margin-top:8px}
+
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);
+    background:#1B3A31;color:#F6F3EA;font-size:13px;letter-spacing:.01em;
+    padding:11px 18px;border-radius:999px;opacity:0;pointer-events:none;
+    transition:opacity .22s ease, transform .22s ease;z-index:30;white-space:nowrap;
+  }
+  .toast[data-show="true"]{opacity:1;transform:translate(-50%,0)}
+
+  @media (max-height:700px){
+    .hero{padding:18px 24px 18px}
+    .nameblock{margin-top:19px}
+    h1{font-size:38px}
+    .row{padding:10.5px 24px}
+    .actions{padding:13px 24px 0}
+    .btn{height:46px}
+    .hint{display:none}
+    footer{margin-top:11px;padding:11px 24px 12px}
+    footer img{height:26px}
+  }
+  @media (max-width:382px){
+    .hero{padding:18px 20px 18px}
+    .row{padding:11px 20px}
+    .k{flex:0 0 56px;font-size:12px}
+    .v{font-size:14.5px}
+    .v.mail{font-size:13.5px}
+    .v.small{font-size:12.8px}
+    .actions{padding:14px 20px 0}
+    .hint{margin:8px 20px 0}
+    .brand-en{letter-spacing:.14em;font-size:11px}
+    .hero-side{font-size:9.5px;right:20px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .card{animation:none}
+    *{transition:none!important}
+  }
+</style>
+</head>
+<body>
+
+<main class="card">
+  <section class="hero">
+    <span class="hero-side" aria-hidden="true">SENIOR PASTOR</span>
+    <div class="brandrow">
+      <div class="mark" aria-hidden="true">GV</div>
+      <div>
+        <span class="brand-ko">글로벌비전교회</span>
+        <span class="brand-en">GLOBAL VISION CHURCH</span>
+      </div>
+    </div>
+
+    <div class="nameblock">
+      <div class="nameline">
+        <h1>박재용</h1>
+        <span class="degree">Th.D</span>
+      </div>
+      <p class="name-en">PARK JAEYONG</p>
+      <p class="role"><span class="bar" aria-hidden="true"></span>글로벌비전교회 담임목사</p>
+    </div>
+  </section>
+
+  <section class="contact" aria-label="연락처">
+    <a class="row" href="tel:+821053283683">
+      <span class="k">휴대전화</span>
+      <span class="v">010-5328-3683</span>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.6 3.5h2.2l1.5 3.7-1.9 1.2a11 11 0 0 0 5.2 5.2l1.2-1.9 3.7 1.5v2.2a1.6 1.6 0 0 1-1.8 1.6A15.4 15.4 0 0 1 5 5.3a1.6 1.6 0 0 1 1.6-1.8Z"/></svg></span>
+    </a>
+    <a class="row" href="tel:+8224291318">
+      <span class="k">교회 전화</span>
+      <span class="v">02-429-1318</span>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.6 3.5h2.2l1.5 3.7-1.9 1.2a11 11 0 0 0 5.2 5.2l1.2-1.9 3.7 1.5v2.2a1.6 1.6 0 0 1-1.8 1.6A15.4 15.4 0 0 1 5 5.3a1.6 1.6 0 0 1 1.6-1.8Z"/></svg></span>
+    </a>
+    <a class="row" href="mailto:pjy53283683@gmail.com">
+      <span class="k">이메일</span>
+      <span class="v mail">pjy53283683@gmail.com</span>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.2" y="5.5" width="17.6" height="13" rx="2"/><path d="m4 7 8 5.6L20 7"/></svg></span>
+    </a>
+    <a class="row" href="https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%20%EA%B4%91%EC%A7%84%EA%B5%AC%20%EA%B5%AC%EC%9D%98%EA%B0%95%EB%B3%80%EB%A1%9C3%EA%B0%80%EA%B8%B8%2033" target="_blank" rel="noopener">
+      <span class="k">주소</span>
+      <span class="v small">서울 광진구 구의강변로3가길 33 상가 2층</span>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s6.4-5.6 6.4-10.3A6.4 6.4 0 0 0 5.6 10.7C5.6 15.4 12 21 12 21Z"/><circle cx="12" cy="10.5" r="2.3"/></svg></span>
+    </a>
+    <button class="row" id="faxrow" type="button">
+      <span class="k">팩스</span>
+      <span class="v">02-419-1319</span>
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6.5" y="3.5" width="11" height="5"/><rect x="3.5" y="8.5" width="17" height="8" rx="1.8"/><path d="M6.5 14.5h11v6h-11z"/></svg></span>
+    </button>
+  </section>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="saveBtn" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5v11"/><path d="m7.5 11 4.5 4.5 4.5-4.5"/><path d="M4.5 19.5h15"/></svg>
+      연락처에 저장
+    </button>
+    <button class="btn btn-ghost" id="qrBtn" type="button" aria-label="QR 코드 크게 보기">
+      <img src="qr.png" alt="">
+    </button>
+  </div>
+  <p class="hint">번호를 누르면 바로 연결됩니다</p>
+
+  <footer>
+    <img src="logo.png" alt="대한예수교 장로회 글로벌비전교회">
+  </footer>
+</main>
+
+<div class="modal" id="qrModal" role="dialog" aria-modal="true" aria-label="QR 코드">
+  <div class="sheet">
+    <h2>명함 주소 QR</h2>
+    <p>카메라로 비추면 이 명함이 열립니다.</p>
+    <img src="qr.png" alt="전자명함 QR 코드">
+    <div class="url">aichurchsystem.github.io/Church/card/</div>
+    <button type="button" id="copyUrl">주소 복사</button>
+    <button type="button" class="sub" id="closeQr">닫기</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var VCF = [
+    "BEGIN:VCARD",
+    "VERSION:3.0",
+    "N:박;재용;;;",
+    "FN:박재용",
+    "ORG:글로벌비전교회",
+    "TITLE:담임목사",
+    "ROLE:Senior Pastor",
+    "TEL;TYPE=CELL,VOICE:+821053283683",
+    "TEL;TYPE=WORK,VOICE:+8224291318",
+    "TEL;TYPE=WORK,FAX:+8224191319",
+    "EMAIL;TYPE=WORK,INTERNET:pjy53283683@gmail.com",
+    "ADR;TYPE=WORK:;;서울 광진구 구의강변로3가길 33 상가 2층;서울특별시;;;대한민국",
+    "URL:https://aichurchsystem.github.io/Church/card/",
+    "NOTE:박재용 Th.D · 글로벌비전교회 담임목사",
+    "END:VCARD"
+  ].join("\r\n") + "\r\n";
+
+  var toast = document.getElementById("toast");
+  var toastTimer;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.dataset.show = "true";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.dataset.show = "false"; }, 2200);
+  }
+
+  document.getElementById("saveBtn").addEventListener("click", function(){
+    try{
+      var blob = new Blob(["\ufeff" + VCF], {type:"text/vcard;charset=utf-8"});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "박재용_글로벌비전교회.vcf";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 1500);
+      showToast("연락처 파일을 내려받았습니다");
+    }catch(e){
+      window.location.href = "parkjaeyong.vcf";
+    }
+  });
+
+  document.getElementById("faxrow").addEventListener("click", function(){
+    var num = "02-419-1319";
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(num).then(function(){ showToast("팩스 번호를 복사했습니다"); },
+        function(){ showToast("팩스 " + num); });
+    } else {
+      showToast("팩스 " + num);
+    }
+  });
+
+  var modal = document.getElementById("qrModal");
+  var lastFocus = null;
+  function openModal(){
+    lastFocus = document.activeElement;
+    modal.dataset.open = "true";
+    document.getElementById("closeQr").focus();
+  }
+  function closeModal(){
+    modal.dataset.open = "false";
+    if(lastFocus) lastFocus.focus();
+  }
+  document.getElementById("qrBtn").addEventListener("click", openModal);
+  document.getElementById("closeQr").addEventListener("click", closeModal);
+  modal.addEventListener("click", function(e){ if(e.target === modal) closeModal(); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape" && modal.dataset.open === "true") closeModal(); });
+
+  document.getElementById("copyUrl").addEventListener("click", function(){
+    var url = "https://aichurchsystem.github.io/Church/card/";
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(function(){ showToast("주소를 복사했습니다"); },
+        function(){ showToast(url); });
+    } else {
+      showToast(url);
+    }
+  });
+})();
+</script>
+</body>
+</html>
