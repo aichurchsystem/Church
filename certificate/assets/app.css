@@ -1,3 +1,8 @@
+/* 지면 글꼴 — 나눔명조(Regular·Bold)를 저장소에 넣어 오프라인에서도 같은 지면이 나온다.
+   KS X 1001 한글 2,350자 + 앱에서 쓰는 글자를 담은 부분집합(OFL). */
+@font-face{font-family:'Nanum Myeongjo Cert';src:url('fonts/nm-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Nanum Myeongjo Cert';src:url('fonts/nm-Bold.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+
 /* ==========================================================================
    소속증명서 발급 앱 — 화면 스타일
    지면(.paper)은 A4 210×297mm 실측 단위로 만들고, 화면에서는 배율만 줄여 보여 준다.
@@ -124,85 +129,106 @@ main{padding:14px 14px 0}
 }
 .pv-foot{margin:8px 2px 0;font-size:11px;color:var(--faint);text-align:center}
 
-/* ---------------- 지면(A4) ---------------- */
+/* ---------------- 지면(A4) ----------------
+   A4 210×297mm 실측. 공문서(관공서 발급 문서)의 격식에 맞춰
+   머리글은 자간을 좁혀 한 덩어리로, 괘선·제목·서명부는 축을 맞춰 정돈한다. */
 .paper{
   position:relative;
   width:210mm;height:297mm;
-  background:#fff;color:#111;
-  font-family:"Noto Serif KR","Noto Serif CJK KR","Nanum Myeongjo","Batang","바탕",AppleMyungjo,serif;
+  background:#fff;color:#101010;
+  font-family:"Nanum Myeongjo Cert","Nanum Myeongjo","Noto Serif KR","Noto Serif CJK KR","Noto Serif CJK","Batang","바탕",AppleMyungjo,serif;
+  font-feature-settings:"kern" 1;
   transform-origin:top left;
   flex:0 0 auto;
   overflow:hidden;
   -webkit-font-smoothing:antialiased;
 }
 .wm{
-  position:absolute;z-index:0;left:50%;top:96.5mm;width:107.5mm;
+  position:absolute;z-index:0;left:50%;top:94mm;width:106mm;
   transform:translateX(-50%);
   opacity:.45;pointer-events:none;user-select:none;
 }
 .paper[data-wm="slate"] .wm{opacity:.38}
 .paper[data-wm="ink"] .wm{opacity:.32}
 .paper[data-wm="none"] .wm{display:none}
-.head{position:absolute;z-index:1;left:0;right:0;top:12.6mm;height:26mm;
-  display:flex;flex-direction:column;align-items:center;justify-content:space-between;
-  text-align:center}
+
+/* 머리글 — 1줄: 교단·노회 / 2줄: 주소·전화·팩스(같은 줄, 같은 기준선) */
+.head{position:absolute;z-index:1;left:16.6mm;right:17.8mm;top:8.6mm;text-align:center}
+/* 총회 주소 줄을 채운 경우에만 머리글을 조금 위로 모아 괘선과 겹치지 않게 한다 */
+.paper.has-hq .head{top:5.4mm}
+.paper.has-hq .hl1{line-height:6.6mm}
 .head .hl{white-space:nowrap}
 .head [hidden]{display:none}
-.hl1{font-size:5.35mm;letter-spacing:2.8mm;padding-left:2.8mm;line-height:7.2mm;font-weight:600}
-.gap-org{display:inline-block;width:6mm}
+.hl1{font-size:5.3mm;letter-spacing:1.15mm;padding-left:1.15mm;line-height:7.1mm;font-weight:700}
+.gap-org{display:inline-block;width:5.5mm}
 .gap-org[hidden]{display:none}
-.hl2{font-size:3.95mm;letter-spacing:.42mm;padding-left:.42mm;line-height:4.6mm}
-.hl3{font-size:3.95mm;letter-spacing:.02mm;line-height:4.6mm}
-.gap-tel{display:inline-block;width:9.5mm}
+.hl2{font-size:3mm;letter-spacing:.1mm;line-height:4.3mm;margin-top:1mm;color:#222}
+/* 주소와 전화·팩스를 한 줄에: 넘치면 스크립트가 이 줄만 살짝 줄인다 */
+.hl2line{display:flex;align-items:baseline;justify-content:center;gap:7mm;
+  margin-top:1.9mm;font-size:3mm;letter-spacing:.08mm;line-height:4.3mm;white-space:nowrap}
+.hl2line .addr,.hl2line .contact{white-space:nowrap}
+.hl2line [hidden]{display:none}
+.gap-tel{display:inline-block;width:7mm}
 .gap-tel[hidden]{display:none}
-.hl4b{font-size:3.15mm;letter-spacing:.16mm;line-height:3.9mm;color:#222}
 
-.rules{position:absolute;z-index:1;left:16.6mm;right:17.8mm;top:44.8mm}
-.rules i{display:block;height:0;border-top:.32mm solid #111}
-.rules i+i{margin-top:1.05mm;border-top-width:1.05mm}
+/* 위 괘선: 가는 선 위에 굵은 선 */
+.rules{position:absolute;z-index:1;left:16.6mm;right:17.8mm;top:26mm}
+.rules i{display:block;height:0;border-top:.26mm solid #111}
+.rules i+i{margin-top:1.15mm;border-top-width:.95mm}
 
-.cno{position:absolute;z-index:1;left:22.4mm;top:47.9mm;font-size:3.1mm;letter-spacing:.05mm}
+.cno{position:absolute;z-index:1;left:22.4mm;top:32.9mm;font-size:3.15mm;letter-spacing:.12mm;line-height:4mm}
 
 /* 공문 머리: 발신처·수신처 */
-.mailhead{position:absolute;z-index:1;right:17.8mm;top:48.9mm;max-width:118mm;display:flex;justify-content:flex-end;
-  gap:7mm;align-items:baseline;font-size:2.95mm;line-height:3.9mm}
+.mailhead{position:absolute;z-index:1;right:17.8mm;top:33.1mm;max-width:118mm;display:flex;justify-content:flex-end;
+  gap:7mm;align-items:baseline;font-size:3mm;line-height:4mm}
 .mailhead .mrow{white-space:nowrap}
 .mailhead .mrow[hidden]{display:none}
 .mailhead .mk{color:#333;margin-right:1.6mm}
-.mailhead .mv{font-weight:600}
+.mailhead .mv{font-weight:700}
 
-.title{position:absolute;z-index:1;left:0;right:0;top:52.8mm;text-align:center;line-height:0}
+/* 제목: 넓은 자간 + 이중 밑줄(가는 선·굵은 선) */
+.title{position:absolute;z-index:1;left:0;right:0;top:43.0mm;text-align:center;line-height:0}
 .title span{
-  display:inline-block;font-size:10.4mm;font-weight:700;letter-spacing:2.9mm;padding-left:2.9mm;
-  line-height:1.05;padding-bottom:1.9mm;border-bottom:.9mm solid #111;
+  position:relative;display:inline-block;font-size:10.9mm;font-weight:700;letter-spacing:2.9mm;padding-left:2.9mm;
+  line-height:1.02;padding-bottom:2.7mm;border-bottom:.95mm solid #111;
 }
+.title span:after{content:'';position:absolute;left:0;right:0;bottom:1.55mm;height:.26mm;background:#111}
 
-.fields{position:absolute;z-index:1;left:22.4mm;right:18mm;top:69.4mm}
+.fields{position:absolute;z-index:1;left:22.4mm;right:18mm;top:64.6mm}
 .paper.has-photo .fields{right:52mm}
-.photo{position:absolute;z-index:1;right:18mm;top:70mm;width:30mm;height:40mm;object-fit:cover;
-  border:.32mm solid #333;background:#fff}
+.photo{position:absolute;z-index:1;right:18mm;top:65.2mm;width:30mm;height:40mm;object-fit:cover;
+  border:.3mm solid #333;background:#fff}
 .photo[hidden]{display:none}
-.fld{display:flex;align-items:baseline;height:8.75mm;font-size:4.15mm;line-height:1}
-.lb{width:19.4mm;flex:0 0 19.4mm;display:flex;justify-content:space-between}
+.fld{display:flex;align-items:baseline;height:9.1mm;font-size:4.2mm;line-height:1}
+.lb{width:20.4mm;flex:0 0 20.4mm;display:flex;justify-content:space-between}
 .lb i{font-style:normal}
-.cl{flex:0 0 5.4mm;text-align:left;padding-left:.5mm}
+.cl{flex:0 0 5.6mm;text-align:left;padding-left:.4mm}
 .vl{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden}
 
-.body{position:absolute;z-index:1;left:22.2mm;right:16mm;top:112.6mm;font-size:4.15mm;line-height:10.45mm;letter-spacing:.02mm}
+.body{position:absolute;z-index:1;left:22.2mm;right:16mm;top:119.0mm;font-size:4.2mm;line-height:11.2mm;letter-spacing:.02mm}
 .bl{display:block}
-.bl.first{text-indent:25.6mm}
+.bl.first{text-indent:26.2mm}
 
-.date{position:absolute;z-index:1;left:0;right:0;top:184.3mm;text-align:center;font-size:4.65mm;letter-spacing:.55mm;padding-left:.55mm}
+.date{position:absolute;z-index:1;left:0;right:0;top:185.6mm;text-align:center;font-size:4.75mm;letter-spacing:.75mm;padding-left:.75mm}
 
-.sign{position:absolute;z-index:1;left:0;right:0;top:196.2mm;text-align:center}
-.sg1{font-size:4.05mm;letter-spacing:.95mm;padding-left:.95mm;font-weight:600;line-height:1.15}
-.sg2{font-size:4.35mm;letter-spacing:.35mm;line-height:1.15}
-.sg2.first{margin-top:7.6mm}
-.sg2 + .sg2{margin-top:3.4mm}
-.gap-sign{display:inline-block;width:9mm}
-.seal-org{width:10mm;height:10mm;object-fit:contain;vertical-align:-2.4mm;margin-left:2.2mm;margin-right:-12.2mm;display:inline-block}
-.seal-name{width:8.6mm;height:8.6mm;object-fit:contain;vertical-align:-2.2mm;margin-left:1.6mm;margin-right:-10.2mm;display:inline-block}
+/* 서명부 — 발급기관 + 노회 직인, 노회장·서기 두 줄은 축을 맞춰 정렬 */
+.sign{position:absolute;z-index:1;left:0;right:0;top:197.2mm;text-align:center}
+.sg1{font-size:4.25mm;letter-spacing:1.2mm;padding-left:1.2mm;font-weight:700;line-height:5mm}
+.sg2wrap{margin-top:10.2mm;display:flex;justify-content:center}
+.sg2{display:grid;grid-template-columns:max-content max-content;column-gap:9mm;row-gap:8.2mm;text-align:left}
+.sg2 .st{font-size:4.4mm;letter-spacing:.3mm;line-height:1.12;text-align:right}
+.sg2 .sn{font-size:4.55mm;letter-spacing:.5mm;line-height:1.12;white-space:nowrap}
+/* 직인은 자리만 차지하고 줄 높이를 늘리지 않는다(글줄 축을 흔들지 않게) */
+.seal-hold{position:relative;display:inline-block;vertical-align:baseline}
+.seal-hold-org{width:23.4mm;height:5mm}
+.seal-hold-name{width:11mm;height:5mm}
+.seal-hold img{position:absolute;left:0;top:50%;transform:translateY(-50%);object-fit:contain;display:block}
+.seal-hold[hidden]{display:none}
+.seal-org{width:20mm;height:20mm;margin-left:3.4mm}
+.seal-name{width:8.8mm;height:8.8mm;margin-left:2.2mm}
 .sign img[hidden]{display:none}
+
+/* ---------------- 화면 쪽 조작 요소(직인·워터마크 고르기) ---------------- */
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
 .seg label{position:relative;display:block}
 .seg input{position:absolute;opacity:0;pointer-events:none}
@@ -224,16 +250,14 @@ main{padding:14px 14px 0}
 .seal-acts{display:flex;flex-direction:column;gap:7px}
 .seal-acts .mini{text-align:center}
 label.mini{cursor:pointer}
-.seal-ph{
-  position:absolute;inset:0;border:.3mm dashed rgba(176,58,52,.55);border-radius:50%;
+.seal-ph{position:absolute;inset:0;border:.3mm dashed rgba(176,58,52,.55);border-radius:50%;
   color:rgba(176,58,52,.75);font-size:2.5mm;display:flex;align-items:center;justify-content:center;
-  font-family:-apple-system,"Malgun Gothic",sans-serif;letter-spacing:0;
-}
+  font-family:-apple-system,"Malgun Gothic",sans-serif;letter-spacing:0}
 
-.note{position:absolute;z-index:1;left:22mm;right:10mm;top:237.4mm;font-size:2.35mm;line-height:4.4mm;letter-spacing:.02mm}
-.band{position:absolute;z-index:1;left:22.2mm;width:161.5mm;top:247.4mm;height:8.7mm;border:.28mm solid #111;overflow:hidden}
+.note{position:absolute;z-index:1;left:22mm;right:10mm;top:239.2mm;font-size:2.5mm;line-height:4.5mm;letter-spacing:.02mm;color:#222}
+.band{position:absolute;z-index:1;left:22.2mm;width:161.5mm;top:249.2mm;height:8.7mm;border:.28mm solid #111;overflow:hidden}
 .band img{width:100%;height:100%;object-fit:cover;display:block}
-.inet{position:absolute;z-index:1;left:22.2mm;top:263.9mm;font-size:2.6mm;letter-spacing:.05mm}
+.inet{position:absolute;z-index:1;left:22.2mm;top:265.7mm;font-size:2.65mm;letter-spacing:.05mm}
 
 /* ---------------- 하단 버튼 ----------------
    받기 버튼은 한 손으로 누르기 좋게 화면 아래에 붙여 둔다. */

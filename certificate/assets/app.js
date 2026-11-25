@@ -37,10 +37,10 @@
       fax: 'Fax: 02-429-1319',
       chairTitle: '노회장',
       chairName: '이용동',
-      signerTitle: '노회 서기',
+      signerTitle: '서기',
       signerName: '박재용',
       noPrefix: '노회(증)',
-      watermark: 'navy',
+      watermark: 'slate',
       note1: '본 증명서의 진위는 대한예수교장로회(백석) 서울강동노회로 문의하시기 바랍니다.',
       note2: '발급일로부터 90일까지만 효력이 있습니다.',
       types: {}
@@ -227,8 +227,10 @@
     SEALS.forEach(function (s) {
       var img = $(SEAL_IMG[s.key]);
       if (!img) return;
-      if (!state.sealsOn) { img.hidden = true; return; }
+      var hold = img.closest ? img.closest('.seal-hold') : null;   /* 직인 자리(줄 높이를 차지하지 않는 상자) */
+      if (!state.sealsOn) { img.hidden = true; if (hold) hold.hidden = true; return; }
       img.hidden = false;
+      if (hold) hold.hidden = false;
       var src = sealSrc(s.key);
       if (img.getAttribute('src') !== src) img.setAttribute('src', src);
     });
@@ -367,7 +369,15 @@
       var v = String(fmt[k] == null ? '' : fmt[k]).trim();
       if (LEGACY_FMT[k].indexOf(v) > -1) fmt[k] = def[k];
     });
-    if (!saved || saved.mig !== 4) {
+    /* 새 지면(2026-11-25)에서 한 번만 옮긴다 — 이후에 관리자에서 고른 값은 그대로 둔다 */
+    if (!saved || saved.mig !== 5) {
+      if (String(fmt.signerTitle || '').trim() === '노회 서기') fmt.signerTitle = def.signerTitle;
+      if (String(fmt.watermark || '').trim() === 'navy') fmt.watermark = def.watermark;
+      /* 종류별 문구에 남은 옛 직함도 함께 옮긴다 */
+      Object.keys(fmt.types || {}).forEach(function (id) {
+        var o = fmt.types[id];
+        if (o && typeof o === 'object' && String(o.signTitle || '').trim() === '노회 서기') delete o.signTitle;
+      });
       if (!String(fmt.tel || '').trim()) fmt.tel = def.tel;
       if (!String(fmt.fax || '').trim()) fmt.fax = def.fax;
       if (!String(fmt.chairTitle || '').trim() && !String(fmt.chairName || '').trim()) {
@@ -406,7 +416,7 @@
     if (typeof saved.sealsOn === 'boolean') base.sealsOn = saved.sealsOn;
     else if (saved.sealChoice === 'none') base.sealsOn = false;
     state = base;
-    state.mig = 4;
+    state.mig = 5;
     state.no = state.no || nextNo(state.date);
     saveState();
   }
@@ -522,9 +532,27 @@
     }
   }
 
+  /* 한 줄로만 찍히는 머리글 줄이 폭을 넘으면 그 줄만 조금씩 줄인다(두 줄로 접히지 않게) */
+  function fitOneLine(node, minMm) {
+    if (!node) return;
+    node.style.fontSize = '';
+    node.style.letterSpacing = '';
+    for (var i = 0; i < 30; i++) {
+      if (node.scrollWidth <= node.clientWidth + 1) return;
+      var fs = parseFloat(getComputedStyle(node).fontSize) / MM;   /* mm */
+      if (fs <= minMm) return;
+      node.style.fontSize = (fs - 0.06).toFixed(2) + 'mm';
+    }
+  }
+  function fitHead() {
+    fitOneLine($('pOrgLine'), 3.6);
+    fitOneLine($('pAddrRow'), 2.2);
+  }
+
   function layoutTitle() {
     var t = el.pTitle, n = t.textContent.replace(/\s/g, '').length || 1;
     t.style.letterSpacing = '0mm'; t.style.paddingLeft = '0mm'; t.style.fontSize = '';
+    if (!t.offsetWidth) return;          /* 지면이 화면에 없을 때는 폭을 재지 않는다(다시 그릴 때 계산) */
     var targetPx = Math.min(n * 12.9, 158) * MM;
     if (t.offsetWidth > targetPx) {
       var fs = parseFloat(getComputedStyle(t).fontSize);
@@ -564,6 +592,7 @@
     $('pOrgGap').hidden = el.pPresb.hidden || !String(F.org || '').trim();
     el.pHq.textContent = F.hqAddress || '';
     el.pHq.hidden = !String(F.hqAddress || '').trim();
+    el.paper.classList.toggle('has-hq', !el.pHq.hidden);
     el.pNohoeAddr.textContent = F.presbyteryAddress || '';
     el.pNohoeAddr.hidden = !String(F.presbyteryAddress || '').trim();
     var tel = String(F.tel || '').trim(), fax = String(F.fax || '').trim();
@@ -629,9 +658,9 @@
              '<span class="cl">:</span><span class="vl">' + esc(rowValue(r)) + '</span></div>';
     }).join('');
     var n = def.rows.length || 4;
-    var rowH = n >= 5 ? 7.7 : 8.75;
+    var rowH = n >= 5 ? 8.9 : 9.1;
     Array.prototype.forEach.call(el.pFields.children, function (f) { f.style.height = rowH + 'mm'; });
-    el.pBody.style.top = Math.max(112.6, 69.4 + n * rowH + 7.2).toFixed(1) + 'mm';
+    el.pBody.style.top = Math.max(119.0, 64.6 + n * rowH + 7.4).toFixed(1) + 'mm';
 
     // 본문
     el.pBody.innerHTML = T.body.map(fill).map(function (l, i) {
@@ -641,6 +670,7 @@
 
     Array.prototype.forEach.call(el.pFields.querySelectorAll('.vl'), function (v) { setFit(v, 9.5); });
     applySeal();
+    fitHead();
   }
 
   /* --------------------------------------------------------------- 폼 */
@@ -1040,7 +1070,7 @@
     $('view-format').hidden = name !== 'format';
     el.actionBar.style.display = name === 'issue' ? '' : 'none';
     if (name === 'format') { renderFmtForm(); renderPeopleList(); renderSealSlots(); }
-    if (name === 'issue') fitPreview();
+    if (name === 'issue') { renderPaper(); fitPreview(); }
   }
 
   /* ------------------------------------------------------------------ 설정 파일 */
