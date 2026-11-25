@@ -574,7 +574,7 @@
       no: state.no, typeId: def.id, type: typeText(def).title || def.name,
       name: state.name.trim(), birth: state.birth, address: state.address,
       church: state.church, position: state.position,
-      sender: state.sender, recipient: state.recipient, extras: ex
+      sender: state.sender, recipient: state.recipient, inet: state.inet, extras: ex
     });
     saveHistory(list);
     renderHistory();
@@ -663,10 +663,10 @@
   function csvDownload() {
     var list = loadHistory();
     if (!list.length) { toast('내려받을 이력이 없습니다.'); return; }
-    var head = ['발급일시', '증명서 종류', '증명서 번호', '이름', '생년월일', '주소', '교회명', '직위', '발신처', '수신처'];
+    var head = ['발급일시', '증명서 종류', '증명서 번호', 'Internet No.', '이름', '생년월일', '주소', '교회명', '직위', '발신처', '수신처'];
     var lines = [head.join(',')];
     list.forEach(function (h) {
-      lines.push([fmtStampFull(h.at), typeNameOf(h), h.no, h.name, h.birth || '', h.address || '',
+      lines.push([fmtStampFull(h.at), typeNameOf(h), h.no, h.inet || '', h.name, h.birth || '', h.address || '',
                   h.church || '', h.position || '', h.sender || '', h.recipient || ''].map(csvCell).join(','));
     });
     var blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
