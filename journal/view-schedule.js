@@ -31,7 +31,7 @@ function renderSchedule(){
   /* 새벽 예배 챕터는 내렸으므로 할 일은 노회부터 연다 */
   const ch=(D.ui.chapter&&D.ui.chapter!=='dawn')?D.ui.chapter:'presby';
   const past=!!D.ui.schPast;
-  const limit=D.ui.schLimit||30;
+  const limit=D.ui.schLimit||12;
   const from=past?App.addDays(today,-30):(dk>today?dk:today);
 
   /* 앞으로의 일정 — 날짜별로 묶는다 */
@@ -143,7 +143,7 @@ function renderSchedule(){
       else if(a==='month'){D.ui.schMonth=!D.ui.schMonth}
       else if(a==='past'){D.ui.schPast=!D.ui.schPast}
       else if(a==='ch'){D.ui.schCh=b.dataset.ch}
-      else if(a==='more'){D.ui.schLimit=(D.ui.schLimit||30)+30}
+      else if(a==='more'){D.ui.schLimit=(D.ui.schLimit||12)+12}
       else if(a==='mmove'){
         const [y,mm]=mth.split('-').map(Number);
         const d=new Date(y,mm-1+(+b.dataset.step),1);

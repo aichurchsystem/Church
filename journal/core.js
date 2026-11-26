@@ -4,7 +4,7 @@ const KEY='mj.v1';
 const App={};
 window.App=App;
 /* 빌드 표시 — index.html의 <meta name="app-version"> 값과 다르면 옛 화면이므로 한 번 새로 연다 */
-App.VERSION='20261126h1';
+App.VERSION='20261126h2';
 
 /* 일정 시간·남은 시간 — 메인과 캘린더가 함께 쓴다 */
 function mnTime(start){
@@ -145,9 +145,9 @@ App.load=function(){
   if(window.SEED_RESTAURANTS&&window.SEED_RESTAURANTS.length){
     /* 처음이거나, 초기 목록이 늘어난 새 버전이면 한 번만 더 심는다(같은 이름·주소는 건너뜀) */
     var _sv='';try{_sv=localStorage.getItem('mj.seedVer')||''}catch(e){}
-    if(!D.restaurants.length||_sv!=='20261126h1'){
+    if(!D.restaurants.length||_sv!=='20261126h2'){
       try{App.foodSeed()}catch(e){console.warn(e)}
-      try{localStorage.setItem('mj.seedVer','20261126h1')}catch(e){}
+      try{localStorage.setItem('mj.seedVer','20261126h2')}catch(e){}
     }
   }
   return D;
