@@ -4,7 +4,7 @@ const KEY='mj.v1';
 const App={};
 window.App=App;
 /* 빌드 표시 — index.html의 <meta name="app-version"> 값과 다르면 옛 화면이므로 한 번 새로 연다 */
-App.VERSION='20261127e';
+App.VERSION='20261127f';
 
 /* 일정 시간·남은 시간 — 메인과 캘린더가 함께 쓴다 */
 function mnTime(start){

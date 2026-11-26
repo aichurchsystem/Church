@@ -2007,10 +2007,10 @@ body:not(.is-cover) .nav-back{display:grid}
 .rp-chev{display:inline-flex;width:13px;height:13px;color:var(--ink-3)}
 .rp-chev svg{width:13px;height:13px;display:block;transition:transform .15s}
 .rp-day.on .rp-chev svg{transform:rotate(180deg)}
-.rp-cal .cell.no{opacity:.22}
+.mini-cal .cell.no{background:rgba(255,255,255,.022)}
 .rp-cal{max-width:440px;margin:6px auto 2px;padding:9px 11px 7px;border-radius:16px;
   border:1px solid var(--line);background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.014))}
-.rp-cal .cell.no{background:transparent}
+.mini-cal .cell.no .dn{color:var(--ink-3);opacity:.5}
 .rp-canote{margin:6px 1px 0;font-size:10.5px;color:var(--ink-3);line-height:1.45}
 .rp-canote b{color:var(--amber-2);font-weight:800}
 
