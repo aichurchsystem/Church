@@ -956,3 +956,4 @@ label.fld > span{display:block;font-size:12.5px;font-weight:700;color:var(--ink-
   .food-region{font-size:11px}
 }
 .home-grid{align-items:start}
+.cell .food-mark{font-size:9px;font-weight:800;line-height:1;letter-spacing:-.02em;padding:2px 3px;border-radius:4px}
