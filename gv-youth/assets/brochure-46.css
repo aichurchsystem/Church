@@ -614,7 +614,7 @@ ul, ol { padding: 0; list-style: none; }
   .wb-hero__in { grid-template-columns: 1fr; }
   .wb-hero::before {
     content: ""; position: absolute; inset: -20px; z-index: 0;
-    background: url("images/conf46/poster-46.jpg") 50% 58% / 190% no-repeat;
+    background: url("images/conf46/poster-46.jpg?v=20261126") 50% 58% / 190% no-repeat;
     opacity: 0.3; filter: blur(11px) brightness(0.55) saturate(1.25);
   }
   .wb-hero__in { position: relative; z-index: 1; }
