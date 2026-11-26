@@ -96,7 +96,7 @@ function monthGrid(m){
             ${shown.map(e=>`<span class="mini" style="--c:${(App.STATUS[e.status||'plan']).color}" title="${App.esc(e.summary)}"><i class="bar"></i><span>${App.esc(e.summary)}</span></span>`).join('')}
             ${evs.length>3?`<span class="more">+${evs.length-3}</span>`:''}
           </span>
-          ${foods.length?`<span class="food-mark ${foods.every(f=>App.foodType(f)==='숙소')?'stay':''}" title="다녀온 곳 ${foods.length}곳">${foods.every(f=>App.foodType(f)==='숙소')?'숙':'맛'}${foods.length>1?foods.length:''}</span>`:''}
+          ${foods.length?`<span class="food-mark ${foods.every(f=>App.foodType(f)==='숙소')?'stay':''}" title="다녀온 곳 ${foods.length}곳 · ${foods.map(f=>f.name).join(', ')}"></span>`:''}
         </button>`}).join('')}
     </div>
   </div>`;

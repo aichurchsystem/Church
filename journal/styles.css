@@ -957,3 +957,5 @@ label.fld > span{display:block;font-size:12.5px;font-weight:700;color:var(--ink-
 }
 .home-grid{align-items:start}
 .cell .food-mark{font-size:9px;font-weight:800;line-height:1;letter-spacing:-.02em;padding:2px 3px;border-radius:4px}
+.cell .food-mark{position:absolute;right:5px;bottom:5px;width:6px;height:6px;border-radius:99px;padding:0;background:var(--amber);box-shadow:0 0 0 2px rgba(232,176,75,.18);border:0}
+.cell .food-mark.stay{background:#82a9e6;box-shadow:0 0 0 2px rgba(130,169,230,.18)}
