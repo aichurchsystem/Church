@@ -1657,21 +1657,38 @@ body.is-home .cover-back{display:grid}
 .cv-foot{margin:0;text-align:center;font-size:11px;font-weight:600;line-height:1.35;color:#8b9ab0;
   letter-spacing:-.01em;word-break:keep-all}
 
-/* 태블릿·PC: 표지를 한 장의 문서처럼 가운데 세운다 */
+/* 태블릿·PC: 표지가 화면을 가득 채운다
+   (2026-11-26 목사님 지시 "탭에서 보니 화면이 꽉 차지 않고 가운데 조그맣게 보인다. 화면 전체에 보이게") */
 @media (min-width:760px) and (min-height:620px){
-  body.is-cover{display:flex;align-items:center;justify-content:center;padding:22px;min-height:100svh;
-    background:radial-gradient(900px 500px at 50% -12%, rgba(232,176,75,.10), transparent 62%),#070c12}
-  body.is-cover .wrap{width:min(520px,100%);max-width:520px;padding:0}
-  .cv{min-height:0;height:min(760px,calc(100svh - 44px));border-radius:26px;
-    border:1px solid rgba(255,255,255,.12);box-shadow:0 34px 80px rgba(0,0,0,.62)}
-  .cv-ttl h1{font-size:34px}
-  .cv-ttl p{font-size:13px}
-  .cv-photo{min-height:260px}
-  .cv-brand img{width:168px}
-  .cv-r{grid-template-columns:104px minmax(0,1fr)}
-  .cv-r dt,.cv-r dd{font-size:13px;padding-top:8px;padding-bottom:8px}
-  .cv-r dd b{font-size:16px}
-  .cv-go{height:54px;font-size:16.5px}
+  body.is-cover{display:block;padding:0;min-height:100svh;--cv-pad:max(22px, calc((100vw - 900px) / 2));
+    background:#070c12}
+  body.is-cover .wrap{width:100%;max-width:none;padding:0}
+  .cv{min-height:100svh;height:auto;border-radius:0;border:0;box-shadow:none}
+  .cv-photo{min-height:min(58svh,560px)}
+  .cv-top{padding-left:var(--cv-pad);padding-right:var(--cv-pad);padding-top:calc(env(safe-area-inset-top) + 20px)}
+  .cv-ttl{left:var(--cv-pad);right:var(--cv-pad);bottom:22px}
+  .cv-body{gap:12px;padding-left:var(--cv-pad);padding-right:var(--cv-pad);padding-bottom:calc(env(safe-area-inset-bottom) + 20px)}
+  .cv-ttl h1{font-size:40px;line-height:1.14}
+  .cv-ttl p{font-size:14.5px}
+  .cv-kick{height:27px;font-size:12px}
+  .cv-no{font-size:12px}
+  .cv-th{padding:10px 16px}
+  .cv-th b{font-size:13px}
+  .cv-th span{font-size:12px}
+  .cv-r{grid-template-columns:132px minmax(0,1fr)}
+  .cv-r dt,.cv-r dd{font-size:14.5px;padding-top:11px;padding-bottom:11px;padding-left:16px;padding-right:16px}
+  .cv-r dd b{font-size:18px}
+  .cv-mut{font-size:13.5px}
+  .cv-go{height:58px;font-size:17px}
+  .cv-hint{font-size:12px}
+  .cv-brand img{width:190px}
+  .cv-foot{font-size:12px}
+}
+/* 태블릿을 옆으로 눕힌 넓은 화면: 사진과 표가 한 화면에 들어오도록 사진 높이만 줄인다 */
+@media (min-width:760px) and (min-height:620px) and (min-aspect-ratio:4/3){
+  .cv-photo{min-height:min(48svh,460px)}
+  .cv-body{gap:10px}
+  .cv-r dt,.cv-r dd{padding-top:8px;padding-bottom:8px}
 }
 /* 가로로 누운 폰: 높이가 짧으니 표와 사진을 눌러 한 화면에 담는다 */
 @media (max-height:560px){
