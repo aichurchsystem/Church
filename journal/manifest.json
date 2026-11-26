@@ -1,0 +1,17 @@
+{
+  "name": "박재용 목사 목회 일지",
+  "short_name": "목회 일지",
+  "description": "일지·스케줄·상담·캘린더·목회 메모·설교 준비를 한 곳에 담은 목회 일지",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a1017",
+  "theme_color": "#0a1017",
+  "lang": "ko",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
