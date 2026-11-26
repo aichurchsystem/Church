@@ -60,7 +60,6 @@ function renderJournal(){
           <button class="btn sm ghost jh-calbtn ${jcal?'on':''}" type="button" data-jcal aria-expanded="${jcal?'true':'false'}">${jcal?'달력 접기':'날짜 달력'}</button>
           <button class="btn sm ghost today-btn" data-today>오늘</button>
         </div>
-        ${jcal?`<div class="mini-cal j-mini">${jMonthGrid(gm)}</div>`:''}
         <div class="week">
           <button class="nav" data-nav="-7">‹</button>
           ${days.map((k,i)=>{
@@ -74,6 +73,7 @@ function renderJournal(){
             </button>`}).join('')}
           <button class="nav" data-nav="7">›</button>
         </div>
+        ${jcal?`<div class="mini-cal j-mini">${jMonthGrid(gm)}</div>`:''}
         <div class="stats mt12">
           ${App.stat('그날 기록',items.length+'건')}
           ${App.stat('지출 합계',App.money(daySum)+'<small>원</small>','amber')}
