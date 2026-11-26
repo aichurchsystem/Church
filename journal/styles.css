@@ -1602,7 +1602,7 @@ body.is-home .cover-back{display:grid}
   background:rgba(10,16,23,.55);border:1px solid rgba(232,176,75,.44);
   -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .cv-kick i{width:5px;height:5px;border-radius:99px;background:#f3c976;box-shadow:0 0 8px rgba(243,201,118,.9)}
-.cv-no{margin-left:auto;font-size:10.5px;font-weight:800;letter-spacing:.05em;color:#cdd8e6;
+.cv-no{margin-left:auto;font-size:11px;font-weight:800;letter-spacing:.05em;color:#cdd8e6;
   font-variant-numeric:tabular-nums;background:rgba(10,16,23,.5);border:1px solid rgba(255,255,255,.18);
   border-radius:7px;padding:4px 7px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .cv-ttl{position:absolute;left:16px;right:16px;bottom:14px;z-index:2}
@@ -1636,7 +1636,7 @@ body.is-home .cover-back{display:grid}
 .cv-r dd{margin:0;padding:6px 11px;font-size:12.5px;font-weight:650;color:#eef3fa;
   display:flex;align-items:baseline;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cv-r dd b{font-size:15px;font-weight:800;color:#fff;margin-right:1px;font-variant-numeric:tabular-nums}
-.cv-mut{color:#93a3b8;font-weight:600;font-size:11.5px}
+.cv-mut{color:#93a3b8;font-weight:600;font-size:12px}
 .cv-dot{margin:0 5px;font-style:normal;font-size:11px;font-weight:700;color:#6f8098}
 
 /* 들어가기 · 안내 · 로고 · 주소 */
@@ -1647,10 +1647,10 @@ body.is-home .cover-back{display:grid}
   transition:transform .12s ease}
 .cv-go:active{transform:scale(.985)}
 .cv-go svg{width:17px;height:17px}
-.cv-hint{margin:-2px 0 0;text-align:center;font-size:10.5px;font-weight:600;color:#8a99ae}
+.cv-hint{margin:-2px 0 0;text-align:center;font-size:11px;font-weight:600;color:#8a99ae}
 .cv-brand{display:flex;align-items:center;justify-content:center;padding-top:2px}
 .cv-brand img{width:154px;height:auto;display:block;opacity:.96;filter:drop-shadow(0 3px 10px rgba(0,0,0,.55))}
-.cv-foot{margin:0;text-align:center;font-size:10px;font-weight:600;line-height:1.35;color:#7b8aa0;
+.cv-foot{margin:0;text-align:center;font-size:11px;font-weight:600;line-height:1.35;color:#8b9ab0;
   letter-spacing:-.01em;word-break:keep-all}
 
 /* 태블릿·PC: 표지를 한 장의 문서처럼 가운데 세운다 */
