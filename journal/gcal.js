@@ -17,12 +17,16 @@ const GCal={
       this.state.range=doc.range||null;
       this.state.err='';
       const changed=this.merge(doc);
-      if(changed)App.save();
-      if(App.D.ui.tab==='calendar'||App.D.ui.tab==='home')App.render();
+      if(changed){
+        App.save();
+        /* 새 일정·바뀐 일정은 일지 자동 채움에도 바로 반영한다 */
+        try{if(App.autoFill)App.autoFill()}catch(e){}
+      }
+      if(App.D.ui.tab==='calendar'||App.D.ui.tab==='schedule'||App.D.ui.tab==='journal'||App.D.ui.tab==='home')App.render();
       if(manual)App.toast(changed?`구글 캘린더 ${this.state.count}건을 맞췄습니다`:'새로 바뀐 일정이 없습니다');
     }catch(e){
       this.state.err=String((e&&e.message)||e);
-      if(App.D.ui.tab==='calendar')App.render();
+      if(App.D.ui.tab==='calendar'||App.D.ui.tab==='schedule')App.render();
       if(manual)App.toast('구글 캘린더를 불러오지 못했습니다. 잠시 후 다시 시도합니다');
     }finally{this.state.syncing=false}
   },

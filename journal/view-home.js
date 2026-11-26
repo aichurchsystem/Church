@@ -1,15 +1,15 @@
 /* 메인 — 큰 타일 메뉴 (문서 발급 앱형 첫 화면)
    원칙: 화면 골격은 데이터 없이 먼저 그리고, 숫자는 항목별로 따로 채운다.
    그래서 데이터나 다른 스크립트 하나가 잘못돼도 메인은 절대 빈 화면이 되지 않는다. */
+/* 2026-11-26 목사님 지시: 캘린더·메모 타일을 내리고, 그 자리에 운동일지를 넣었다 */
 var MN_TILES=[
-  {tab:'journal', name:'오늘 일지', color:'#57ce93', icon:'journal', hint:'오늘 한 일 기록'},
-  {tab:'schedule',name:'스케줄',   color:'#82a9e6', icon:'schedule',hint:'이번 주 일정'},
-  {tab:'calendar',name:'캘린더',   color:'#e8b04b', icon:'calendar',hint:'월간·주간 보기'},
+  {tab:'journal', name:'오늘 일지', color:'#57ce93', icon:'journal', hint:'오늘 한 일 한눈에'},
+  {tab:'schedule',name:'스케줄',   color:'#82a9e6', icon:'schedule',hint:'앞으로의 일정'},
   {tab:'counsel', name:'상담 일지', color:'#6fd2d2', icon:'counsel', hint:'성도·심방 기록'},
   {tab:'sermons', name:'설교 준비', color:'#b79cff', icon:'sermons', hint:'설교 노트'},
   {tab:'vehicle', name:'차량 관리', color:'#f0a86b', icon:'car',     hint:'주유·정비·보험'},
-  {tab:'notes',   name:'목회 메모', color:'#f08ba8', icon:'notes',   hint:'아이디어 모음'},
-  {tab:'food',    name:'다녀온 곳', color:'#a9b6d4', icon:'food',    hint:'식당·숙소 기록'}
+  {tab:'food',    name:'다녀온 곳', color:'#a9b6d4', icon:'food',    hint:'식당·숙소 기록'},
+  {tab:'workout', name:'운동일지',  color:'#f0564a', icon:'dumbbell',hint:'종목·세트·무게'}
 ];
 
 function mnSafe(fn,alt){try{var v=fn();return (v===0||v)?v:alt}catch(e){return alt}}
@@ -38,6 +38,13 @@ function mnData(){
   out.notes=mnSafe(function(){return D.notes.length},0);
   out.food=mnSafe(function(){return D.restaurants.length},0);
   out.car=mnSafe(function(){var c=App.car&&App.car();return c&&(c.name||c.model)?(c.name||'내 차'):'등록 전'},'등록 전');
+  out.wo=mnSafe(function(){
+    var list=JSON.parse(localStorage.getItem('workoutlog.v1')||'[]')||[];
+    var mon=App.mondayOf(today),end=App.addDays(mon,6);
+    var days={};list.forEach(function(r){if(r&&r.date>=mon&&r.date<=end)days[r.date]=1});
+    var n=Object.keys(days).length;
+    return n?(n+'일 운동'):'기록 없음';
+  },'기록하기');
   return out;
 }
 function mnNext(){
@@ -67,7 +74,7 @@ function mnTileSub(tab,d){
   switch(tab){
     case 'journal': return d.journalToday?('오늘 '+d.journalToday+'건 기록'):'오늘 기록 없음';
     case 'schedule':return d.evWeek?('앞으로 7일 '+d.evWeek+'건'):'앞으로 7일 한가함';
-    case 'calendar':return '이번 달 '+d.evMonth+'건';
+    case 'workout': return d.wo;
     case 'counsel': return d.people+'명 · '+d.records+'건';
     case 'sermons': return d.sermons+'편 준비';
     case 'vehicle': return d.car;

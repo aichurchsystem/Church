@@ -4,7 +4,7 @@ const KEY='mj.v1';
 const App={};
 window.App=App;
 /* 빌드 표시 — index.html의 <meta name="app-version"> 값과 다르면 옛 화면이므로 한 번 새로 연다 */
-App.VERSION='20261126f4';
+App.VERSION='20261126h1';
 
 /* 일정 시간·남은 시간 — 메인과 캘린더가 함께 쓴다 */
 function mnTime(start){
@@ -82,6 +82,26 @@ App.calCat=function(e){const id=App.calCatId(e);return App.CALCATS.find(c=>c.id=
 App.CAT=id=>App.CATS.find(c=>c.id===id)||App.CATS[6];
 App.THEME=id=>App.THEMES.find(t=>t.id===id)||App.THEMES[0];
 App.chapter=id=>App.CHAPTERS.find(c=>c.id===id)||App.CHAPTERS[0];
+/* 챕터 표시 — 빈 값은 '미분류' (App.chapter는 빈 값을 새벽으로 돌려 주기 때문에 따로 쓴다) */
+App.chapterInfo=id=>App.CHAPTERS.find(c=>c.id===id)||{id:'',name:'미분류',color:'#9aa8bd'};
+/* ── 일정 → 챕터 분류 (2026-11-26 목사님 지시: 캘린더 일정을 스케줄의 챕터별로 모은다) ──
+   일정에 chapter가 적혀 있으면 그 뜻을 먼저 존중한다(직접 넣은 것·미분류로 되돌린 것).
+   아니면 제목·장소의 말로 알아보고, 챕터에 안 맞는 일(강의·인쇄·행정·개인 일정)은
+   억지로 넣지 않고 '미분류'로 남긴다. */
+const CH_RULES=[
+  ['presby',/노회/],
+  ['assembly',/총회|영성수련회|영성대회|스텝\s*모임/],
+  ['counsel',/상담|심방|문병|면담|위로|장례|병원|입원|수술|시술|퇴원/],
+  ['dawn',/새벽/],
+  ['church',/예배|설교|주보|교회|성회|부흥|집회|수련회|캠프|바이블|컨퍼런스|임직|취임|장로|권사|안수|세례|성찬|구역|전도|제직|선교|기도회|목회|축도/]
+];
+App.chapterOf=function(e){
+  if(!e)return '';
+  if(e.chapter!==undefined&&e.chapter!==null)return e.chapter;
+  const s=(e.summary||'')+' '+(e.location||'');
+  for(let i=0;i<CH_RULES.length;i++){if(CH_RULES[i][1].test(s))return CH_RULES[i][0]}
+  return '';
+};
 
 /* ── state ── */
 function pad(n){return String(n).padStart(2,'0')}
@@ -111,7 +131,7 @@ function blank(){
     carExpenses:[], restaurants:[],
     ui:{tab:'home',journalDate:App.todayKey(),chapter:'dawn',counselId:null,
         calMonth:App.todayKey().slice(0,7),calDate:App.todayKey(),calFilter:'all',
-        calTab:'month',noteTheme:'',noteTag:'',noteQ:'',sermonTheme:'dawn',carFilter:'',
+        calTab:'month',schMonth:false,noteTheme:'',noteTag:'',noteQ:'',sermonTheme:'dawn',carFilter:'',
         foodQ:'',foodRegion:''}
   };
 }
@@ -175,26 +195,48 @@ App.ask=function(msg,okLabel){
 };
 
 /* ── navigation ── */
+/* 2026-11-26 목사님 지시로 탭 구성 정리: 캘린더·메모는 탭에서 내리고(화면·자료는 보존)
+   그 자리에 운동(운동일지)을 넣었다. 순서: 홈·일지·스케줄·상담·설교·차량·다녀온 곳·보고·운동 */
 App.TABS=[
-  {id:'home',name:'메인'},{id:'journal',name:'일지'},{id:'schedule',name:'스케줄'},
-  {id:'counsel',name:'상담'},{id:'calendar',name:'캘린더'},{id:'notes',name:'메모'},
-  {id:'sermons',name:'설교'},{id:'vehicle',name:'차량'},{id:'food',name:'다녀온 곳'},
-  {id:'report',name:'보고'}
+  {id:'home',name:'홈'},{id:'journal',name:'일지'},{id:'schedule',name:'스케줄'},
+  {id:'counsel',name:'상담'},{id:'sermons',name:'설교'},
+  {id:'vehicle',name:'차량'},{id:'food',name:'다녀온 곳'},{id:'report',name:'보고'},
+  {id:'workout',name:'운동'}
 ];
-App.TAB=id=>App.TABS.find(t=>t.id===id)||App.TABS[0];
-/* 하단 바에 늘 보이는 탭 — 나머지는 '더보기' 안에 */
-App.PRIMARY=['home','journal','schedule','calendar','counsel'];
-App.MORE=['notes','sermons','vehicle','food','report'];
-App.TABICON={home:'home',journal:'journal',schedule:'schedule',counsel:'counsel',calendar:'calendar',notes:'notes',sermons:'sermons',vehicle:'car',food:'food',report:'report'};
-/* 탭이 아닌 화면 — 표지(첫 화면)와 관리자 */
-App.EXTRA=['cover','admin'];
+/* 탭에서 내렸지만 화면·자료는 살려 두는 것 (다시 올릴 때 여기서 꺼내 쓴다)
+   calendar: 일정은 스케줄 화면이 맡는다 / notes: 목회 메모 */
+App.HIDDEN=[{id:'calendar',name:'캘린더'},{id:'notes',name:'메모'}];
+App.TAB=id=>App.TABS.find(t=>t.id===id)||App.HIDDEN.find(t=>t.id===id)||App.TABS[0];
+/* 하단 바 탭 — 폰에서는 가로로 밀어서 본다(더보기 없음) */
+App.PRIMARY=['home','journal','schedule','counsel','sermons','vehicle','food','report','workout'];
+App.MORE=[];
+App.TABICON={home:'home',journal:'journal',schedule:'schedule',counsel:'counsel',calendar:'calendar',notes:'notes',sermons:'sermons',vehicle:'car',food:'food',report:'report',workout:'dumbbell'};
+/* 탭이 아닌 화면 — 표지(첫 화면)와 관리자, 그리고 내려 둔 화면 */
+App.EXTRA=['cover','admin','calendar','notes'];
 App.isScreen=function(tab){return App.TABS.some(t=>t.id===tab)||App.EXTRA.indexOf(tab)>=0};
-App.go=function(tab){
+/* 이전 화면 이력 — ← 버튼과 폰의 뒤로 가기가 같은 길을 쓴다.
+   화면을 옮길 때마다 App._stack에 쌓고, 실제 되돌아가기는 브라우저 history가 맡는다.
+   (날짜 바꾸기·일정 펼치기 같은 화면 안의 변화는 이력에 쌓지 않는다) */
+App._stack=[];
+App.canBack=function(){return App._stack.length>0};
+App.back=function(){
+  if(!App._stack.length)return false;
+  try{history.back();return true}catch(e){}
+  const t=App._stack.pop();App.go(t,{back:true});return true;
+};
+App.go=function(tab,opt){
+  opt=opt||{};
   if(!App.isScreen(tab))tab='home';
-  if(App._tab&&App._tab!==tab)App._scroll[App._tab]=window.scrollY||0;
+  const prev=App._tab;
+  if(prev&&prev!==tab)App._scroll[prev]=window.scrollY||0;
+  if(prev&&prev!==tab){
+    if(!opt.back){App._stack.push(prev);if(App._stack.length>40)App._stack.shift();}
+    try{if(!opt.back)history.pushState({mj:tab},'');}catch(e){}
+  }
+  if(tab==='cover')App._stack=[];
   D.ui.tab=tab;App.save();
   App._tab=tab;
-  App.syncTabs();
+  App.syncTabs();App.syncNav();
   document.body.classList.toggle('is-home',tab==='home');
   document.body.classList.toggle('is-cover',tab==='cover');
   document.body.classList.toggle('is-admin',tab==='admin');
@@ -202,22 +244,29 @@ App.go=function(tab){
   App.render();
   if(tab==='home'||tab==='cover'){window.scrollTo({top:0,behavior:'instant'})}
   else{const y=App._scroll[tab]||0;window.scrollTo({top:y,behavior:'instant'});}
-  if(tab==='calendar'&&window.GCal)window.GCal.maybeSync();
-  /* 폰의 뒤로 가기 버튼으로 표지까지 돌아올 수 있게 기록을 한 칸만 쌓아 둔다 */
-  try{
-    if(tab==='cover'){App._histIn=false}
-    else if(!App._histIn){history.pushState({mj:tab},'');App._histIn=true}
-  }catch(e){}
+  /* 구글 캘린더 연동은 캘린더 탭 대신 스케줄 화면을 열 때 돈다 */
+  if(tab==='schedule'&&window.GCal)window.GCal.maybeSync();
 };
 window.addEventListener('popstate',function(){
-  if(App._histIn){App._histIn=false;try{App.go('cover')}catch(e){}}
+  try{
+    if(!App._stack.length){App.go('cover',{back:true});return}
+    App.go(App._stack.pop(),{back:true});
+  }catch(e){console.error('[back]',e)}
 });
+/* ← 이전 버튼 상태 — 첫 화면(이력 없음)에서는 흐리게 */
+App.syncNav=function(){
+  const b=document.getElementById('btnBack');
+  if(!b)return;
+  const on=App.canBack();
+  b.classList.toggle('off',!on);
+  b.setAttribute('aria-disabled',on?'false':'true');
+};
 /* 화면 하나를 그린다. 실패해도 빈 화면을 남기지 않고 안내와 다시 그리기를 보여 준다 */
 App.render=function(){
   const t=D.ui.tab;
   const names={cover:'renderCover',home:'renderHome',journal:'renderJournal',schedule:'renderSchedule',counsel:'renderCounsel',
     calendar:'renderCalendar',notes:'renderNotes',sermons:'renderSermons',vehicle:'renderVehicle',food:'renderFood',
-    report:'renderReport',admin:'renderAdmin'};
+    report:'renderReport',workout:'renderWorkout',admin:'renderAdmin'};
   let err=null;
   try{
     const fn=window[names[t]||''];
@@ -236,8 +285,8 @@ App.homeFallback=function(){
   const el=document.getElementById('sc-home');
   if(!el)return;
   try{document.body.classList.add('is-home');if(App.D&&App.D.ui)App.D.ui.tab='home'}catch(e){}
-  const tiles=[['report','에스더 보고'],['journal','오늘 일지'],['schedule','스케줄'],['calendar','캘린더'],['counsel','상담 일지'],
-    ['sermons','설교 준비'],['vehicle','차량 관리'],['notes','목회 메모'],['food','다녀온 곳']];
+  const tiles=[['report','에스더 보고'],['journal','오늘 일지'],['schedule','스케줄'],['counsel','상담 일지'],
+    ['sermons','설교 준비'],['vehicle','차량 관리'],['food','다녀온 곳'],['workout','운동일지']];
   el.innerHTML=`<div class="mnhome"><div class="mntiles">${tiles.map(([id,name])=>
     `<button class="mtile" type="button" data-action="tab" data-tab="${id}" style="--c:#82a9e6">
       <b>${name}</b><span class="mt-sub">열기</span></button>`).join('')}</div>
@@ -358,11 +407,15 @@ App.ACT={
   'cal-day':el=>{App.D.ui.calDate=el.dataset.date;App.save();renderCalendar()},
   'cal-weekmove':el=>{App.D.ui.calWeek=App.addDays(App.D.ui.calWeek||App.mondayOf(App.todayKey()),7*(+el.dataset.step));App.save();renderCalendar()},
   'ev-add':el=>eventEdit(null,el.dataset.date||App.D.ui.calDate),
-  'ev-open':el=>{calOpen=calOpen===el.dataset.ev?null:el.dataset.ev;renderCalendar()},
+  'ev-open':el=>{calOpen=calOpen===el.dataset.ev?null:el.dataset.ev;App.render()},
   'ev-edit':el=>eventEdit(el.dataset.ev),
   'ev-tojournal':el=>eventToJournal(el.dataset.ev),
   'ev-status':el=>{const [id,st]=el.dataset.set.split('|');const ev=App.D.events.find(x=>x.id===id);if(!ev)return;
-    ev.status=st;App.save();renderCalendar();App.toast(App.STATUS[st].label+'으로 바뀔습니다')},
+    ev.status=st;App.save();App.render();App.toast(App.STATUS[st].label+'으로 바뀔습니다')},
+  /* 일정을 챕터에 직접 넣기 / 미분류로 되돌리기 */
+  'ev-chapter':el=>{const [id,ch]=el.dataset.set.split('|');const ev=App.D.events.find(x=>x.id===id);if(!ev)return;
+    ev.chapter=ch||'';App.save();App.render();
+    App.toast(ch?App.chapter(ch).name+'에 넣었습니다':'미분류로 되돌렸습니다')},
   'ev-note':el=>{const ev=App.D.events.find(x=>x.id===el.dataset.ev);if(ev){ev.note=el.value;App.save();App.toast('메모를 저장했습니다')}},
   ledger:()=>{},
   'car-add':el=>carExpenseEdit(null,el.dataset.type||''),
@@ -371,7 +424,7 @@ App.ACT={
   'car-vedit':()=>vehicleEdit(App.car().id),
   'car-vimg':()=>carPhoto(),
   'lecture-edit':el=>lectureEdit(el.dataset.ev),
-  'go-cal-day':el=>{App.D.ui.calDate=el.dataset.date;App.D.ui.calMonth=(el.dataset.date||'').slice(0,7);App.save();App.go('calendar')},
+  'go-cal-day':el=>{App.D.ui.calDate=el.dataset.date;App.D.ui.calMonth=(el.dataset.date||'').slice(0,7);App.save();App.go('schedule')},
   'ics':()=>openIcs(),
   'food-open':el=>{App.go('food');setTimeout(()=>foodDetail(el.dataset.food),120)}
 };
@@ -405,6 +458,8 @@ App.init=function(){
   const step=function(fn,name){try{fn()}catch(e){console.error('[boot]',name||'',e)}};
   step(App.load,'load');
   App._scroll={};App._tab=null;
+  /* 앱이 이미 아는 자료로 그날 일지를 미리 채운다 (일정·차량·상담·설교·맛집·보고·운동) */
+  step(()=>{if(App.autoFill)App.autoFill()},'autofill');
   step(buildTabs,'tabs');
   step(()=>{
     /* 앱을 열면 언제나 표지부터. 표지를 눌러 들어간 뒤에는 탭 이동은 지금처럼.
@@ -423,6 +478,8 @@ App.init=function(){
     document.getElementById('barDate').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 ${App.DW[d.getDay()]}요일`;
   },'date');
   step(()=>{
+    const bb=document.getElementById('btnBack');
+    if(bb)bb.onclick=()=>{if(App.canBack())App.back()};
     document.getElementById('btnExport').onclick=App.exportAll;
     document.getElementById('btnImport').onclick=()=>document.getElementById('fileImport').click();
     document.getElementById('fileImport').onchange=e=>{const f=e.target.files[0];if(f)App.importAll(f);e.target.value=''};

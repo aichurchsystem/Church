@@ -5,7 +5,7 @@
 (function(){
 var BASE='../report/data/';
 var LS_IDX='mj.rp.idx', LS_DAY='mj.rp.day.', LS_LAT='mj.rp.latest';
-var RP={dates:[],date:null,data:null,view:'done',open:{},all:false,
+var RP={dates:[],date:null,data:null,view:'done',filt:'',open:{},all:false,
         booted:false,req:0,err:'',stale:false,latest:null};
 window.RP=RP;
 
@@ -33,17 +33,43 @@ function chipLabel(k){
   var r=relDay(k);
   return r||(shortMd(k)+' '+dowOf(k));
 }
+/* 상태 나눔 (2026-11-26 목사님 지시로 확정)
+   수행 = 끝낸 일 / 작업 진행 중 = 에스더가 하는 중 / 목사님 결재 대기 = 목사님 확인·사인을 기다리는 일
+   나누는 기준은 담당(owner) 값이고, 목사님이 앱에서 '확인함'을 누르면 그 표시를 저장해 다음에도 지킨다. */
+function rpMarks(){try{var s=ls('mj.rp.mark');return s?JSON.parse(s):{}}catch(e){return {}}}
+function rpKey(it){return (RP.date||'')+'|'+(it&&it.title||'')}
+function rpMark(it){return rpMarks()[rpKey(it)]||''}
+function rpSetMark(it,v){
+  var m=rpMarks(),k=rpKey(it);
+  if(v)m[k]=v;else delete m[k];
+  try{ls('mj.rp.mark',JSON.stringify(m))}catch(e){}
+}
+function splitPending(x){
+  var p=(x&&x.pending)||[];
+  var doing=[],hold=[],doneMarked=[];
+  p.forEach(function(it){
+    var mk=rpMark(it);
+    if(mk==='done'){doneMarked.push(it);return}
+    if(it.owner==='에스더')doing.push(it);else hold.push(it);
+  });
+  return {doing:doing,hold:hold,doneMarked:doneMarked};
+}
 function counts(x){
   x=x||{};
-  return {order:(x.ordered||[]).length,done:(x.done||[]).length,hold:(x.pending||[]).length};
+  var sp=splitPending(x);
+  return {order:(x.ordered||[]).length,
+          done:(x.done||[]).length+sp.doneMarked.length,
+          doing:sp.doing.length,hold:sp.hold.length,
+          holdList:sp.hold,doingList:sp.doing};
 }
 
 /* ── 데이터 ── */
 function setLatest(x){
   if(!x)return;
   var c=counts(x);
-  var mine=(x.pending||[]).filter(function(p){return p.owner==='목사님'}).length;
-  RP.latest={date:x.date||RP.dates[0],label:x.label||'',order:c.order,done:c.done,hold:c.hold,mine:mine};
+  var mine=c.hold;
+  RP.latest={date:x.date||RP.dates[0],label:x.label||'',order:c.order,done:c.done,
+             doing:c.doing,hold:c.hold,mine:mine};
   ls(LS_LAT,JSON.stringify(RP.latest));
 }
 function boot(cb){
@@ -105,6 +131,42 @@ function tabBtn(id,num,label,on){
   return '<button class="rp-tab'+(on?' on '+id:'')+'" type="button" data-action="rp-view" data-view="'+id+'">'
     +'<b>'+num+'</b><span>'+label+'</span></button>';
 }
+/* 매일 하는 일 — 앱 안에 두고 나중에 고칠 수 있습니다 */
+var ROUTINE=[
+  ['05:00','모닝콜 — 오늘 일정·메일 보고'],
+  ['06:30','청소년 소식 수집·검증·초안'],
+  ['07:00','아침 보고 일지 + 쇼츠 점검·승인 확인'],
+  ['08:30','아침 쇼츠 한 편 업로드'],
+  ['17:15','16:9 영상 순차 업로드'],
+  ['19:00','저녁 쇼츠 한 편 업로드'],
+  ['2시간마다','목회일지 ↔ 구글 캘린더 동기화'],
+  ['월 09·10·20시','앱 소식 · 홈페이지 점검 · 영상 주간 보고'],
+  ['화 09:00','기획 회의 — 다음에 할 일 세 가지'],
+  ['매달 20·22일','미용실 정기 예약 확인'],
+  ['메일','지메일·네이버 함께 · 학교·관공서는 꼭 확인']
+];
+function routineHTML(){
+  var t=App.todayKey();
+  var ev=0;
+  try{ev=(App.D.events||[]).filter(function(e){return App.evDate(e)===t}).length}catch(e){}
+  var g=window.GCal&&window.GCal.state;
+  var syn=g&&g.last?(function(){var d=new Date(g.last);
+    return (d.getMonth()+1)+'/'+d.getDate()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')})():'확인 안 됨';
+  var c=counts(RP.data||{});
+  return '<section class="rp-routine">'
+    +'<div class="rp-rh"><b>매일 하는 일</b><span>오늘 일정 '+ev+'건 · 캘린더 연동 '+App.esc(syn)+'</span></div>'
+    +'<ul class="rp-rlist">'+ROUTINE.map(function(r){
+        return '<li><i>'+App.esc(r[0])+'</i><span>'+App.esc(r[1])+'</span></li>'
+      }).join('')+'</ul>'
+    +'<div class="rp-cards">'
+      +'<button class="rp-card done'+(RP.view==='done'?' on':'')+'" type="button" data-action="rp-view" data-view="done" data-filt="">'
+        +'<b>'+c.done+'</b><span>수행</span><i>끝낸 일</i></button>'
+      +'<button class="rp-card doing'+(RP.view==='doing'&&RP.filt!=='pastor'?' on':'')+'" type="button" data-action="rp-view" data-view="doing" data-filt="es">'
+        +'<b>'+c.doing+'</b><span>작업 진행 중</span><i>에스더가 하는 중</i></button>'
+      +'<button class="rp-card hold'+(RP.view==='doing'&&RP.filt==='pastor'?' on':'')+'" type="button" data-action="rp-view" data-view="doing" data-filt="pastor">'
+        +'<b>'+c.hold+'</b><span>목사님 결재 대기</span><i>목사님 확인을 기다립니다</i></button>'
+    +'</div></section>';
+}
 function headHTML(){
   var c=counts(RP.data);
   var day='불러오는 중';
@@ -118,8 +180,7 @@ function headHTML(){
   +'</div>'
   +'<div class="rp-tabs">'
     +tabBtn('done',c.done,'수행한 일',RP.view==='done')
-    +tabBtn('order',c.order,'명령한 일',RP.view==='order')
-    +tabBtn('hold',c.hold,'보류·대기',RP.view==='hold')
+    +tabBtn('doing',c.doing+c.hold,'작업 진행 중',RP.view==='doing')
   +'</div>';
 }
 function datesHTML(){
@@ -159,9 +220,20 @@ function orderLi(it){
         +(it.note?'<span class="rp-res">'+App.esc(it.note)+'</span>':'')+'</span>'
     +'</div></li>';
 }
-function holdLi(it){
+/* 작업 진행 중 목록의 한 줄 — 담당에 따라 배지가 달라진다 */
+function pendingLi(it){
   var mine=it.owner==='에스더';
-  return '<li class="rp-li hold">'
+  return '<li class="rp-li '+(mine?'doing':'hold sign')+'">'
+    +'<div class="rp-row static">'
+      +'<span class="rp-rt"><b>'+App.esc(it.title)+'</b>'
+        +(it.note?'<span class="rp-res">'+App.esc(it.note)+'</span>':'')+'</span>'
+      +'<i class="rp-owner '+(mine?'me':'')+'">'+(mine?'진행 중':'목사님 보류 중')+'</i>'
+      +'<button class="rp-ok" type="button" data-action="rp-mark" data-key="'+App.esc(rpKey(it))+'">확인함</button>'
+    +'</div></li>';
+}
+function holdLi(it){
+  var mine=false;   /* 이 목록은 결재 대기(목사님 담당)만 모은다 */
+  return '<li class="rp-li hold sign">'
     +'<div class="rp-row static">'
       +'<span class="rp-rt"><b>'+App.esc(it.title)+'</b>'
         +(it.note?'<span class="rp-res">'+App.esc(it.note)+'</span>':'')+'</span>'
@@ -176,15 +248,27 @@ function listHTML(){
     return '<div class="rp-none">불러오는 중…</div>';
   }
   var html='';
-  if(RP.view==='done')html=(d.done||[]).map(doneLi).join('');
-  else if(RP.view==='order')html=(d.ordered||[]).map(orderLi).join('');
-  else html=(d.pending||[]).map(holdLi).join('');
+  var sp=splitPending(d);
+  if(RP.view==='done'){
+    html=(d.done||[]).map(doneLi).join('')
+      +(sp.doneMarked||[]).map(function(it){
+        return '<li class="rp-li done on"><div class="rp-row static">'
+          +'<span class="rp-rt"><b><span class="rp-kind">확인함</span>'+App.esc(it.title)+'</b>'
+          +(it.note?'<span class="rp-res">'+App.esc(it.note)+'</span>':'')+'</span>'
+          +'<i class="rp-owner me">목사님 확인</i></div></li>'}).join('');
+  }
+  else{
+    var list=(d.pending||[]).filter(function(it){return rpMark(it)!=='done'});
+    if(RP.filt==='es')list=list.filter(function(it){return it.owner==='에스더'});
+    else if(RP.filt==='pastor')list=list.filter(function(it){return it.owner!=='에스더'});
+    html=list.map(pendingLi).join('');
+  }
   if(!html)return '<div class="rp-none">해당하는 항목이 없습니다.</div>';
   return '<ul class="rp-list '+RP.view+'">'+html+'</ul>';
 }
 function bodyHTML(){
   var d=RP.data;
-  var out=headHTML()+datesHTML();
+  var out=routineHTML()+headHTML()+datesHTML();
   if(d){
     if(d.summary)out+='<p class="rp-sum">'+App.esc(d.summary)+'</p>';
     if(RP.err==='stale')out+='<p class="rp-cau">네트워크가 없어 마지막으로 받은 내용을 보여 줍니다.</p>';
@@ -209,9 +293,20 @@ function renderReport(){
 /* 기존 클릭 위임(App.ACT)에 보고 일지 동작을 더한다 */
 App.ACT['rp-view']=function(el){
   var v=el.dataset.view;
-  if(!v||v===RP.view)return;
-  RP.view=v;RP.all=false;
+  if(v==='order')v='doing';
+  if(v==='hold')v='doing';
+  if(!v)return;
+  RP.view=v;RP.filt=el.dataset.filt||'';RP.all=false;
   renderReport();
+};
+/* 목사님이 '확인함'을 누르면 그 항목은 수행으로 넘어가고, 그 표시는 다음 보고에도 남는다 */
+App.ACT['rp-mark']=function(el){
+  var key=el.dataset.key;if(!key)return;
+  var m=rpMarks();
+  if(m[key]==='done')delete m[key];else m[key]='done';
+  try{ls('mj.rp.mark',JSON.stringify(m))}catch(e){}
+  renderReport();
+  App.toast(m[key]==='done'?'확인함으로 표시했습니다':'되돌렸습니다');
 };
 App.ACT['rp-date']=function(el){selectDate(el.dataset.date)};
 App.ACT['rp-open']=function(el){
@@ -228,7 +323,7 @@ window.ReportPeek=function(cb){
     var txt='명령·수행·보류 한눈에';
     if(L&&L.date){
       var rel=relDay(L.date)||('최근 '+shortMd(L.date));
-      txt=rel+' · 수행 '+L.done+' · 보류 '+L.hold;
+      txt=rel+' · 수행 '+L.done+' · 진행 '+(L.doing||0)+' · 결재 '+(L.hold||0);
     }
     try{if(cb)cb(txt,L)}catch(e){}
   });
