@@ -3,14 +3,15 @@
      표지 들어가는 메인 화면을 넣고, 그걸 누르면 지금 화면이 보였으면 좋겠어."
    표지를 누르면 지금의 큰 타일 메인으로 들어간다. 타일 메인·상세 화면은 손대지 않는다. */
 
-/* 사진 두 판 — 기본은 서서 강의하는 사진, ?photo=desk 로 앉은 사진 판을 연다 */
+/* 사진 두 판 — 기본은 책상에 앉은 사진, ?photo=stand 로 서서 강의하는 사진 판을 연다
+   (2026-11-26 목사님 지시 "그럼 이 사진으로 적용. 시켜줘. 앉아 있는 사진으로.") */
 var CV_PHOTOS={
   stand:{src:'assets/cover-stand.jpg', pos:'62% 20%', alt:'박재용 목사 — 강단에서 설교하는 모습'},
   desk :{src:'assets/cover-desk.jpg',  pos:'50% 34%', alt:'박재용 목사 — 책상에 앉아 이야기하는 모습'}
 };
 function cvPhotoKey(){
   try{var m=/[?&]photo=([a-z]+)/.exec(location.search);if(m&&CV_PHOTOS[m[1]])return m[1]}catch(e){}
-  return 'stand';
+  return 'desk';
 }
 function cvNum(fn,alt){try{var v=fn();return (v===0||v)?v:alt}catch(e){return alt}}
 function cvEsc(s){return App.esc?App.esc(s):String(s==null?'':s)}
