@@ -1306,15 +1306,6 @@ label.fld > span{display:block;font-size:12.5px;font-weight:700;color:var(--ink-
   .tl{max-height:none}
 }
 
-/* 넓은 화면: 메인을 2단으로 (오늘 일정 | 이번 주) */
-@media(min-width:920px){
-  #sc-home{display:grid;grid-template-columns:1fr 1fr;gap:11px;align-items:start}
-  #sc-home .mn-hero,#sc-home .mn-quick{grid-column:1/-1;margin-bottom:0}
-  #sc-home .mn-block{margin-bottom:0}
-  #sc-home .mn-two{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:0}
-  #sc-home .mn-install,#sc-home .mn-foot{grid-column:1/-1;margin-bottom:0}
-}
-
 /* 다음 일정 줄: 제목이 먼저 보이고 남은 시간은 오른쪽에 */
 .mn-next .tx{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
 .mn-next .tx .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;color:var(--ink)}
@@ -1326,3 +1317,135 @@ label.fld > span{display:block;font-size:12.5px;font-weight:700;color:var(--ink-
 .mn-next{margin-right:0}
 @media(min-width:760px){.mn-brand{padding-right:108px}}
 @media(min-width:1100px){.mn-brand{padding-right:130px}}
+
+/* ══════════════════════════════════════════════════════════
+   2026-11-26 큰 타일 메인 — 문서 발급 앱형 첫 화면
+   (메인은 화면을 꽉 채우는 2×4 타일, 상세 화면은 지금 모습 그대로)
+   ══════════════════════════════════════════════════════════ */
+
+/* 메인에서는 하단 탭바를 접어 타일 자리를 넓힌다 (상세 화면은 그대로) */
+body.is-home{padding-bottom:calc(6px + env(safe-area-inset-bottom))}
+body.is-home .tabbar{display:none}
+body.is-home #btnExport,body.is-home #btnImport{display:none}
+body.is-home .wrap{padding:6px 13px 6px}
+body.is-home .topbar{padding:8px 13px 7px}
+
+/* 상세 화면에서 메인으로 돌아가는 길 — 상단 왼쪽 화살표 */
+.home-back{display:none;flex:0 0 auto}
+body:not(.is-home) .home-back{display:grid}
+.home-back:active{transform:scale(.94)}
+
+.mnhome{display:flex;flex-direction:column;gap:8px;
+  min-height:calc(100svh - 92px)}
+@supports not (height:100svh){.mnhome{min-height:calc(100vh - 92px)}}
+
+/* ── 위쪽 인사 띠 ── */
+.mnh{position:relative;display:block;
+  padding:10px 13px 11px;border-radius:16px;
+  border:1px solid rgba(232,176,75,.24);
+  background:
+    radial-gradient(420px 180px at 4% -40%, rgba(232,176,75,.20), transparent 68%),
+    radial-gradient(360px 170px at 98% 140%, rgba(80,120,200,.20), transparent 70%),
+    linear-gradient(155deg,#18232f,#101925 76%);
+  box-shadow:0 12px 28px rgba(0,0,0,.34)}
+.mnh::after{content:"";position:absolute;inset:0;border-radius:16px;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size:14px 14px;opacity:.4;
+  -webkit-mask-image:linear-gradient(180deg,#000,transparent 78%);
+  mask-image:linear-gradient(180deg,#000,transparent 78%)}
+.mnh-tx{position:relative;z-index:2;min-width:0;flex:1}
+.mnh-top{position:relative;z-index:2;display:flex;align-items:center;gap:8px}
+.mnh-kicker{flex:1;min-width:0;font-size:12.5px;font-weight:800;color:#c9a25a;letter-spacing:.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mnh-hello{margin:2px 0 0;font-size:19px;line-height:1.24;font-weight:800;
+  letter-spacing:-.045em;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mnh-hello b{color:var(--amber-2)}
+.mnh-now{display:flex;align-items:center;gap:7px;margin-top:6px;min-width:0;
+  font-size:13px;color:var(--ink-2)}
+.mnh-now .lb{flex:0 0 auto;font-size:12px;font-weight:800;color:#0f1722;
+  background:linear-gradient(150deg,#f3c976,#dc9f33);border-radius:6px;padding:2px 7px}
+.mnh-now .tx{display:flex;align-items:baseline;gap:6px;min-width:0;flex:1}
+.mnh-now .tx b{font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mnh-now .tx i{flex:0 0 auto;font-style:normal;font-size:12px;font-weight:700;color:#f0cd8a}
+.mnh-sync{position:relative;z-index:2;flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;
+  height:23px;padding:0 8px;border-radius:8px;font-size:11.5px;font-weight:700;white-space:nowrap;
+  color:#8fe0b6;background:rgba(87,206,147,.12);border:1px solid rgba(87,206,147,.32)}
+.mnh-sync i{width:6px;height:6px;border-radius:99px;background:#57ce93;box-shadow:0 0 8px rgba(87,206,147,.9)}
+
+/* ── 큰 타일 격자 ── */
+.mntiles{flex:1 1 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-auto-rows:minmax(128px,1fr);gap:9px;min-height:0}
+.mtile{position:relative;display:flex;flex-direction:column;justify-content:flex-end;
+  gap:3px;padding:13px 13px 12px;border-radius:18px;text-align:left;overflow:hidden;
+  border:1px solid color-mix(in srgb,var(--c) 34%,rgba(255,255,255,.09));
+  background:
+    radial-gradient(130% 96% at 104% -6%, color-mix(in srgb,var(--c) 30%,transparent), transparent 62%),
+    linear-gradient(158deg, color-mix(in srgb,var(--c) 13%, #1a2634), #101925 82%);
+  box-shadow:0 12px 26px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.05);
+  transition:transform .12s ease, box-shadow .12s ease;
+  touch-action:manipulation;-webkit-user-select:none;user-select:none;min-width:0}
+.mtile:active{transform:scale(.972);box-shadow:0 6px 16px rgba(0,0,0,.4)}
+.mt-ico{position:absolute;top:11px;left:12px;width:44px;height:44px;border-radius:14px;
+  display:grid;place-items:center;color:var(--c);
+  background:color-mix(in srgb,var(--c) 19%,transparent);
+  border:1px solid color-mix(in srgb,var(--c) 44%,transparent);
+  box-shadow:0 6px 14px color-mix(in srgb,var(--c) 18%,transparent), inset 0 1px 0 rgba(255,255,255,.10)}
+.mt-ico svg{width:23px;height:23px}
+.mt-badge{position:absolute;top:11px;right:11px;min-width:24px;height:24px;padding:0 6px;
+  border-radius:99px;display:none;place-items:center;font-size:12px;font-weight:800;
+  color:#0f1722;background:linear-gradient(150deg,#f7d189,#e0a63c);
+  box-shadow:0 4px 10px rgba(224,166,60,.35)}
+.mt-wm{position:absolute;right:-10px;bottom:-12px;width:92px;height:92px;color:var(--c);opacity:.09}
+.mt-wm svg{width:100%;height:100%}
+.mtile b{position:relative;font-size:17.5px;line-height:1.2;font-weight:800;
+  letter-spacing:-.045em;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mt-sub{position:relative;font-size:13px;font-weight:650;color:var(--ink-2);
+  letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mt-arrow{position:absolute;top:13px;right:12px;width:16px;height:16px;color:color-mix(in srgb,var(--c) 80%,#fff);opacity:.66}
+.mt-arrow svg{width:16px;height:16px;display:block}
+.mtile b,.mt-sub{padding-right:16px}
+
+.mn-foot2{margin-top:auto;text-align:center;font-size:11.5px;color:var(--ink-3);
+  font-weight:600;letter-spacing:-.01em;padding:2px 0 1px}
+
+/* ── 화면을 못 그렸을 때의 안내 ── */
+.mn-boot{display:flex;flex-direction:column;align-items:flex-start;gap:8px;
+  padding:18px 16px;border-radius:16px;border:1px dashed var(--line-2);
+  background:linear-gradient(160deg,var(--panel-2),var(--panel))}
+.mn-boot b{font-size:16px;font-weight:800;color:#fff}
+.mn-boot span{font-size:13px;color:var(--ink-2);line-height:1.55}
+.mn-boot-b{display:flex;gap:8px;margin-top:4px}
+
+/* ── 태블릿: 2열로 크게 (문서 발급 앱처럼) ── */
+@media(min-width:700px){
+  body.is-home .wrap{padding:12px 18px 14px}
+  .mnhome{max-width:780px;margin:0 auto}
+  .mtile b{font-size:19px}
+  .mt-sub{font-size:13.5px}
+  .mt-ico{width:50px;height:50px;border-radius:15px}
+  .mt-ico svg{width:26px;height:26px}
+  .mnh-hello{font-size:21px}
+}
+/* ── 넓은 화면은 4열로 ── */
+@media(min-width:1000px){
+  .mnhome{max-width:1040px}
+  .mntiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;
+    max-height:min(620px,calc(100svh - 250px));align-self:center;width:100%}
+}
+/* 가로로 눕힌 화면: 높이가 짧으니 타일을 낮추고 글자를 줄인다 */
+@media(max-height:520px){
+  body.is-home .wrap{padding:6px 12px 8px}
+  .mnhome{min-height:calc(100svh - 84px);gap:7px}
+  .mnh{padding:8px 11px}
+  .mnh-kicker{font-size:11.5px}
+  .mnh-hello{font-size:16.5px}
+  .mnh-now{margin-top:4px;font-size:12px}
+  .mntiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;grid-auto-rows:minmax(94px,1fr)}
+  .mtile{padding:9px 10px;border-radius:14px}
+  .mt-ico{width:34px;height:34px;border-radius:11px;top:8px;left:9px}
+  .mt-ico svg{width:18px;height:18px}
+  .mtile b{font-size:15px}
+  .mt-sub{font-size:12px}
+  .mt-arrow{display:none}
+  .mn-foot2{display:none}
+}

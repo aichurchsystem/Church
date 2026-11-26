@@ -3,6 +3,24 @@
 const KEY='mj.v1';
 const App={};
 window.App=App;
+/* 빌드 표시 — index.html의 <meta name="app-version"> 값과 다르면 옛 화면이므로 한 번 새로 연다 */
+App.VERSION='20261126d1';
+
+/* 일정 시간·남은 시간 — 메인과 캘린더가 함께 쓴다 */
+function mnTime(start){
+  if(!start)return '';
+  return start.length<=10?'종일':start.slice(11,16);
+}
+function mnLeft(start){
+  if(!start||start.length<=10)return '';
+  const t=new Date(start.replace(' ','T'));
+  let diff=Math.round((t-new Date())/60000);
+  if(diff<-1)return '지난 일정';
+  if(diff<=0)return '지금';
+  if(diff<60)return `${diff}분 후`;
+  const h=Math.floor(diff/60), m=diff%60;
+  return m?`${h}시간 ${m}분 후`:`${h}시간 후`;
+}
 
 App.CHAPTERS=[
   {id:'dawn',name:'새벽 예배',color:'#e8b04b'},
@@ -173,25 +191,52 @@ App.go=function(tab){
   D.ui.tab=tab;App.save();
   App._tab=tab;
   App.syncTabs();
+  document.body.classList.toggle('is-home',tab==='home');
   App.$$('.screen').forEach(s=>s.classList.toggle('on',s.id==='sc-'+tab));
   App.render();
-  const y=App._scroll[tab]||0;
-  window.scrollTo({top:y,behavior:'instant'});
+  if(tab==='home'){window.scrollTo({top:0,behavior:'instant'})}
+  else{const y=App._scroll[tab]||0;window.scrollTo({top:y,behavior:'instant'});}
   if(tab==='calendar'&&window.GCal)window.GCal.maybeSync();
 };
+/* 화면 하나를 그린다. 실패해도 빈 화면을 남기지 않고 안내와 다시 그리기를 보여 준다 */
 App.render=function(){
   const t=D.ui.tab;
+  const names={home:'renderHome',journal:'renderJournal',schedule:'renderSchedule',counsel:'renderCounsel',
+    calendar:'renderCalendar',notes:'renderNotes',sermons:'renderSermons',vehicle:'renderVehicle',food:'renderFood'};
+  let err=null;
   try{
-    if(t==='home')renderHome();
-    else if(t==='journal')renderJournal();
-    else if(t==='schedule')renderSchedule();
-    else if(t==='counsel')renderCounsel();
-    else if(t==='calendar')renderCalendar();
-    else if(t==='notes')renderNotes();
-    else if(t==='sermons')renderSermons();
-    else if(t==='vehicle')renderVehicle();
-    else if(t==='food')renderFood();
-  }catch(e){console.error(e);}
+    const fn=window[names[t]||''];
+    if(typeof fn!=='function'){
+      if(t==='home')App.homeFallback();
+      else throw new Error(t+' 화면 스크립트를 불러오지 못했습니다');
+    }else fn();
+  }catch(e){err=e;console.error('[render]',t,e)}
+  try{
+    const el=document.getElementById('sc-'+t);
+    if(el&&!el.innerHTML.trim())App.screenFallback(el,t,err);
+  }catch(e){console.error(e)}
+};
+/* 스크립트가 일부 빠져도 메인은 타일 메뉴로 그려진다 */
+App.homeFallback=function(){
+  const el=document.getElementById('sc-home');
+  if(!el)return;
+  try{document.body.classList.add('is-home');if(App.D&&App.D.ui)App.D.ui.tab='home'}catch(e){}
+  const tiles=[['journal','오늘 일지'],['schedule','스케줄'],['calendar','캘린더'],['counsel','상담 일지'],
+    ['sermons','설교 준비'],['vehicle','차량 관리'],['notes','목회 메모'],['food','다녀온 곳']];
+  el.innerHTML=`<div class="mnhome"><div class="mntiles">${tiles.map(([id,name])=>
+    `<button class="mtile" type="button" data-action="tab" data-tab="${id}" style="--c:#82a9e6">
+      <b>${name}</b><span class="mt-sub">열기</span></button>`).join('')}</div>
+    <div class="mn-foot2">박재용 목사 · 글로벌비전교회 담임 · GV청소년선교회 대표</div></div>`;
+};
+App.screenFallback=function(el,tab,err){
+  const name=(App.TAB(tab)||{}).name||tab;
+  el.innerHTML=`<div class="mn-boot">
+    <b>${App.esc(name)} 화면을 그리지 못했습니다</b>
+    <span>잠시 뒤 다시 눌러 주세요. 계속 이러면 앱을 한 번 새로 열면 해결됩니다.</span>
+    <div class="mn-boot-b">
+      <button class="btn sm" type="button" data-action="tab" data-tab="home">메인으로</button>
+      <button class="btn sm primary" type="button" data-action="reload">다시 열기</button>
+    </div></div>`;
 };
 
 /* ── shared small builders ── */
@@ -244,10 +289,12 @@ App.importAll=function(file){
 
 /* ── 하단 탭바 (아이콘과 글자 모두 누를 수 있게) ── */
 const ICON_MORE=`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h.01M4 12h.01M4 17h.01"/><path d="M9.5 7H20M9.5 12H20M9.5 17H20"/></svg>`;
+/* 아이콘 스크립트가 빠져도 탭바는 그려지게 */
+App.icon=function(name){try{return (App.ICON&&App.ICON[name])||''}catch(e){return ''}};
 function tabHTML(id){
   const t=App.TAB(id);
   return `<button class="tab" type="button" data-action="tab" data-tab="${id}" aria-label="${t.name}">
-    <span class="ti">${App.ICON[App.TABICON[id]||id]||''}</span><span class="tl">${t.name}</span><i class="dotb"></i>
+    <span class="ti">${App.icon(App.TABICON[id]||id)}</span><span class="tl">${t.name}</span><i class="dotb"></i>
   </button>`;
 }
 function buildTabs(){
@@ -269,7 +316,7 @@ App.moreSheet=function(){
   const rows=App.MORE.map(id=>{
     const t=App.TAB(id);
     return `<button class="more-i" type="button" data-action="tab" data-tab="${id}">
-      <span class="mi">${App.ICON[App.TABICON[id]||id]||''}</span><b>${t.name}</b>
+      <span class="mi">${App.icon(App.TABICON[id]||id)}</span><b>${t.name}</b>
       <span class="mhint">${({notes:'목회 메모·아이디어',sermons:'설교 준비 노트',vehicle:'주유·정비·보험 기록',food:'다녀온 식당·숙소'})[id]||''}</span>
     </button>`;
   }).join('');
@@ -282,6 +329,7 @@ App.ACT={
   tab:el=>{const id=el.dataset.tab;App.closeSheet();App.go(id)},
   more:()=>App.moreSheet(),
   'sheet-close':()=>App.closeSheet(),
+  'reload':()=>location.reload(),
   'install-guide':()=>{App.closeSheet();App.installGuide()},
   'install-dismiss':()=>{try{localStorage.setItem('mj.installHide','1')}catch(e){};App.render()},
   'gcal-sync':()=>{if(window.GCal)window.GCal.sync(true)},
@@ -336,15 +384,23 @@ App.installGuide=function(){
 
 /* ── boot ── */
 App.init=function(){
-  App.load();
+  /* 한 단계가 실패해도 나머지는 계속 진행한다 — 메인이 비지 않게 */
+  const step=function(fn,name){try{fn()}catch(e){console.error('[boot]',name||'',e)}};
+  step(App.load,'load');
   App._scroll={};App._tab=null;
-  buildTabs();
-  App.go('home');            // 앱을 열면 언제나 메인 화면부터
-  const d=new Date();
-  document.getElementById('barDate').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 ${App.DW[d.getDay()]}요일`;
-  document.getElementById('btnExport').onclick=App.exportAll;
-  document.getElementById('btnImport').onclick=()=>document.getElementById('fileImport').click();
-  document.getElementById('fileImport').onchange=e=>{const f=e.target.files[0];if(f)App.importAll(f);e.target.value=''};
+  step(buildTabs,'tabs');
+  step(()=>App.go('home'),'home');       // 앱을 열면 언제나 메인 화면부터
+  step(()=>{
+    const d=new Date();
+    document.getElementById('barDate').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 ${App.DW[d.getDay()]}요일`;
+  },'date');
+  step(()=>{
+    document.getElementById('btnExport').onclick=App.exportAll;
+    document.getElementById('btnImport').onclick=()=>document.getElementById('fileImport').click();
+    document.getElementById('fileImport').onchange=e=>{const f=e.target.files[0];if(f)App.importAll(f);e.target.value=''};
+    const bh=document.getElementById('btnHome');
+    if(bh)bh.onclick=()=>App.go('home');         /* 상세 화면 → 메인 */
+  },'buttons');
   document.addEventListener('keydown',e=>{if(e.key==='Escape')App.closeSheet()});
   document.addEventListener('change',e=>{
     const t=e.target.closest&&e.target.closest('[data-action="ev-note"]');
@@ -352,8 +408,25 @@ App.init=function(){
     const ev=App.D.events.find(x=>x.id===t.dataset.ev);
     if(ev){ev.note=t.value;App.save();App.toast('메모를 저장했습니다')}
   });
-  if(window.GCal)window.GCal.sync();          // 구글 캘린더 자동 연동
+  step(()=>{if(window.GCal)window.GCal.sync()},'gcal');   // 구글 캘린더 자동 연동
   document.documentElement.classList.add('ready');
+  window.__mjBooted=true;                     // 인라인 감시기가 빈 화면을 덮지 않게
 };
-document.addEventListener('DOMContentLoaded',App.init);
+/* 옛 index.html이 남아 있으면(버전 불일치) 캐시를 피해 한 번만 새로 연다 */
+App.versionCheck=function(){
+  try{
+    const meta=document.querySelector('meta[name="app-version"]');
+    const htmlV=(window.APP_VERSION||(meta&&meta.content)||'').trim();
+    if(!htmlV||htmlV===App.VERSION)return false;
+    const k='mj.reload.'+App.VERSION;
+    if(sessionStorage.getItem(k))return false;
+    sessionStorage.setItem(k,'1');
+    location.replace(location.pathname+'?v='+App.VERSION+'&t='+Date.now());
+    return true;
+  }catch(e){return false}
+};
+document.addEventListener('DOMContentLoaded',function(){
+  if(App.versionCheck())return;
+  App.init();
+});
 })();
