@@ -199,7 +199,7 @@ App.statusChip=function(st){const s=App.STATUS[st]||App.STATUS.plan;return `<spa
 App.catChip=function(id){const c=App.CAT(id);return `<span class="chip" style="color:${c.color}"><span class="pt"></span>${c.name}</span>`};
 App.stat=function(label,value,cls){return `<div class="stat ${cls||''}"><span class="l">${label}</span><span class="v">${value}</span></div>`};
 App.empty=function(title,sub,icon){
-  return `<div class="empty">${icon||''}<b>${App.esc(title)}</b><span>${App.esc(sub||'')}</span></div>`;
+  return `<div class="empty">${icon||''}<b>${App.esc(title)}</b><span>${sub||''}</span></div>`;
 };
 App.monthOf=function(k){return k.slice(0,7)};
 App.inMonth=function(k,m){return (k||'').slice(0,7)===m};

@@ -70,7 +70,7 @@ function renderJournal(){
               <span class="chip st-${j.status||'done'}"><span class="pt"></span>${st.label}</span>
             </div>
           </article>`}).join('')
-        :App.empty('아직 기록이 없습니다','오늘 대화하며 실행한 일을 한 줄씩 남겨 두세요.<br>에스더가 채워 넣을 때는 <b>일괄 추가</b>를 씁니다.',
+        :App.empty('아직 기록이 없습니다','오늘 한 일을 한 줄씩 남겨 보세요.<br><b>＋ 기록</b>으로 바로 추가할 수 있습니다.',
           `<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M5 4.5h11a2 2 0 0 1 2 2V20H7a2 2 0 0 1-2-2z"/><path d="M5 18a2 2 0 0 1 2-2h11"/><path d="M8.5 8.2h6M8.5 11.4h4"/></svg>`)}
       </div>
       ${items.length?`<div class="day-total"><span>${App.fmtDate(dk)} 합계</span><b>${App.money(daySum)}원</b><span class="muted">· ${items.length}건</span></div>`:''}
