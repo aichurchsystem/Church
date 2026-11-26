@@ -142,7 +142,14 @@ App.load=function(){
     if(!Array.isArray(D.events)||!D.events.length)D.events=(window.SEED_EVENTS||[]).map(e=>Object.assign({},e));
   }else{D=blank()}}catch(e){console.warn(e);D=blank()}
   App.D=D;
-  if(!D.restaurants.length&&window.SEED_RESTAURANTS&&window.SEED_RESTAURANTS.length){try{App.foodSeed()}catch(e){console.warn(e)}}
+  if(window.SEED_RESTAURANTS&&window.SEED_RESTAURANTS.length){
+    /* 처음이거나, 초기 목록이 늘어난 새 버전이면 한 번만 더 심는다(같은 이름·주소는 건너뜀) */
+    var _sv='';try{_sv=localStorage.getItem('mj.seedVer')||''}catch(e){}
+    if(!D.restaurants.length||_sv!=='20261126h1'){
+      try{App.foodSeed()}catch(e){console.warn(e)}
+      try{localStorage.setItem('mj.seedVer','20261126h1')}catch(e){}
+    }
+  }
   return D;
 };
 App.save=function(){
@@ -212,7 +219,7 @@ App.PRIMARY=['home','journal','schedule','counsel','sermons','vehicle','food','r
 App.MORE=[];
 App.TABICON={home:'home',journal:'journal',schedule:'schedule',counsel:'counsel',calendar:'calendar',notes:'notes',sermons:'sermons',vehicle:'car',food:'food',report:'report',workout:'dumbbell'};
 /* 탭이 아닌 화면 — 표지(첫 화면)와 관리자, 그리고 내려 둔 화면 */
-App.EXTRA=['cover','admin','calendar','notes'];
+App.EXTRA=['cover','admin','calendar'];   /* 메모는 화면에서 완전히 내렸다(자료는 보존) */
 App.isScreen=function(tab){return App.TABS.some(t=>t.id===tab)||App.EXTRA.indexOf(tab)>=0};
 /* 이전 화면 이력 — ← 버튼과 폰의 뒤로 가기가 같은 길을 쓴다.
    화면을 옮길 때마다 App._stack에 쌓고, 실제 되돌아가기는 브라우저 history가 맡는다.
@@ -355,17 +362,21 @@ App.importAll=function(file){
 const ICON_MORE=`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h.01M4 12h.01M4 17h.01"/><path d="M9.5 7H20M9.5 12H20M9.5 17H20"/></svg>`;
 /* 아이콘 스크립트가 빠져도 탭바는 그려지게 */
 App.icon=function(name){try{return (App.ICON&&App.ICON[name])||''}catch(e){return ''}};
+/* 탭 아이콘은 컬러 그림(없으면 선 아이콘) */
+App.cicon=function(name){try{return (App.CICON&&App.CICON[name])||App.icon(name)}catch(e){return App.icon(name)}};
 function tabHTML(id){
   const t=App.TAB(id);
+  const k=App.TABICON[id]||id;
   return `<button class="tab" type="button" data-action="tab" data-tab="${id}" aria-label="${t.name}">
-    <span class="ti">${App.icon(App.TABICON[id]||id)}</span><span class="tl">${t.name}</span><i class="dotb"></i>
+    <span class="ti">${App.cicon(k)}</span><span class="tl">${t.name}</span><i class="dotb"></i>
   </button>`;
 }
 function buildTabs(){
   const bar=document.getElementById('tabs');
+  /* 더보기 안에 넣을 탭이 없으면 더보기 버튼도 만들지 않는다 (2026-11-26 탭 9개를 바로 보이게) */
   bar.innerHTML=App.PRIMARY.map(tabHTML).join('')
-    +`<button class="tab" type="button" data-action="more" aria-label="더보기"><span class="ti">${ICON_MORE}</span><span class="tl">더보기</span></button>`;
-  App._tabs=[...App.PRIMARY,'more'];
+    +(App.MORE.length?`<button class="tab" type="button" data-action="more" aria-label="더보기"><span class="ti">${ICON_MORE}</span><span class="tl">더보기</span></button>`:'');
+  App._tabs=App.MORE.length?[...App.PRIMARY,'more']:[...App.PRIMARY];
 }
 App.syncTabs=function(){
   const cur=D.ui.tab;
@@ -374,6 +385,15 @@ App.syncTabs=function(){
     const on=id==='more'?App.MORE.includes(cur):id===cur;
     b.classList.toggle('on',on);
     b.setAttribute('aria-current',on?'page':'false');
+    /* 탭이 많아 폰에서는 가로로 밀어 본다 — 지금 화면의 탭이 보이게 맞춰 준다 */
+    if(on&&b.scrollIntoView){
+      try{const bar=document.getElementById('tabs');
+        if(bar&&bar.scrollWidth>bar.clientWidth+4){
+          const l=b.offsetLeft-bar.clientWidth/2+b.offsetWidth/2;
+          bar.scrollTo({left:Math.max(0,l),behavior:'smooth'});
+        }
+      }catch(e){}
+    }
   });
 };
 App.moreSheet=function(){
@@ -458,8 +478,23 @@ App.init=function(){
   const step=function(fn,name){try{fn()}catch(e){console.error('[boot]',name||'',e)}};
   step(App.load,'load');
   App._scroll={};App._tab=null;
+  /* 메모 화면은 2026-11-26 내렸다. 남아 있던 자료는 지우지 않고 한 번 파일로 내려받게 한다 */
+  step(()=>{
+    try{
+      const n=App.D.notes||[];
+      if(n.length&&!localStorage.getItem('mj.notesBackup')){
+        App.download('notes-backup-20261126.json',
+          JSON.stringify({exportedAt:new Date().toISOString(),note:'목회 메모 화면을 내리며 남긴 백업',notes:n},null,1));
+        localStorage.setItem('mj.notesBackup','1');
+      }
+    }catch(e){console.warn('[notes-backup]',e)}
+  },'notes-backup');
   /* 앱이 이미 아는 자료로 그날 일지를 미리 채운다 (일정·차량·상담·설교·맛집·보고·운동) */
   step(()=>{if(App.autoFill)App.autoFill()},'autofill');
+  /* 에스더 보고(오늘·어제)에서 그날 한 일도 가져온다 — 네트워크가 없으면 조용히 넘어간다 */
+  step(()=>{if(App.autoFillReport)App.autoFillReport()},'autofill-report');
+  /* 목사님이 고르신 배경 화면 (관리자 → 배경 화면) */
+  step(()=>{if(App.bgApply)App.bgApply()},'bg');
   step(buildTabs,'tabs');
   step(()=>{
     /* 앱을 열면 언제나 표지부터. 표지를 눌러 들어간 뒤에는 탭 이동은 지금처럼.

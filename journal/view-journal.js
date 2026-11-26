@@ -40,12 +40,12 @@ function renderJournal(){
 
   /* 한 줄 요약 */
   const bits=[];
-  if(evToday)bits.push('일정 '+evToday+'건');
-  if(groups['상담'])bits.push('상담 '+groups['상담'].length+'건');
+  if(evToday)bits.push('일정 '+evToday);
+  if(groups['상담'])bits.push('상담 '+groups['상담'].length);
   if(wo.sets)bits.push('운동 '+wo.sets+'세트');
   if(groups['차량']){const s=groups['차량'].reduce((a,j)=>a+(+j.amount||0),0);if(s)bits.push('차량 '+wonShort(s)+'원')}
   if(groups['설교'])bits.push('설교 '+groups['설교'].length+'편');
-  if(groups['보고'])bits.push('보고 '+groups['보고'].length+'건');
+  if(groups['보고'])bits.push('보고 '+groups['보고'].length);
   const autoAll=info.n;
 
   const el=document.getElementById('sc-journal');
@@ -65,7 +65,7 @@ function renderJournal(){
             const nEv=(D.events||[]).filter(e=>App.evDate(e)===k).length;
             return `<button class="wday ${i===6?'sun':i===5?'sat':''} ${k===today?'today':''} ${k===dk?'sel':''}" data-d="${k}">
               <span class="dw">${wdName[i]}</span><span class="dn">${App.dateObj(k).getDate()}</span>
-              <span class="amt">${sum?wonShort(sum):(nEv?nEv+'일정':'')}</span>
+              <span class="amt">${sum?wonShort(sum):(nEv?String(nEv):'')}</span>
               <span class="dot" style="opacity:${its.length||nEv?1:0}"></span>
             </button>`}).join('')}
           <button class="nav" data-nav="7">›</button>
@@ -91,7 +91,6 @@ function renderJournal(){
       <div class="jsum">
         <span class="js-l">한눈에</span>
         <span class="js-t">${bits.length?bits.join(' · '):'오늘은 아직 모인 기록이 없습니다'}</span>
-        <span class="js-w">이번 주 일정 ${evWeek}건</span>
         ${autoAll?`<button class="js-clr" type="button" data-autoclear>자동 ${autoAll}건 지우기</button>`:''}
       </div>
 
@@ -151,12 +150,14 @@ function renderJournal(){
 
 /* 자동 항목 한 줄 */
 function jRow(j){
-  const t=j.time?`<span class="jr-t">${App.esc(j.time)}</span>`:'';
+  const t=j.time?`<span class="jr-t">${App.esc(j.time)}</span>`:'<span class="jr-t"></span>';
   const amt=+j.amount?`<span class="jr-amt">${App.money(j.amount)}원</span>`:'';
+  const meta=[j.place,j.note].filter(Boolean).join(' · ');
+  const tag=j.srcName?`<i class="jr-src" style="--c:${jSecColor(j.srcName)}">${App.esc(j.srcName)}</i>`:'';
   return `<button class="jrow" type="button" data-id="${j.id}">
     ${t}
-    <span class="jr-b"><b>${App.esc(j.title)}</b>${j.place?`<i>${App.esc(j.place)}</i>`:''}</span>
-    ${amt}
+    <span class="jr-b"><b>${App.esc(j.title)}</b>${meta?`<i>${App.esc(meta)}</i>`:''}</span>
+    ${tag}${amt}
   </button>`;
 }
 function jSection(k,rows){

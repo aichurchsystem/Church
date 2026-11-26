@@ -1805,7 +1805,10 @@ body:not(.is-cover) .nav-back{display:grid}
   .home-back span{display:none}          /* 좁은 폰은 아이콘만 */
   .top-actions{gap:4px}
   .brand{gap:8px}
-  .brand h1{font-size:13.5px;display:block;overflow:hidden;text-overflow:ellipsis}
+  .brand>div{min-width:0}
+  .brand h1{font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand h1 .appname{display:none}       /* 좁은 폰에서는 이름만 (버튼과 겹치지 않게) */
+  .top-actions{flex:0 0 auto}
   .brand .sub{font-size:11.5px}
   .icon-btn{width:33px;height:33px}
   .nav-back{width:33px;height:33px}
@@ -1816,7 +1819,18 @@ body:not(.is-cover) .nav-back{display:grid}
   scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;
   gap:2px;padding-left:3px;padding-right:3px}
 .tabbar::-webkit-scrollbar{display:none}
-.tab{flex:1 0 auto;min-width:57px;max-width:130px}
+.tab{flex:1 0 auto;min-width:54px;max-width:130px}
+/* 컬러 아이콘 — 색은 그대로 두고, 선택된 탭만 밝게 */
+.tab .ti{width:26px;height:22px;display:grid;place-items:center;opacity:.78;transition:opacity .15s}
+.tab.on .ti{opacity:1}
+.tab .ti svg{display:block;width:22px;height:22px}
+.tab.on .ti{position:relative}
+.tab.on .ti::after{content:"";position:absolute;inset:-4px -6px;border-radius:10px;
+  background:rgba(255,255,255,.10);box-shadow:0 0 0 1px rgba(255,255,255,.09) inset;z-index:-1}
+.tab .tl{color:var(--ink-3)}
+.tab.on .tl{color:var(--amber-2)}
+.tabbar{mask-image:linear-gradient(90deg,#000 0,#000 94%,rgba(0,0,0,.35) 100%);
+  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 94%,rgba(0,0,0,.35) 100%)}
 @media(min-width:700px){
   .tabbar{justify-content:center}
   .tab{flex:1 1 0;min-width:0}
@@ -1824,9 +1838,16 @@ body:not(.is-cover) .nav-back{display:grid}
 
 /* ── 스케줄 (앞으로의 일정) ── */
 .sch{display:grid;gap:12px}
-.sch-left,.sch-right{min-width:0;display:flex;flex-direction:column;gap:12px}
+.sch-right{min-width:0;display:flex;flex-direction:column;gap:9px}
 @media(min-width:900px){
-  .sch{grid-template-columns:342px minmax(0,1fr);align-items:start}
+  .sch{grid-template-columns:342px minmax(0,1fr);align-items:start;
+    grid-template-rows:max-content max-content 1fr;
+    grid-template-areas:"cal right" "tasks right" "verses right"}
+  .sch-cal{grid-area:cal}
+  .sch-right{grid-area:right}
+  .sch-tasks{grid-area:tasks}
+  .sch-verses{grid-area:verses}
+  .sch-tasks,.sch-verses{align-self:start}
 }
 .sch-cal{padding:11px 12px 10px}
 .sch-mh{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700}
@@ -1837,7 +1858,7 @@ body:not(.is-cover) .nav-back{display:grid}
 .sch-week .amt{font-size:9.5px;min-height:11px}
 .sch-mini{margin-top:10px}
 .sch-mini .cal{border:0;background:none;padding:0}
-.sch-mini .cell{min-height:38px;padding:3px 2px 2px}
+.sch-mini .cell{min-height:33px;padding:2px 2px 1px}
 .sch-mini .cell .dn{font-size:11.5px}
 .sch-sync{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:11.5px}
 .sch-sync .sync-chip{font-size:11px}
@@ -1872,11 +1893,12 @@ body:not(.is-cover) .nav-back{display:grid}
 .sch-foot{font-size:11.5px;color:var(--ink-3);margin:6px 3px 0;line-height:1.55}
 
 /* ── 일지: 한눈에 보는 섹션 ── */
-.jsum{display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+.jsum{display:flex;align-items:center;gap:5px 7px;flex-wrap:wrap;
   background:linear-gradient(120deg,rgba(232,176,75,.12),rgba(130,169,230,.08));
   border:1px solid rgba(232,176,75,.22);border-radius:12px;padding:8px 11px;margin-bottom:10px}
 .jsum .js-l{font-size:10.5px;font-weight:800;color:#f0cd8a;letter-spacing:.02em}
-.jsum .js-t{font-size:12.5px;color:var(--ink);font-weight:600;min-width:0;flex:1}
+.jsum .js-t{font-size:12.5px;color:var(--ink);font-weight:600;min-width:0;flex:1 1 100%;line-height:1.45}
+.jsum .js-l{flex:0 0 auto}
 .jsum .js-w{font-size:11px;color:var(--ink-3);white-space:nowrap}
 .jsum .js-clr{flex:0 0 auto;font-size:10.5px;font-weight:700;color:var(--ink-3);
   border:1px solid var(--line-2);border-radius:8px;padding:3px 7px;background:rgba(255,255,255,.04)}
@@ -1899,8 +1921,10 @@ body:not(.is-cover) .nav-back{display:grid}
 .jr-b{flex:1;min-width:0}
 .jr-b b{display:block;font-size:13px;font-weight:650;line-height:1.35;
   overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.jr-b i{display:block;font-size:11px;color:var(--ink-3);font-style:normal;margin-top:2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jr-b i{display:block;font-size:11px;color:var(--ink-3);font-style:normal;margin-top:2px;line-height:1.35;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.jr-src{flex:0 0 auto;font-style:normal;font-size:9.5px;font-weight:800;color:var(--c);
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:5px;padding:2px 5px}
 .jr-amt{flex:0 0 auto;font-size:11.5px;font-weight:800;color:#f0a86b;white-space:nowrap}
 .jmore{width:100%;padding:6px;font-size:11.5px;font-weight:700;color:var(--ink-3)}
 .jsce{margin-top:2px}
@@ -1915,11 +1939,11 @@ body:not(.is-cover) .nav-back{display:grid}
   grid-template-columns:1fr 1fr;gap:3px 10px;
   background:linear-gradient(150deg,var(--panel-2),var(--panel));
   border:1px solid var(--line);border-radius:12px}
-.rp-rlist li{display:flex;gap:6px;align-items:baseline;min-width:0}
-.rp-rlist i{flex:0 0 auto;font-style:normal;font-size:10px;font-weight:800;color:#e8b04b;
-  font-variant-numeric:tabular-nums;letter-spacing:-.02em;min-width:44px}
-.rp-rlist span{font-size:11px;color:var(--ink-2);line-height:1.35;min-width:0;
+.rp-rlist li{display:block;min-width:0;font-size:10.8px;line-height:1.35;color:var(--ink-2);
   overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.rp-rlist b{font-size:9.8px;font-weight:800;color:#e8b04b;letter-spacing:-.03em;
+  margin-right:4px;font-variant-numeric:tabular-nums}
+.rp-rlist span{}
 .rp-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
 .rp-card{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 9px;
   border-radius:12px;border:1px solid var(--line);

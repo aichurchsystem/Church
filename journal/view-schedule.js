@@ -28,7 +28,8 @@ function renderSchedule(){
   const mth=(D.ui.calMonth||dk.slice(0,7));
   const wkMon=App.mondayOf(dk);
   const days=[0,1,2,3,4,5,6].map(i=>App.addDays(wkMon,i));
-  const ch=D.ui.chapter||'presby';
+  /* 새벽 예배 챕터는 내렸으므로 할 일은 노회부터 연다 */
+  const ch=(D.ui.chapter&&D.ui.chapter!=='dawn')?D.ui.chapter:'presby';
   const past=!!D.ui.schPast;
   const limit=D.ui.schLimit||30;
   const from=past?App.addDays(today,-30):(dk>today?dk:today);
@@ -47,64 +48,26 @@ function renderSchedule(){
   const el=document.getElementById('sc-schedule');
   el.innerHTML=`
   <div class="sch">
-    <div class="sch-left">
-      <div class="card pad sch-cal">
-        <div class="sch-mh">
-          <button class="icon-btn sm" type="button" data-sch="wmove" data-step="-1" aria-label="지난 주">‹</button>
-          <b>${App.dateObj(dk).getFullYear()}년 ${App.dateObj(dk).getMonth()+1}월</b>
-          <button class="icon-btn sm" type="button" data-sch="wmove" data-step="1" aria-label="다음 주">›</button>
-          <button class="btn sm ghost" type="button" data-sch="today">오늘</button>
-          <button class="btn sm ghost ${D.ui.schMonth?'on':''}" type="button" data-sch="month">${D.ui.schMonth?'주간':'월간'}</button>
-        </div>
-        <div class="week sch-week">
-          <button class="nav" type="button" data-sch="wmove" data-step="-1">‹</button>
-          ${days.map((k,i)=>{
-            const n=schDayCount(k), dow=App.dow(k);
-            return `<button class="wday ${dow===0?'sun':dow===6?'sat':''} ${k===today?'today':''} ${k===dk?'sel':''}" type="button" data-sch="day" data-date="${k}">
-              <span class="dw">${App.DW[dow]}</span><span class="dn">${App.dateObj(k).getDate()}</span>
-              <span class="amt">${n?n+'건':''}</span><span class="dot" style="opacity:${n?1:0}"></span>
-            </button>`}).join('')}
-          <button class="nav" type="button" data-sch="wmove" data-step="1">›</button>
-        </div>
-        ${D.ui.schMonth?`<div class="sch-mini">${schMonthGrid(mth)}</div>`:''}
-        <div class="sch-sync">${syncLine()} <button class="icon-btn sm" type="button" data-action="gcal-sync" aria-label="구글 캘린더 새로고침">${App.ICON.down}</button></div>
+    <div class="card pad sch-cal">
+      <div class="sch-mh">
+        <button class="icon-btn sm" type="button" data-sch="wmove" data-step="-1" aria-label="지난 주">‹</button>
+        <b>${App.dateObj(dk).getFullYear()}년 ${App.dateObj(dk).getMonth()+1}월</b>
+        <button class="icon-btn sm" type="button" data-sch="wmove" data-step="1" aria-label="다음 주">›</button>
+        <button class="btn sm ghost" type="button" data-sch="today">오늘</button>
+        <button class="btn sm ghost ${D.ui.schMonth?'on':''}" type="button" data-sch="month">${D.ui.schMonth?'주간':'월간'}</button>
       </div>
-
-      <div class="card sch-tasks">
-        <div class="card-h"><h2>챕터 할 일</h2><span class="hint">${(D.tasks||[]).filter(t=>!t.done&&t.chapter===ch).length}개 남음</span></div>
-        <div class="card-b">
-          <div class="chips sch-ch">
-            ${App.CHAPTERS.filter(c=>c.id!=='dawn').map(c=>{
-              const n=(D.tasks||[]).filter(t=>t.chapter===c.id&&!t.done).length;
-              return `<button class="chip ${c.id===ch?'sel':''}" type="button" data-ch="${c.id}" style="${c.id===ch?'':'color:'+c.color}"><span class="pt"></span>${c.name}${n?' '+n:''}</button>`}).join('')}
-          </div>
-          <div class="task-list mt12" id="taskList">${taskListHTML(ch)}</div>
-          <div class="inline-form">
-            <input class="tx" id="tText" placeholder="할 일  예) 노회 월례회 참석 준비">
-            <input class="date" type="date" id="tDate">
-            <input class="time" type="time" id="tTime">
-            <input class="place" id="tPlace" placeholder="장소 (선택)">
-            <button class="btn sm primary" id="tAdd">추가</button>
-          </div>
-        </div>
+      <div class="week sch-week">
+        <button class="nav" type="button" data-sch="wmove" data-step="-1">‹</button>
+        ${days.map((k,i)=>{
+          const n=schDayCount(k), dow=App.dow(k);
+          return `<button class="wday ${dow===0?'sun':dow===6?'sat':''} ${k===today?'today':''} ${k===dk?'sel':''}" type="button" data-sch="day" data-date="${k}">
+            <span class="dw">${App.DW[dow]}</span><span class="dn">${App.dateObj(k).getDate()}</span>
+            <span class="amt">${n?n+'건':''}</span><span class="dot" style="opacity:${n?1:0}"></span>
+          </button>`}).join('')}
+        <button class="nav" type="button" data-sch="wmove" data-step="1">›</button>
       </div>
-
-      <div class="card sch-verses">
-        <div class="card-h"><h2>새벽 예배 본문</h2><span class="hint">${(D.verses||[]).length}건</span></div>
-        <div class="card-b">
-          ${(D.verses||[]).length?`<div class="dawn-grid">${D.verses.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6).map(v=>`
-            <div class="verse" data-vid="${v.id}">
-              <div class="dt"><b>${App.dateObj(v.date).getDate()}</b><span>${App.dateObj(v.date).getMonth()+1}월 ${App.DW[App.dow(v.date)]}</span></div>
-              <div class="bd"><div class="p">${App.esc(v.passage)}</div>${v.note?`<div class="n">${App.nl(v.note)}</div>`:''}</div>
-            </div>`).join('')}</div>`:`<div class="empty small">아직 새벽예배 본문이 없습니다.<span>아래에 날짜와 본문을 적어 두면 여기 쌓입니다.</span></div>`}
-          <div class="inline-form">
-            <input class="date" type="date" id="vDate" value="${today}">
-            <input id="vPassage" placeholder="본문  예) 빌립보서 4:4-9">
-            <input id="vNote" class="place" placeholder="한 줄 메모 (선택)">
-            <button class="btn sm primary" id="vAdd">본문 추가</button>
-          </div>
-        </div>
-      </div>
+      ${D.ui.schMonth?`<div class="sch-mini">${schMonthGrid(mth)}</div>`:''}
+      <div class="sch-sync">${syncLine()} <button class="icon-btn sm" type="button" data-action="gcal-sync" aria-label="구글 캘린더 새로고침">${App.ICON.down}</button></div>
     </div>
 
     <div class="sch-right">
@@ -114,7 +77,7 @@ function renderSchedule(){
           <span>${past?'지난 30일 포함':'오늘부터'} · 예배 제외 · ${all.length}건</span>
         </div>
         <div class="sh-r">
-          <button class="btn sm ${past?'ghost':'ghost'}" type="button" data-sch="past">${past?'지난 일정 접기':'지난 일정'}</button>
+          <button class="btn sm ghost" type="button" data-sch="past">${past?'지난 일정 접기':'지난 일정'}</button>
           <button class="btn sm primary" type="button" data-action="ev-add" data-date="${dk}">＋ 일정</button>
         </div>
       </div>
@@ -128,6 +91,42 @@ function renderSchedule(){
       ${dates.length?dates.map(d=>schDayGroup(d,byDate[d])).join(''):`<div class="card"><div class="card-b">${App.empty('앞으로 잡힌 일정이 없습니다','구글 캘린더에 넣으면 자동으로 이곳에 들어옵니다.','')}</div></div>`}
       ${rest>0?`<button class="btn ghost sch-more" type="button" data-sch="more">${rest}건 더 보기</button>`:''}
       <p class="muted sch-foot">예배(새벽·주일·수요·금요·줌)는 스케줄표에서 뺐습니다. 그날 예배는 <b>일지</b>에 자동으로 남습니다.</p>
+    </div>
+
+    <div class="card sch-tasks">
+      <div class="card-h"><h2>챕터 할 일</h2><span class="hint">${(D.tasks||[]).filter(t=>!t.done&&t.chapter===ch).length}개 남음</span></div>
+      <div class="card-b">
+        <div class="chips sch-ch">
+          ${App.CHAPTERS.filter(c=>c.id!=='dawn').map(c=>{
+            const n=(D.tasks||[]).filter(t=>t.chapter===c.id&&!t.done).length;
+            return `<button class="chip ${c.id===ch?'sel':''}" type="button" data-ch="${c.id}" style="${c.id===ch?'':'color:'+c.color}"><span class="pt"></span>${c.name}${n?' '+n:''}</button>`}).join('')}
+        </div>
+        <div class="task-list mt12" id="taskList">${taskListHTML(ch)}</div>
+        <div class="inline-form">
+          <input class="tx" id="tText" placeholder="할 일  예) 노회 월례회 참석 준비">
+          <input class="date" type="date" id="tDate">
+          <input class="time" type="time" id="tTime">
+          <input class="place" id="tPlace" placeholder="장소 (선택)">
+          <button class="btn sm primary" id="tAdd">추가</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card sch-verses">
+      <div class="card-h"><h2>새벽 예배 본문</h2><span class="hint">${(D.verses||[]).length}건</span></div>
+      <div class="card-b">
+        ${(D.verses||[]).length?`<div class="dawn-grid">${D.verses.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6).map(v=>`
+          <div class="verse" data-vid="${v.id}">
+            <div class="dt"><b>${App.dateObj(v.date).getDate()}</b><span>${App.dateObj(v.date).getMonth()+1}월 ${App.DW[App.dow(v.date)]}</span></div>
+            <div class="bd"><div class="p">${App.esc(v.passage)}</div>${v.note?`<div class="n">${App.nl(v.note)}</div>`:''}</div>
+          </div>`).join('')}</div>`:`<div class="empty small">아직 새벽예배 본문이 없습니다.<span>아래에 날짜와 본문을 적어 두면 여기 쌓입니다.</span></div>`}
+        <div class="inline-form">
+          <input class="date" type="date" id="vDate" value="${today}">
+          <input id="vPassage" placeholder="본문  예) 빌립보서 4:4-9">
+          <input id="vNote" class="place" placeholder="한 줄 메모 (선택)">
+          <button class="btn sm primary" id="vAdd">본문 추가</button>
+        </div>
+      </div>
     </div>
   </div>`;
 

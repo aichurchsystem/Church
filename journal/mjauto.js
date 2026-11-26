@@ -20,6 +20,14 @@ function num(n){n=+n||0;return n}
 function hash(s){let h=0;s=String(s||'');for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))|0}return Math.abs(h).toString(36)}
 function timed(e){return (e.start||'').length>10}
 function money(n){try{return App.money(n)}catch(e){return String(n)}}
+/* 쓴 글에서 앞부분을 줄여 요약문으로 쓴다 (지어내지 않고 적힌 말만 쓴다) */
+function summarize(text,n){
+  text=String(text||'').replace(/\s+/g,' ').trim();
+  if(!text)return '';
+  const cut=text.split(/(?:\.\s|\n|。|·\s)/)[0]||text;
+  const s=cut.length<=n?cut:cut.slice(0,n-1).replace(/[\s,]+$/,'')+'…';
+  return s;
+}
 
 /* ── 운동 기록(운동일지 앱과 같은 저장 키) ── */
 function woSets(r){
@@ -82,22 +90,24 @@ function collect(){
   (D.carExpenses||[]).forEach(c=>{
     if(!c||!c.date)return;
     const t=(App.CTYPE&&App.CTYPE(c.type))||{name:'차량'};
-    const parts=[t.name,c.place].filter(Boolean);
     const notes=[c.note,c.mileage?('주행 '+c.mileage+'km'):'',c.liters?(c.liters+'L'):''].filter(Boolean);
     F.push({ref:'car:'+(c.id||hash(c.date+c.type+c.amount)),date:c.date.slice(0,10),time:'',
-      title:parts.join(' · '),place:c.place||'',amount:num(c.amount),cat:'admin',status:'done',
+      title:t.name,place:c.place||'',amount:num(c.amount),cat:'admin',status:'done',
       src:'차량',note:notes.join(' · ')});
   });
-  /* 3) 상담 — 그날 상담 일지에 적힌 글 그대로(요약하지 않는다) */
+  /* 3) 상담 — 그날 상담 일지의 요약(대상 이름 · 주제 · 핵심 한두 줄). 원문을 통째로 붙이지 않는다 */
   (D.records||[]).forEach(r=>{
     if(!r||!r.date)return;
     const person=(D.people||[]).find(p=>p.id===r.personId);
-    const body=String(r.content||'').trim();
+    const body=String(r.content||'').replace(/\s+/g,' ').trim();
     const topic=String(r.topic||'').trim();
     if(!body&&!topic)return;                       /* 아무 글도 없으면 넣지 않는다 */
+    const sum=summarize(body,90);
+    const ttl=topic||summarize(body,26)||'상담';
+    const note=[sum,r.next?('다음: '+String(r.next).trim()):''].filter(Boolean).join(' · ');
     F.push({ref:'cs:'+(r.id||hash(r.date+(person?person.name:'')+body)),date:r.date.slice(0,10),time:'',
-      title:topic||body,place:person?person.name:'',amount:0,cat:'church',status:'done',
-      src:'상담',note:topic?body:''});
+      title:ttl,place:person?person.name:'',amount:0,cat:'church',status:'done',
+      src:'상담',note:note});
   });
   /* 4) 설교 준비 — 그날 날짜가 잡힌 설교 */
   (D.sermons||[]).forEach(s=>{
@@ -106,7 +116,7 @@ function collect(){
     F.push({ref:'sr:'+(s.id||hash(s.date+(s.title||''))),date:s.date,time:s.time||'',
       title:(s.title||th.name),place:s.place||'',amount:0,cat:'church',
       status:s.status==='done'?'done':'plan',src:'설교',
-      note:[th.name,s.passage,s.status==='done'?'완성':''].filter(Boolean).join(' · ')});
+      note:[s.passage,s.status==='done'?'완성':'준비 중'].filter(Boolean).join(' · ')});
   });
   /* 5) 다녀온 곳 — 그날 남긴 방문 기록 */
   (D.restaurants||[]).forEach(r=>{
@@ -172,10 +182,20 @@ App.autoFill=function(){
 /* ── 보고 일지(에스더 보고)에서 그날 한 일을 가져온다 — 오늘·어제만 ── */
 App.autoFillReport=function(){
   if(App._rpBusy)return;App._rpBusy=true;
-  const today=App.todayKey(), days=[today,App.addDays(today,-1)];
-  let pending=days.length;
-  const done=()=>{if(--pending<=0){App._rpBusy=false}};
-  days.forEach(dk=>{
+  const today=App.todayKey(), yday=App.addDays(today,-1);
+  let pending=0;
+  const done=()=>{if(pending>0)pending--;if(pending<=0)App._rpBusy=false};
+  fetch(RP_BASE+'index.json?t='+Date.now(),{cache:'no-store'})
+    .then(r=>r.ok?r.json():[])
+    .then(idx=>{
+      const has=Array.isArray(idx)?idx:[];
+      const days=[today,yday].filter(d=>!has.length||has.indexOf(d)>=0);
+      pending=days.length||1;
+      if(!days.length){App._rpBusy=false;return}
+      days.forEach(dk=>fetchDay(dk));
+    })
+    .catch(()=>{App._rpBusy=false});
+  function fetchDay(dk){
     fetch(RP_BASE+dk+'.json?t='+Date.now(),{cache:'no-store'})
       .then(r=>r.ok?r.json():null)
       .then(x=>{
@@ -206,10 +226,24 @@ App.autoFillReport=function(){
         done();
       })
       .catch(()=>done());
-  });
+  }
 };
 
 /* ── 일지 화면용 도움말 ── */
+/* 그날 운동 요약 — 일지 한 줄 요약에 '운동 12세트'로 쓰인다 */
+App.woSummary=function(dk){
+  const out={sets:0,vol:0,exs:[],parts:[]};
+  let list=[];
+  try{list=JSON.parse(localStorage.getItem(KEY_WORKOUT)||'[]')||[]}catch(e){list=[]}
+  if(!Array.isArray(list))return out;
+  list.forEach(r=>{
+    if(!r||r.date!==dk)return;
+    out.sets+=woSets(r);out.vol+=woVol(r);
+    if(r.ex&&out.exs.indexOf(r.ex)<0)out.exs.push(r.ex);
+    if(r.part&&out.parts.indexOf(r.part)<0)out.parts.push(r.part);
+  });
+  return out;
+};
 App.autoInfo=function(dk){
   const out={n:0,by:{},sum:0};
   (App.D.journal||[]).forEach(j=>{

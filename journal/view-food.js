@@ -3,7 +3,8 @@ App.foodVisits=function(r){return (r.visits||[]).slice().sort((a,b)=>b.date.loca
 App.foodOn=function(dk){
   return App.D.restaurants.filter(r=>(r.visits||[]).some(v=>v.date===dk));
 };
-App.foodType=r=>r.type==='숙소'?'숙소':'식당';
+/* 다녀온 곳 종류 — 식당 · 숙소 · 명소 (2026-11-26 목사님 지시로 명소 추가) */
+App.foodType=r=>{const t=(r&&(r.type||r.kind))||'식당';return t==='숙소'?'숙소':(t==='명소'?'명소':'식당')};
 App.foodPhone=r=>String(r.phone||'').split(/[\/,·]/)[0].trim();
 App.foodStars=function(n){
   n=Math.max(0,Math.min(5,Math.round(+n||0)));
@@ -22,7 +23,7 @@ App.foodSeed=function(){
     const key=(s.name||'').trim()+'|'+(s.address||'').trim();
     if(App.D.restaurants.some(r=>(r.name||'').trim()+'|'+(r.address||'').trim()===key))return;
     App.D.restaurants.push({
-      id:App.uid('f'),name:s.name||'',alias:s.alias||'',type:s.type||'식당',region:s.region||'',address:s.address||'',
+      id:App.uid('f'),name:s.name||'',alias:s.alias||'',type:s.type||s.kind||'식당',region:s.region||'',address:s.address||'',
       menu:s.menu||'',price:s.price||'',hours:s.hours||'',rating:+s.rating||0,
       reviews:s.reviews||'',phone:s.phone||'',mapUrl:s.mapUrl||'',website:s.website||'',note:s.note||'',
       pick:!!s.pick,visited:s.visited===true,
@@ -39,10 +40,12 @@ function renderFood(){
   const q=(D.ui.foodQ||'').trim(), rg=D.ui.foodRegion||'', tp=D.ui.foodType||'';
   const regions=Array.from(new Set(D.restaurants.map(r=>r.region).filter(Boolean))).sort();
   const nStay=D.restaurants.filter(r=>App.foodType(r)==='숙소').length;
+  const nSpot=D.restaurants.filter(r=>App.foodType(r)==='명소').length;
+  const nEat=D.restaurants.length-nStay-nSpot;
   const list=D.restaurants.filter(r=>{
     if(tp&&App.foodType(r)!==tp)return false;
     if(rg&&r.region!==rg)return false;
-    if(q){const hay=[r.name,r.alias,r.region,r.menu,r.address,r.note,r.reviews,'맛집','숙소'].filter(Boolean).join(' ');if(!hay.includes(q))return false}
+    if(q){const hay=[r.name,r.alias,r.region,r.menu,r.address,r.note,r.reviews,'맛집','숙소','명소'].filter(Boolean).join(' ');if(!hay.includes(q))return false}
     return true;
   }).sort((a,b)=>{
     if(!!b.pick!==!!a.pick)return b.pick?1:-1;
@@ -55,17 +58,18 @@ function renderFood(){
   el.innerHTML=`
   <div class="food-top">
     <div class="food-title">
-      <h2>다녀온 곳 <span class="ftype-note">맛집 · 숙소</span></h2>
-      <span class="muted">${D.restaurants.length-nStay}곳 맛집 · ${nStay}곳 숙소 · 방문 ${D.restaurants.reduce((a,r)=>a+(r.visits||[]).length,0)}회</span>
+      <h2>다녀온 곳 <span class="ftype-note">맛집 · 숙소 · 명소</span></h2>
+      <span class="muted">${nEat}곳 맛집 · ${nStay}곳 숙소 · ${nSpot}곳 명소 · 방문 ${D.restaurants.reduce((a,r)=>a+(r.visits||[]).length,0)}회</span>
     </div>
     <button class="btn primary" data-fadd>${App.ICON.plus} 추가</button>
   </div>
   <div class="food-tools">
-    <input id="fQ" placeholder="맛집·숙소·상호·메뉴 검색" value="${App.esc(q)}">
+    <input id="fQ" placeholder="맛집·숙소·명소·이름 검색" value="${App.esc(q)}">
     <div class="chips scroll">
       <button class="chip ${!tp?'sel':''}" data-ft="">전체</button>
       <button class="chip ${tp==='식당'?'sel':''}" data-ft="식당">식당</button>
       <button class="chip ${tp==='숙소'?'sel':''}" data-ft="숙소">숙소</button>
+      <button class="chip ${tp==='명소'?'sel':''}" data-ft="명소">명소</button>
     </div>
   </div>
   ${regions.length?`<div class="chips scroll mb12">
@@ -75,13 +79,14 @@ function renderFood(){
 
   ${list.length?`<div class="food-grid">
     ${list.map(r=>{
-      const vs=App.foodVisits(r), last=vs[0], isStay=App.foodType(r)==='숙소';
+      const vs=App.foodVisits(r), last=vs[0], isStay=App.foodType(r)==='숙소', isSpot=App.foodType(r)==='명소';
       return `<article class="food" data-f="${r.id}">
         <div class="food-img ${r.photo?'':'noimg'}" ${r.photo?`style="background-image:url('${r.photo}')"`:''}>
-          ${r.photo?'':`<span class="ph-initial">${App.esc((r.name||'?').slice(0,1))}</span><span class="ph-label">${isStay?'STAY':'TABLE'}</span>`}
+          ${r.photo?'':`<span class="ph-initial">${App.esc((r.name||'?').slice(0,1))}</span><span class="ph-label">${isStay?'STAY':isSpot?'SPOT':'TABLE'}</span>`}
           <div class="food-badges">
             ${r.pick?'<span class="fb pick">목사님 지정</span>':''}
             ${isStay?'<span class="fb stay">숙소</span>':''}
+            ${isSpot?'<span class="fb spot">명소</span>':''}
             ${r.photo&&r.photoType==='card'?'<span class="fb card">명함 있음</span>':''}
             ${r.photo&&r.photoType==='sign'?'<span class="fb card">간판 사진</span>':''}
             ${vs.length?`<span class="fb">방문 ${vs.length}회</span>`:(r.visited?'<span class="fb">방문</span>':'')}
@@ -95,7 +100,9 @@ function renderFood(){
           <div class="food-region">${App.esc(r.region||'')}${r.region&&r.address?' · ':''}${App.esc(r.address||'')}${r.alias?` <i class="falias">(${App.esc(r.alias)})</i>`:''}</div>
           ${isStay
             ? `<div class="food-menu">${[r.hours?'체크인 '+App.esc(r.hours):'',r.phone?App.esc(r.phone):''].filter(Boolean).join(' · ')||'위치·연락처는 카드에서 확인'}</div>`
-            : (r.menu?`<div class="food-menu">${App.esc(r.menu)}${r.price?` · ${App.esc(r.price)}`:''}</div>`:'')}
+            : isSpot
+              ? `<div class="food-menu">${[r.menu,r.hours].filter(Boolean).map(App.esc).join(' · ')||'볼거리·관람시간은 카드에서 확인'}</div>`
+              : (r.menu?`<div class="food-menu">${App.esc(r.menu)}${r.price?` · ${App.esc(r.price)}`:''}</div>`:'')}
           <div class="food-foot">
             <span class="food-last">${last?'최근 방문 '+App.fmtDate(last.date):(r.visited?'방문한 곳':'방문 기록 없음')}</span>
             <span class="food-acts">
@@ -123,9 +130,9 @@ function renderFood(){
 
 function foodDetail(id){
   const r=App.D.restaurants.find(x=>x.id===id);if(!r)return;
-  const vs=App.foodVisits(r), isStay=App.foodType(r)==='숙소';
+  const vs=App.foodVisits(r), isStay=App.foodType(r)==='숙소', isSpot=App.foodType(r)==='명소';
   App.sheet({
-    title:isStay?'숙소 정보':'맛집 정보',
+    title:isStay?'숙소 정보':isSpot?'명소 정보':'맛집 정보',
     body:`${r.photo?`<div class="fd-img" style="background-image:url('${r.photo}')"></div>`:''}
       <div class="fd-head">
         <div><b class="fd-name">${App.esc(r.name)}</b>${r.alias?` <span class="falias">${App.esc(r.alias)}</span>`:''}
@@ -134,7 +141,7 @@ function foodDetail(id){
       </div>
       <div class="fd-grid">
         ${isStay?`<div><span>위치</span><b>${App.esc([r.region,r.address].filter(Boolean).join(' ')||'—')}</b></div>`:''}
-        ${r.menu?`<div><span>대표 메뉴</span><b>${App.esc(r.menu)}</b></div>`:''}
+        ${r.menu?`<div><span>${isSpot?'볼거리':'대표 메뉴'}</span><b>${App.esc(r.menu)}</b></div>`:''}
         ${r.price?`<div><span>가격</span><b>${App.esc(r.price)}</b></div>`:''}
         ${r.hours?`<div><span>${isStay?'체크인·영업':'영업시간'}</span><b>${App.esc(r.hours)}</b></div>`:''}
         ${r.phone?`<div><span>전화</span><b>${App.esc(r.phone)}</b></div>`:''}
@@ -189,8 +196,9 @@ function foodEdit(id){
     body:`<label class="fld"><span>종류</span><div class="chips" id="fType2">
         <button class="chip ${App.foodType(r)==='식당'?'sel':''}" data-ty="식당">식당</button>
         <button class="chip ${App.foodType(r)==='숙소'?'sel':''}" data-ty="숙소">숙소</button>
+        <button class="chip ${App.foodType(r)==='명소'?'sel':''}" data-ty="명소">명소</button>
       </div></label>
-      <label class="fld"><span>상호명</span><input id="fName" value="${App.esc(r.name)}" placeholder="예: 고산수제갈비"></label>
+      <label class="fld"><span>이름</span><input id="fName" value="${App.esc(r.name)}" placeholder="예: 고산수제갈비 · 아차산 고구려정"></label>
       <div class="row2">
         <label class="fld"><span>지역</span><input id="fRegion" value="${App.esc(r.region)}" list="regionList" placeholder="예: 의정부"></label>
         <label class="fld"><span>방문일</span><input id="fDate" type="date" value="${App.todayKey()}"></label>
@@ -198,11 +206,11 @@ function foodEdit(id){
       <datalist id="regionList">${regions.map(x=>`<option value="${App.esc(x)}">`).join('')}</datalist>
       <label class="fld"><span>주소</span><input id="fAddr" value="${App.esc(r.address)}"></label>
       <div class="row2">
-        <label class="fld"><span>대표 메뉴 (숙소는 비워도 됨)</span><input id="fMenu" value="${App.esc(r.menu)}" placeholder="예: 수제 갈비"></label>
+        <label class="fld"><span>대표 메뉴 · 볼거리</span><input id="fMenu" value="${App.esc(r.menu)}" placeholder="예: 수제 갈비 · 둘레길 산책"></label>
         <label class="fld"><span>가격대</span><input id="fPrice" value="${App.esc(r.price)}" placeholder="예: 저렴"></label>
       </div>
       <div class="row2">
-        <label class="fld"><span>${App.foodType(r)==='숙소'?'체크인·영업시간':'영업시간'}</span><input id="fHours" value="${App.esc(r.hours)}" placeholder="예: 11:00~21:00"></label>
+        <label class="fld"><span>${App.foodType(r)==='숙소'?'체크인·영업시간':App.foodType(r)==='명소'?'관람시간':'영업시간'}</span><input id="fHours" value="${App.esc(r.hours)}" placeholder="예: 11:00~21:00"></label>
         <label class="fld"><span>전화</span><input id="fPhone" type="tel" value="${App.esc(r.phone)}"></label>
       </div>
       <label class="fld"><span>홈페이지</span><input id="fWeb" value="${App.esc(r.website||'')}" placeholder="http://"></label>

@@ -156,7 +156,7 @@ function routineHTML(){
   return '<section class="rp-routine">'
     +'<div class="rp-rh"><b>매일 하는 일</b><span>오늘 일정 '+ev+'건 · 캘린더 연동 '+App.esc(syn)+'</span></div>'
     +'<ul class="rp-rlist">'+ROUTINE.map(function(r){
-        return '<li><i>'+App.esc(r[0])+'</i><span>'+App.esc(r[1])+'</span></li>'
+        return '<li><b>'+App.esc(r[0])+'</b><span>'+App.esc(r[1])+'</span></li>'
       }).join('')+'</ul>'
     +'<div class="rp-cards">'
       +'<button class="rp-card done'+(RP.view==='done'?' on':'')+'" type="button" data-action="rp-view" data-view="done" data-filt="">'
