@@ -1,17 +1,23 @@
 {
+  "id": "./",
   "name": "박재용 목사 목회 일지",
-  "short_name": "목회 일지",
-  "description": "일지·스케줄·상담·캘린더·목회 메모·설교 준비를 한 곳에 담은 목회 일지",
-  "start_url": "./index.html",
+  "short_name": "목회일지",
+  "description": "구글 캘린더와 자동으로 맞춰지는 목회 일지 — 일지·스케줄·상담·캘린더·목회 메모·설교 준비",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "./index.html?src=pwa",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
   "background_color": "#0a1017",
   "theme_color": "#0a1017",
-  "lang": "ko",
+  "categories": ["productivity", "lifestyle", "education"],
+  "prefer_related_applications": false,
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

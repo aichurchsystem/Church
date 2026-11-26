@@ -1,185 +1,274 @@
-/* 캘린더 */
+/* 캘린더 — 월간 / 주간 타임라인 / 강의 목록, 구글 캘린더 자동 연동 */
 let calOpen=null;
+
+function calView(){return App.D.ui.calTab||'month'}
+function calSelected(){return App.D.ui.calDate||App.todayKey()}
+function eventsOn(dk){
+  return App.D.events.filter(e=>App.evDate(e)===dk)
+    .sort((a,b)=>(a.start||'').localeCompare(b.start||''));
+}
+function timed(e){return (e.start||'').length>10}
+function mins(t){const s=t.slice(11,16).split(':').map(Number);return s[0]*60+s[1]}
+function hhmm(m){const h=Math.floor(m/60),mm=Math.round(m%60);return `${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`}
+function durMin(e){
+  if(!timed(e))return 60;
+  const a=mins(e.start);
+  const b=(e.end&&e.end.length>10)?mins(e.end):a+60;
+  return Math.max(30,Math.min(24*60,(b>a?b:a+60)-a));
+}
+function eventEnd(e){
+  if(!timed(e))return '';
+  const a=mins(e.start), d=durMin(e);
+  return hhmm(a+d);
+}
+function catBadge(e){const c=App.calCat(e);return `<span class="kbadge" style="--c:${c.color}">${c.name}</span>`}
+function nextEventAfterNow(){
+  const now=new Date();
+  return App.D.events.filter(e=>timed(e)&&new Date(e.start.replace(' ','T'))>now)
+    .sort((a,b)=>a.start.localeCompare(b.start))[0]||null;
+}
+function syncLine(){
+  const s=window.GCal&&window.GCal.state;
+  if(!s||(!s.last&&!s.err))return `<span class="sync-chip">구글 캘린더 연결 중…</span>`;
+  if(s.err)return `<span class="sync-chip err" title="${App.esc(s.err)}">연동 오류 · 다시 시도</span>`;
+  const d=new Date(s.last);
+  const t=`${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  return `<span class="sync-chip ok" title="구글 캘린더에서 ${s.count}건을 받았습니다">자동 연동 ${t}</span>`;
+}
 
 function renderCalendar(){
   const D=App.D;
+  const v=calView();
   const m=D.ui.calMonth||App.todayKey().slice(0,7);
-  const tab=D.ui.calTab||'month';
-  const monthName=`${+m.slice(0,4)}년 ${+m.slice(5,7)}월`;
   const el=document.getElementById('sc-calendar');
-  const mEvents=D.events.filter(e=>App.inMonth(App.evDate(e),m));
-  const counts={done:0,hold:0,todo:0,plan:0};
-  mEvents.forEach(e=>counts[e.status||'plan']++);
+  const today=App.todayKey();
+  const monthEvents=D.events.filter(e=>App.inMonth(App.evDate(e),m));
+  const todayEvents=eventsOn(today);
+  const wkMon=App.mondayOf(today);
+  const weekEvents=D.events.filter(e=>{const d=App.evDate(e);return d>=wkMon&&d<=App.addDays(wkMon,6)});
+  const next=nextEventAfterNow();
 
   el.innerHTML=`
   <div class="cal-top">
     <div class="cal-row1">
-      <button class="icon-btn" data-mv="-1" aria-label="이전 달">‹</button>
-      <span class="mon">${monthName}<span>${mEvents.length}건</span></span>
-      <button class="icon-btn" data-mv="1" aria-label="다음 달">›</button>
-      <button class="btn sm ghost" data-mtoday>오늘</button>
+      <button class="icon-btn" type="button" data-action="cal-move" data-step="-1" aria-label="이전 달">‹</button>
+      <span class="mon">${+m.slice(0,4)}년 ${+m.slice(5,7)}월<span>${monthEvents.length}건</span></span>
+      <button class="icon-btn" type="button" data-action="cal-move" data-step="1" aria-label="다음 달">›</button>
+      <button class="btn sm ghost" type="button" data-action="cal-today">오늘</button>
+      <button class="btn sm primary cal-add" type="button" data-action="ev-add" data-date="${calSelected()}">＋ 일정</button>
     </div>
     <div class="cal-row2">
       <div class="cal-subtabs">
-        <button class="chip ${tab==='month'?'sel':''}" data-caltab="month">월간 달력</button>
-        <button class="chip ${tab==='lecture'?'sel':''}" data-caltab="lecture">강의 목록</button>
+        <button class="chip ${v==='month'?'sel':''}" type="button" data-action="cal-tab" data-view="month">월간</button>
+        <button class="chip ${v==='week'?'sel':''}" type="button" data-action="cal-tab" data-view="week">주간</button>
+        <button class="chip ${v==='lecture'?'sel':''}" type="button" data-action="cal-tab" data-view="lecture">강의</button>
       </div>
-      <div class="cal-acts">
-        <button class="btn sm" data-ics>${App.ICON.down} ICS</button>
-        <button class="btn sm primary" data-evadd>${App.ICON.plus} 일정</button>
-      </div>
+      <div class="cal-sync">${syncLine()}<button class="icon-btn sm" type="button" data-action="gcal-sync" aria-label="구글 캘린더 새로고침">${App.ICON.down}</button></div>
     </div>
   </div>
-  ${tab==='month'?`
-    <div class="cal-sum">
-      <span class="pill"><i class="pt" style="background:#57ce93"></i>완성 <b>${counts.done}</b></span>
-      <span class="pill"><i class="pt" style="background:#e8b04b"></i>보류 <b>${counts.hold}</b></span>
-      <span class="pill"><i class="pt" style="background:#ef7373"></i>미완성 <b>${counts.todo}</b></span>
-      <span class="pill"><i class="pt" style="background:#82a9e6"></i>예정 <b>${counts.plan}</b></span>
-      <span class="pill">강의 <b>${mEvents.filter(App.lectureLike).length}</b></span>
-    </div>
-    <div class="split wide">
-      <div>${monthGrid(m)}${legend()}</div>
-      <div class="day-panel card sticky" id="dayPanel">${dayPanel(D.ui.calDate)}</div>
-    </div>`
-  :`<div id="lectureList">${lectureList()}</div>`}
-  `;
 
-  el.querySelectorAll('[data-caltab]').forEach(b=>b.onclick=()=>{D.ui.calTab=b.dataset.caltab;App.save();renderCalendar()});
-  el.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{
-    const [y,mm]=m.split('-').map(Number);const dt=new Date(y,mm-1+ +b.dataset.mv,1);
-    D.ui.calMonth=`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}`;App.save();renderCalendar();
-  });
-  const mt=el.querySelector('[data-mtoday]');
-  if(mt)mt.onclick=()=>{D.ui.calMonth=App.todayKey().slice(0,7);D.ui.calDate=App.todayKey();App.save();renderCalendar()};
-  el.querySelector('[data-ics]').onclick=openIcs;
-  el.querySelector('[data-evadd]').onclick=()=>eventEdit(null,D.ui.calDate);
+  <div class="cal-sum2">
+    <div class="cs"><span class="l">오늘</span><b>${todayEvents.length}<i>건</i></b></div>
+    <div class="cs wide"><span class="l">다음 일정</span><b class="nx">${next?`${mnTime(next.start)} ${App.esc(next.summary.slice(0,16))}${next.summary.length>16?'…':''}`:'없음'}</b><span class="m">${next?mnLeft(next.start):'오늘 일정 없음'}</span></div>
+    <div class="cs"><span class="l">이번 주</span><b>${weekEvents.length}<i>건</i></b></div>
+  </div>
+
+  ${v==='lecture'?`<div id="lectureList">${lectureList()}</div>`:`<div class="cal-body">
+    <div class="cal-main">${v==='month'?monthBlock(m):weekBlock()}</div>
+    <div class="cal-daycards">${dayPanel(calSelected())}</div>
+  </div>`}
+  `;
 
   el.querySelectorAll('[data-cell]').forEach(c=>c.onclick=()=>{
     D.ui.calDate=c.dataset.cell;App.save();calOpen=null;renderCalendar();
-    if(window.innerWidth<880){
-      const p=document.getElementById('dayPanel');
-      if(p)setTimeout(()=>p.scrollIntoView({behavior:'smooth',block:'center'}),40);
+    if(window.innerWidth<980){
+      const p=document.querySelector('.cal-daycards');
+      if(p&&p.getBoundingClientRect().top>window.innerHeight*0.55)setTimeout(()=>p.scrollIntoView({behavior:'smooth',block:'start'}),50);
     }
   });
   bindDayPanel(el);
   el.querySelectorAll('[data-evcard]').forEach(n=>n.onclick=e=>{
     if(e.target.closest('button,textarea,input'))return;
-    calOpen=calOpen===n.dataset.evcard?null:n.dataset.evcard;
-    renderCalendar();
+    calOpen=calOpen===n.dataset.evcard?null:n.dataset.evcard;renderCalendar();
+    if(calOpen&&window.innerWidth<980){const o=document.querySelector('.ev.open');if(o)setTimeout(()=>o.scrollIntoView({behavior:'smooth',block:'center'}),60);}
   });
   el.querySelectorAll('[data-lecture]').forEach(n=>n.onclick=()=>lectureEdit(n.dataset.lecture));
 }
 
+/* ── 월간 ── */
+function monthBlock(m){
+  return `<div class="cal-month-wrap">${monthGrid(m)}${legend()}</div>`;
+}
 function monthGrid(m){
-  const [y,mm]=m.split('-').map(Number);
-  const first=new Date(y,mm-1,1);
-  const startMonday=App.mondayOf(App.todayKey(first));
-  const cells=[];
+  const first=new Date(+m.slice(0,4),+m.slice(5,7)-1,1);
+  const start=App.mondayOf(App.todayKey(first));
+  const today=App.todayKey(), sel=calSelected();
+  let cells='';
   for(let i=0;i<42;i++){
-    const k=App.addDays(startMonday,i);
-    cells.push(k);
+    const k=App.addDays(start,i);
+    const evs=eventsOn(k);
+    const dow=App.dow(k);
+    const dots=evs.slice(0,3).map(e=>{const c=App.calCat(e);return `<i class="cdot" style="background:${c.color}"></i>`}).join('');
+    cells+=`<button class="cell ${App.inMonth(k,m)?'':'out'} ${dow===0?'sun':''} ${dow===6?'sat':''} ${k===today?'today':''} ${k===sel?'sel':''}" type="button" data-cell="${k}" aria-label="${App.fmtDate(k)} ${evs.length}건">
+      <span class="dn">${App.dateObj(k).getDate()}</span>
+      ${evs.length?`<span class="dots">${dots}${evs.length>3?`<i class="cmore">+${evs.length-3}</i>`:''}</span>`:''}
+      ${evs.length&&evs.some(e=>timed(e))?`<span class="cbars">${evs.filter(timed).slice(0,2).map(e=>`<i style="background:${App.calCat(e).color}"></i>`).join('')}</span>`:''}
+    </button>`;
   }
-  const today=App.todayKey();
   return `<div class="cal">
-    <div class="cal-wd">${['월','화','수','목','금','토','일'].map(d=>`<div>${d}</div>`).join('')}</div>
-    <div class="cal-grid">
-      ${cells.map(k=>{
-        const inM=App.inMonth(k,m);
-        const dow=App.dow(k);
-        const evs=App.D.events.filter(e=>App.evDate(e)===k).sort((a,b)=>(a.start||'').localeCompare(b.start||''));
-        const shown=evs.slice(0,3);
-        const foods=App.foodOn(k);
-        return `<button class="cell ${inM?'':'out'} ${dow===0||dow===6?'we':''} ${k===today?'today':''} ${k===App.D.ui.calDate?'sel':''}" data-cell="${k}">
-          <span class="dn">${App.dateObj(k).getDate()}</span>
-          <span class="minis">
-            ${shown.map(e=>`<span class="mini" style="--c:${(App.STATUS[e.status||'plan']).color}" title="${App.esc(e.summary)}"><i class="bar"></i><span>${App.esc(e.summary)}</span></span>`).join('')}
-            ${evs.length>3?`<span class="more">+${evs.length-3}</span>`:''}
-          </span>
-          ${foods.length?`<span class="food-mark ${foods.every(f=>App.foodType(f)==='숙소')?'stay':''}" title="다녀온 곳 ${foods.length}곳 · ${foods.map(f=>f.name).join(', ')}"></span>`:''}
-        </button>`}).join('')}
-    </div>
+    <div class="cal-wd">${['월','화','수','목','금','토','일'].map((d,i)=>`<div class="${i===5?'sat':i===6?'sun':''}">${d}</div>`).join('')}</div>
+    <div class="cal-grid">${cells}</div>
   </div>`;
 }
-
 function legend(){
   return `<div class="cal-legend">
-    ${Object.entries(App.STATUS).map(([k,s])=>`<i><b style="background:${s.color}"></b>${s.label}</i>`).join('')}
-    <i style="margin-left:auto;opacity:.8">일정을 누르면 상태를 바꿀 수 있습니다</i>
+    ${App.CALCATS.map(c=>`<i><b style="background:${c.color}"></b>${c.name}</i>`).join('')}
   </div>`;
 }
 
+/* ── 주간 타임라인 ── */
+function weekBlock(){
+  const base=App.D.ui.calWeek||App.mondayOf(App.todayKey());
+  const days=[];for(let i=0;i<7;i++)days.push(App.addDays(base,i));
+  const sel=calSelected();
+  const selDay=days.includes(sel)?sel:(days.includes(App.todayKey())?App.todayKey():days[0]);
+  // 보이는 시간대 — 폰에서는 그 날 일정에 맞춰 좁게, 넓은 화면에서는 그 주 전체
+  const wide=(window.innerWidth||390)>=760;
+  const basis=wide?days:[selDay];
+  let lo=24,hi=0,any=false;
+  basis.forEach(k=>eventsOn(k).filter(timed).forEach(e=>{
+    any=true;
+    lo=Math.min(lo,mins(e.start)/60);
+    hi=Math.max(hi,(mins(e.start)+durMin(e))/60);
+  }));
+  if(!any){lo=9;hi=15}
+  else{lo=Math.max(5,Math.floor(lo)-1);hi=Math.min(23,Math.ceil(hi)+1)}
+  if(hi-lo<4)hi=Math.min(23,lo+4);
+  if(hi-lo>11)hi=lo+11;
+  const H=42,total=(hi-lo)*H;
+  const now=new Date(),nowMin=now.getHours()*60+now.getMinutes();
+  const nowTop=(nowMin-lo*60)/60*H;
+  const labels=[];for(let h=lo;h<=hi;h++)labels.push(`<span style="top:${(h-lo)*H}px">${String(h).padStart(2,'0')}</span>`);
+  const cols=days.map(k=>{
+    const evs=eventsOn(k).filter(timed);
+    const groups=[];
+    evs.forEach(e=>{
+      const a=mins(e.start),b=a+durMin(e);
+      const g=groups.find(g=>g.some(x=>a<mins(x.start)+durMin(x)&&b>mins(x.start)));
+      if(g)g.push(e);else groups.push([e]);
+    });
+    const pos=new Map();
+    groups.forEach(g=>g.sort((x,y)=>x.start.localeCompare(y.start)).forEach((e,i)=>pos.set(e,{i,n:g.length})));
+    return `<div class="wk-col ${k===selDay?'sel':''} ${k===App.todayKey()?'today':''}" data-cell="${k}">
+      <div class="tl-in" style="height:${total}px">
+        ${evs.map(e=>{
+          const p=pos.get(e)||{i:0,n:1};
+          const top=Math.max(0,(mins(e.start)-lo*60)/60*H);
+          const h=Math.max(26,durMin(e)/60*H);
+          const c=App.calCat(e);
+          const w=100/p.n-3;
+          return `<button class="tev" type="button" data-evcard-on="${e.id}" style="--c:${c.color};top:${top}px;height:${h}px;left:${p.i*(100/p.n)+1}%;width:${w}%">
+            <b>${App.esc(e.summary)}</b><i>${mnTime(e.start)}–${eventEnd(e)}${e.location?' · '+App.esc(e.location.slice(0,16)):''}</i>
+          </button>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+  const allDay=days.map(k=>{
+    const ads=eventsOn(k).filter(e=>!timed(e));
+    return `<div class="ad-col ${k===selDay?'sel':''}">${ads.map(e=>`<button class="wad" type="button" data-evcard-on="${e.id}" style="--c:${App.calCat(e).color}">${App.esc(e.summary.slice(0,16))}</button>`).join('')}</div>`;
+  }).join('');
+  const hasAd=days.some(k=>eventsOn(k).some(e=>!timed(e)));
+  return `<div class="wk">
+    <div class="wk-top">
+      <button class="icon-btn" type="button" data-action="cal-weekmove" data-step="-1" aria-label="이전 주">‹</button>
+      <b>${App.fmtDate(days[0])} – ${App.fmtDate(days[6])}</b>
+      <button class="icon-btn" type="button" data-action="cal-weekmove" data-step="1" aria-label="다음 주">›</button>
+      <button class="btn sm ghost" type="button" data-action="cal-day" data-date="${App.todayKey()}">이번 주</button>
+    </div>
+    <div class="wk-days">
+      ${days.map(k=>{const c=eventsOn(k).length;return `<button class="wk-d ${k===selDay?'sel':''} ${k===App.todayKey()?'today':''} ${App.dow(k)===0?'sun':''}" type="button" data-action="cal-day" data-date="${k}">
+        <span>${App.DW[App.dow(k)]}</span><b>${App.dateObj(k).getDate()}</b><i class="${c?'has':''}">${c||''}</i></button>`}).join('')}
+    </div>
+    ${hasAd?`<div class="wk-ad"><span class="ad-lb">종일</span><div class="ad-cols">${allDay}</div></div>`:''}
+    <div class="tl" style="--H:${H}px">
+      <div class="tl-labels" style="height:${total}px">${labels.join('')}</div>
+      <div class="tl-cols" data-date="${selDay}">${cols}</div>
+      ${selDay===App.todayKey()&&nowTop>0&&nowTop<total?`<div class="tl-now" style="top:${nowTop+8}px"></div>`:''}
+    </div>
+    <div class="tl-hint">${App.fmtDate(selDay)} ${App.DW[App.dow(selDay)]}요일 · ${eventsOn(selDay).length}건 · ${String(lo).padStart(2,'0')}시~${String(hi).padStart(2,'0')}시</div>
+  </div>`;
+}
+
+/* ── 날짜별 카드 ── */
 function dayPanel(dk){
-  const evs=App.D.events.filter(e=>App.evDate(e)===dk).sort((a,b)=>(a.start||'').localeCompare(b.start||''));
+  const evs=eventsOn(dk);
   const d=App.dateObj(dk);
-  const wk=['일','월','화','수','목','금','토'][d.getDay()];
-  return `<div class="dp-h">
-      <span class="dt">${d.getMonth()+1}월 ${d.getDate()}일</span><span class="dw">${wk}요일</span>
+  return `<div class="dp">
+    <div class="dp-h">
+      <span class="dt">${d.getMonth()+1}월 ${d.getDate()}일</span>
+      <span class="dw">${App.DW[d.getDay()]}요일</span>
       <span class="n">${evs.length}건</span>
+      <button class="btn sm ghost" type="button" data-action="ev-add" data-date="${dk}">＋ 추가</button>
     </div>
     ${evs.length?evs.map(e=>{
-      const st=App.STATUS[e.status||'plan'];
-      const open=calOpen===e.id;
-      return `<div class="ev ${open?'open':''}" data-evcard="${e.id}" style="--c:${st.color}">
+      const open=calOpen===e.id, c=App.calCat(e), st=App.STATUS[e.status||'plan'];
+      return `<div class="ev ${open?'open':''}" data-evcard="${e.id}" style="--c:${c.color}">
         <div class="ev-h">
-          <span class="stripe"></span>
+          <span class="ev-t">${timed(e)?`<b>${mnTime(e.start)}</b><i>${eventEnd(e)}</i>`:'<b class="ad">종일</b>'}</span>
           <span class="ei">
             <span class="et">${App.esc(e.summary)}</span>
-            <span class="em"><i>${App.evTime(e)}</i>${e.location?`<i>· ${App.esc(e.location)}</i>`:''}${open?'':`<i>· ${st.label}</i>`}</span>
+            <span class="em">${catBadge(e)}${e.location?`<i>· ${App.esc(e.location.slice(0,30))}</i>`:''}</span>
           </span>
           <span class="chev">${App.ICON.chev}</span>
         </div>
         ${open?`<div class="ev-b">
-          <div class="status-pick">${Object.entries(App.STATUS).map(([k,s])=>`<button class="chip ${(e.status||'plan')===k?'st-'+k:''}" data-setstatus="${e.id}|${k}" style="${(e.status||'plan')===k?'':'color:'+s.color}"><span class="pt"></span>${s.label}</button>`).join('')}</div>
+          <div class="status-pick">${Object.entries(App.STATUS).map(([k,s])=>`<button class="chip ${(e.status||'plan')===k?'st-'+k:''}" type="button" data-action="ev-status" data-set="${e.id}|${k}" style="${(e.status||'plan')===k?'':'color:'+s.color}"><span class="pt"></span>${s.label}</button>`).join('')}</div>
           ${e.location?`<div class="lbl mt8">장소</div><div class="desc">${App.esc(e.location)}</div>`:''}
-          ${e.desc?`<div class="lbl mt8">설명</div><div class="desc">${App.nl(e.desc)}</div>`:''}
-          ${e.lecture?`<div class="lbl mt8">강의 정보</div><div class="desc">${[e.org?'기관 '+e.org:'',e.audience?'대상 '+e.audience:'',e.fee?'강사료 '+e.fee:''].filter(Boolean).map(App.esc).join(' · ')||'강의로 표시됨'}</div>`:''}
+          ${e.desc?`<div class="lbl mt8">설명</div><div class="desc clamp">${App.nl(e.desc)}</div>`:''}
           <div class="lbl mt8">메모</div>
-          <textarea data-note="${e.id}" placeholder="이 일정에 대한 메모" style="min-height:58px;font-size:13.5px">${App.esc(e.note||'')}</textarea>
+          <textarea data-action="ev-note" data-ev="${e.id}" placeholder="이 일정에 대한 메모" style="min-height:56px;font-size:13.5px">${App.esc(e.note||'')}</textarea>
           <div class="acts">
-            <button class="btn sm primary" data-tojournal="${e.id}">일지에 기록</button>
-            <button class="btn sm" data-evedit="${e.id}">수정</button>
+            <button class="btn sm primary" type="button" data-action="ev-tojournal" data-ev="${e.id}">일지에 기록</button>
+            <button class="btn sm" type="button" data-action="ev-edit" data-ev="${e.id}">수정</button>
           </div>
         </div>`:''}
       </div>`}).join('')
-    :`<div class="empty small">이 날은 일정이 없습니다.<span>＋ 일정으로 직접 추가하거나 ICS로 가져올 수 있습니다.</span></div>`}
-    <button class="btn sm ghost mt8" style="width:100%" data-evadd-day="${dk}">＋ 이 날에 일정 추가</button>
-    ${(function(){const fs=App.foodOn(dk);return fs.length?`<div class="dp-food"><div class="dp-food-h">🍽 이 날 다녀온 맛집</div>${fs.map(r=>`<button class="dp-food-i" data-food="${r.id}"><b>${App.esc(r.name)}</b><span>${App.esc([r.region,r.menu].filter(Boolean).join(' · '))}</span></button>`).join('')}</div>`:''})()}`;
+    :`<div class="dp-none"><b>이 날은 일정이 없습니다</b><span>＋ 추가로 직접 넣거나, 구글 캘린더에 넣으면 자동으로 들어옵니다.</span></div>`}
+    ${(function(){const fs=App.foodOn?App.foodOn(dk):[];return fs.length?`<div class="dp-food"><div class="dp-food-h">🍽 이 날 다녀온 맛집</div>${fs.map(r=>`<button class="dp-food-i" type="button" data-action="food-open" data-food="${r.id}"><b>${App.esc(r.name)}</b><span>${App.esc([r.region,r.menu].filter(Boolean).join(' · '))}</span></button>`).join('')}</div>`:''})()}
+  </div>`;
 }
-
 function bindDayPanel(el){
-  el.querySelectorAll('[data-setstatus]').forEach(b=>b.onclick=e=>{
+  // 상세 카드의 시간/장소는 카드 전체 클릭으로 열고 닫는다 (위임 리스너가 나머지를 처리)
+  el.querySelectorAll('.tev,[data-evcard-on]').forEach(b=>b.onclick=e=>{
     e.stopPropagation();
-    const [id,st]=b.dataset.setstatus.split('|');
-    const ev=App.D.events.find(x=>x.id===id);if(!ev)return;
-    ev.status=st;App.save();renderCalendar();App.toast(App.STATUS[st].label+'으로 바꿨습니다');
+    const id=b.dataset.evcardOn;
+    App.D.ui.calDate=App.evDate(App.D.events.find(x=>x.id===id)||{start:calSelected()});
+    calOpen=id;App.save();renderCalendar();
   });
-  el.querySelectorAll('[data-note]').forEach(t=>{
+  el.querySelectorAll('[data-action="ev-note"]').forEach(t=>{
     t.onclick=e=>e.stopPropagation();
-    t.onchange=()=>{const ev=App.D.events.find(x=>x.id===t.dataset.note);if(ev){ev.note=t.value;App.save();App.toast('메모를 저장했습니다')}};
   });
-  el.querySelectorAll('[data-evedit]').forEach(b=>b.onclick=e=>{e.stopPropagation();eventEdit(b.dataset.evedit)});
-  el.querySelectorAll('[data-tojournal]').forEach(b=>b.onclick=e=>{e.stopPropagation();eventToJournal(b.dataset.tojournal)});
-  el.querySelectorAll('[data-evadd-day]').forEach(b=>b.onclick=e=>{e.stopPropagation();eventEdit(null,b.dataset.evaddDay)});
-  el.querySelectorAll('[data-food]').forEach(b=>b.onclick=e=>{e.stopPropagation();App.go('food');setTimeout(()=>foodDetail(b.dataset.food),120)});
 }
 
+/* ── 일지로 ── */
 function eventToJournal(id){
   const ev=App.D.events.find(x=>x.id===id);if(!ev)return;
   const dk=App.evDate(ev);
   const cat=/강의|특강|교육|세미나|강연|포럼/.test(ev.summary)?'lecture':/선교/.test(ev.summary)?'mission':'church';
-  App.D.journal.push({id:App.uid('j'),date:dk,time:App.evTime(ev)==='종일'?'':App.evTime(ev),
+  App.D.journal.push({id:App.uid('j'),date:dk,time:timed(ev)?mnTime(ev.start):'',
     title:ev.summary,place:ev.location||'',amount:0,cat,status:'done',note:ev.note||'',by:''});
   ev.status='done';
   App.save();renderCalendar();
-  App.toast('일지에 기록했습니다');
+  App.toast('오늘 일지에 기록했습니다');
 }
 
+/* ── 일정 편집 ── */
 function eventEdit(id,date){
   const D=App.D;
   const e=id?D.events.find(x=>x.id===id):{id:'',uid:'',start:(date||App.todayKey())+'T09:00:00',end:'',summary:'',location:'',desc:'',status:'plan',note:'',lecture:false,org:'',audience:'',fee:''};
   if(!e)return;
-  const dk=App.evDate(e), tm=e.start&&e.start.length>10?e.start.slice(11,16):'';
+  const dk=App.evDate(e), tm=timed(e)?e.start.slice(11,16):'';
   App.sheet({
     title:id?'일정 수정':'일정 추가',
     body:`<label class="fld"><span>일정 이름</span><input id="eSum" value="${App.esc(e.summary)}" placeholder="예: 노회 월례회"></label>
@@ -189,8 +278,8 @@ function eventEdit(id,date){
       </div>
       <label class="fld"><span>장소</span><input id="eLoc" value="${App.esc(e.location)}"></label>
       <label class="fld"><span>설명</span><textarea id="eDesc">${App.esc(e.desc)}</textarea></label>
-      <label class="fld"><span>상태</span><div class="chips" id="eStat">${Object.entries(App.STATUS).map(([k,s])=>`<button class="chip ${(e.status||'plan')===k?'st-'+k:''}" data-st="${k}" style="${(e.status||'plan')===k?'':'color:'+s.color}"><span class="pt"></span>${s.label}</button>`).join('')}</div></label>
-      <label class="fld"><span>강의로 표시</span><div class="chips"><button class="chip ${e.lecture?'sel':''}" id="eLec"><span class="pt"></span>강의·특강·교육</button></div></label>
+      <label class="fld"><span>상태</span><div class="chips" id="eStat">${Object.entries(App.STATUS).map(([k,s])=>`<button class="chip ${(e.status||'plan')===k?'st-'+k:''}" type="button" data-st="${k}" style="${(e.status||'plan')===k?'':'color:'+s.color}"><span class="pt"></span>${s.label}</button>`).join('')}</div></label>
+      <label class="fld"><span>강의로 표시</span><div class="chips"><button class="chip ${e.lecture?'sel':''}" type="button" id="eLec"><span class="pt"></span>강의·특강·교육</button></div></label>
       <div id="lecFields" style="display:${e.lecture?'block':'none'}">
         <div class="row2">
           <label class="fld"><span>기관</span><input id="eOrg" value="${App.esc(e.org)}"></label>
@@ -213,11 +302,14 @@ function eventEdit(id,date){
     const sum=document.getElementById('eSum').value.trim();
     if(!sum){App.toast('일정 이름을 적어 주세요');return}
     const d=document.getElementById('eDate').value, t=document.getElementById('eTime').value;
-    const rec={summary:sum,start:d+(t?'T'+t+':00':'T00:00:00'),end:'',location:document.getElementById('eLoc').value.trim(),
+    const rec={summary:sum,start:d+(t?'T'+t+':00':'T00:00:00'),end:'',
+      location:document.getElementById('eLoc').value.trim(),
       desc:document.getElementById('eDesc').value.trim(),status:st,lecture:lec,
-      org:document.getElementById('eOrg').value.trim(),audience:document.getElementById('eAud').value.trim(),fee:document.getElementById('eFee').value.trim()};
+      org:document.getElementById('eOrg')?document.getElementById('eOrg').value.trim():'',
+      audience:document.getElementById('eAud')?document.getElementById('eAud').value.trim():'',
+      fee:document.getElementById('eFee')?document.getElementById('eFee').value.trim():''};
     if(id)Object.assign(e,rec);
-    else D.events.push(Object.assign({id:App.uid('ev'),uid:'local-'+Date.now(),note:''},rec));
+    else D.events.push(Object.assign({id:App.uid('ev'),uid:'local-'+Date.now(),note:'',src:'local'},rec));
     App.save();App.closeSheet();D.ui.calDate=d;App.save();renderCalendar();App.toast('저장했습니다');
   };
   const del=document.querySelector('[data-del]');
@@ -247,7 +339,7 @@ function lectureList(){
           </div>
           <div class="lec-t">${App.esc(e.summary)}</div>
           <div class="lec-m">
-            <span><b>시간</b> ${App.evTime(e)}${e.start&&e.start.length>10?'':' (종일)'}</span>
+            <span><b>시간</b> ${timed(e)?mnTime(e.start):'종일'}</span>
             <span><b>장소</b> ${App.esc(e.location||'—')}</span>
             <span><b>기관</b> ${App.esc(e.org||'미입력')}</span>
             <span><b>대상</b> ${App.esc(e.audience||'미입력')}</span>
@@ -282,22 +374,18 @@ function lectureEdit(id){
   };
 }
 
-/* ── ICS 가져오기 ── */
+/* ── ICS 가져오기(수동 보조 수단) ── */
 function openIcs(){
   App.sheet({
-    title:'캘린더에서 새로 가져오기',
-    body:`<p class="muted" style="margin:0 0 10px">구글 캘린더에서 내보낸 <b style="color:#a9b7ca">.ics</b> 파일을 올리거나, 내용을 붙여넣으세요. 같은 일정(UID)은 두 번 들어가지 않습니다.</p>
+    title:'ICS 파일로 가져오기',
+    body:`<p class="muted" style="margin:0 0 10px">보통은 구글 캘린더와 자동으로 맞춰집니다. 다른 캘린더의 <b style="color:#a9b7ca">.ics</b> 파일만 따로 넣고 싶을 때 쓰세요. 같은 일정(UID)은 두 번 들어가지 않습니다.</p>
       <input type="file" id="icsFile" accept=".ics,text/calendar" style="padding:8px;font-size:13px">
-      <textarea id="icsText" style="min-height:130px;margin-top:8px;font-size:12.5px" placeholder="BEGIN:VCALENDAR … END:VCALENDAR"></textarea>
-      <p class="muted" style="margin:8px 0 0">구글 캘린더 앱 → 설정 → 캘린더 내보내기 로 .ics를 받을 수 있습니다.</p>`,
+      <textarea id="icsText" style="min-height:120px;margin-top:8px;font-size:12.5px" placeholder="BEGIN:VCALENDAR … END:VCALENDAR"></textarea>`,
     footer:`<button class="btn" data-x>취소</button><button class="btn primary" data-save>가져오기</button>`
   });
   const file=document.getElementById('icsFile');
-  file.onchange=()=>{
-    const f=file.files[0];if(!f)return;
-    const r=new FileReader();r.onload=()=>{document.getElementById('icsText').value=r.result};
-    r.readAsText(f);
-  };
+  file.onchange=()=>{const f=file.files[0];if(!f)return;const r=new FileReader();
+    r.onload=()=>{document.getElementById('icsText').value=r.result};r.readAsText(f)};
   document.querySelector('[data-x]').onclick=App.closeSheet;
   document.querySelector('[data-save]').onclick=()=>{
     const text=document.getElementById('icsText').value;
@@ -308,7 +396,6 @@ function openIcs(){
     renderCalendar();
   };
 }
-
 function unescICal(s){
   return String(s||'').replace(/\\n/gi,'\n').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\').trim();
 }
@@ -353,7 +440,7 @@ function importICS(text){
     const key=(v.summary||'').trim()+'|'+v.start.slice(0,10);
     if(known.has(uid)||knownKey.has(key)){dup++;return}
     known.add(uid);knownKey.add(key);
-    App.D.events.push({id:App.uid('ev'),uid,start:v.start,end:v.end||v.start,summary:v.summary,
+    App.D.events.push({id:App.uid('ev'),uid,src:'ics',start:v.start,end:v.end||v.start,summary:v.summary,
       location:v.location||'',desc:v.desc||'',status:'plan',note:'',lecture:false,org:'',audience:'',fee:''});
     added++;
   });

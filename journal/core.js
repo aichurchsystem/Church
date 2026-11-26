@@ -39,6 +39,28 @@ App.THEMES=[
   {id:'dream',name:'꿈이 있는 예배',color:'#f08ba8'},
   {id:'ext',name:'외부 강의',color:'#f0a86b'}
 ];
+/* 캘린더 분류 — 일정 이름에서 종류를 읽어 색으로 구분 */
+App.CALCATS=[
+  {id:'worship',name:'설교·예배',color:'#e8b04b'},
+  {id:'lecture',name:'강의',color:'#b79cff'},
+  {id:'counsel',name:'상담·심방',color:'#6fd2d2'},
+  {id:'move',name:'이동',color:'#82a9e6'},
+  {id:'admin',name:'행정·모임',color:'#57ce93'},
+  {id:'personal',name:'개인',color:'#e69ab4'}
+];
+App.calCatId=function(e){
+  const s=(e&&e.summary)||'';
+  if(e&&e.lecture)return 'lecture';
+  if(/예배|설교|집회|부흥|성회|수련회|캠프|바이블|컨퍼런스/.test(s)){
+    return /특강|강의|강연|세미나|포럼/.test(s)?'lecture':'worship';
+  }
+  if(/강의|특강|교육|세미나|훈련|포럼|강연|설명회|고시/.test(s))return 'lecture';
+  if(/상담|심방|문병|면담|위로|장례|결혼|예식/.test(s))return 'counsel';
+  if(/이동|출발|도착|비행|항공|기차|KTX|드라이브|픽업|샌딩|탑승|Flight|이동 중/.test(s))return 'move';
+  if(/노회|총회|위원회|회의|임직|취임|위촉|간담회|협의|행정|준비|박람회|인쇄|촬영|영상|업무/.test(s))return 'admin';
+  return 'personal';
+};
+App.calCat=function(e){const id=App.calCatId(e);return App.CALCATS.find(c=>c.id===id)||App.CALCATS[5]};
 App.CAT=id=>App.CATS.find(c=>c.id===id)||App.CATS[6];
 App.THEME=id=>App.THEMES.find(t=>t.id===id)||App.THEMES[0];
 App.chapter=id=>App.CHAPTERS.find(c=>c.id===id)||App.CHAPTERS[0];
@@ -136,19 +158,26 @@ App.ask=function(msg,okLabel){
 
 /* ── navigation ── */
 App.TABS=[
-  {id:'home',name:'홈'},{id:'journal',name:'일지'},{id:'schedule',name:'스케줄'},
+  {id:'home',name:'메인'},{id:'journal',name:'일지'},{id:'schedule',name:'스케줄'},
   {id:'counsel',name:'상담'},{id:'calendar',name:'캘린더'},{id:'notes',name:'메모'},
   {id:'sermons',name:'설교'},{id:'vehicle',name:'차량'},{id:'food',name:'다녀온 곳'}
 ];
+App.TAB=id=>App.TABS.find(t=>t.id===id)||App.TABS[0];
+/* 하단 바에 늘 보이는 탭 — 나머지는 '더보기' 안에 */
+App.PRIMARY=['home','journal','schedule','calendar','counsel'];
+App.MORE=['notes','sermons','vehicle','food'];
 App.TABICON={home:'home',journal:'journal',schedule:'schedule',counsel:'counsel',calendar:'calendar',notes:'notes',sermons:'sermons',vehicle:'car',food:'food'};
 App.go=function(tab){
   if(!App.TABS.some(t=>t.id===tab))tab='home';
+  if(App._tab&&App._tab!==tab)App._scroll[App._tab]=window.scrollY||0;
   D.ui.tab=tab;App.save();
-  App.$$('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  App._tab=tab;
+  App.syncTabs();
   App.$$('.screen').forEach(s=>s.classList.toggle('on',s.id==='sc-'+tab));
   App.render();
-  const main=document.getElementById('main');
-  window.scrollTo({top:0,behavior:'instant'});
+  const y=App._scroll[tab]||0;
+  window.scrollTo({top:y,behavior:'instant'});
+  if(tab==='calendar'&&window.GCal)window.GCal.maybeSync();
 };
 App.render=function(){
   const t=D.ui.tab;
@@ -213,19 +242,118 @@ App.importAll=function(file){
   r.readAsText(file);
 };
 
+/* ── 하단 탭바 (아이콘과 글자 모두 누를 수 있게) ── */
+const ICON_MORE=`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h.01M4 12h.01M4 17h.01"/><path d="M9.5 7H20M9.5 12H20M9.5 17H20"/></svg>`;
+function tabHTML(id){
+  const t=App.TAB(id);
+  return `<button class="tab" type="button" data-action="tab" data-tab="${id}" aria-label="${t.name}">
+    <span class="ti">${App.ICON[App.TABICON[id]||id]||''}</span><span class="tl">${t.name}</span><i class="dotb"></i>
+  </button>`;
+}
+function buildTabs(){
+  const bar=document.getElementById('tabs');
+  bar.innerHTML=App.PRIMARY.map(tabHTML).join('')
+    +`<button class="tab" type="button" data-action="more" aria-label="더보기"><span class="ti">${ICON_MORE}</span><span class="tl">더보기</span></button>`;
+  App._tabs=[...App.PRIMARY,'more'];
+}
+App.syncTabs=function(){
+  const cur=D.ui.tab;
+  App.$$('#tabs .tab').forEach(b=>{
+    const id=b.dataset.tab||'more';
+    const on=id==='more'?App.MORE.includes(cur):id===cur;
+    b.classList.toggle('on',on);
+    b.setAttribute('aria-current',on?'page':'false');
+  });
+};
+App.moreSheet=function(){
+  const rows=App.MORE.map(id=>{
+    const t=App.TAB(id);
+    return `<button class="more-i" type="button" data-action="tab" data-tab="${id}">
+      <span class="mi">${App.ICON[App.TABICON[id]||id]||''}</span><b>${t.name}</b>
+      <span class="mhint">${({notes:'목회 메모·아이디어',sermons:'설교 준비 노트',vehicle:'주유·정비·보험 기록',food:'다녀온 식당·숙소'})[id]||''}</span>
+    </button>`;
+  }).join('');
+  App.sheet({title:'더보기',body:`<div class="more-grid">${rows}</div>`,
+    footer:`<button class="btn" data-action="install-guide">홈 화면에 추가</button><button class="btn primary" data-action="sheet-close">닫기</button>`});
+};
+
+/* ── 이벤트 위임 — 화면을 다시 그려도 핸들러가 사라지지 않는다 ── */
+App.ACT={
+  tab:el=>{const id=el.dataset.tab;App.closeSheet();App.go(id)},
+  more:()=>App.moreSheet(),
+  'sheet-close':()=>App.closeSheet(),
+  'install-guide':()=>{App.closeSheet();App.installGuide()},
+  'install-dismiss':()=>{try{localStorage.setItem('mj.installHide','1')}catch(e){};App.render()},
+  'gcal-sync':()=>{if(window.GCal)window.GCal.sync(true)},
+  'cal-tab':el=>{App.D.ui.calTab=el.dataset.view;App.save();renderCalendar()},
+  'cal-move':el=>{const m=App.D.ui.calMonth;const [y,mm]=m.split('-').map(Number);
+    const d=new Date(y,mm-1+ +el.dataset.step,1);
+    App.D.ui.calMonth=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;App.save();renderCalendar()},
+  'cal-today':()=>{App.D.ui.calMonth=App.todayKey().slice(0,7);App.D.ui.calDate=App.todayKey();App.save();renderCalendar()},
+  'cal-day':el=>{App.D.ui.calDate=el.dataset.date;App.save();renderCalendar()},
+  'cal-weekmove':el=>{App.D.ui.calWeek=App.addDays(App.D.ui.calWeek||App.mondayOf(App.todayKey()),7*(+el.dataset.step));App.save();renderCalendar()},
+  'ev-add':el=>eventEdit(null,el.dataset.date||App.D.ui.calDate),
+  'ev-open':el=>{calOpen=calOpen===el.dataset.ev?null:el.dataset.ev;renderCalendar()},
+  'ev-edit':el=>eventEdit(el.dataset.ev),
+  'ev-tojournal':el=>eventToJournal(el.dataset.ev),
+  'ev-status':el=>{const [id,st]=el.dataset.set.split('|');const ev=App.D.events.find(x=>x.id===id);if(!ev)return;
+    ev.status=st;App.save();renderCalendar();App.toast(App.STATUS[st].label+'으로 바뀔습니다')},
+  'ev-note':el=>{const ev=App.D.events.find(x=>x.id===el.dataset.ev);if(ev){ev.note=el.value;App.save();App.toast('메모를 저장했습니다')}},
+  ledger:()=>{},
+  'car-add':el=>carExpenseEdit(null,el.dataset.type||''),
+  'car-filter':el=>{App.D.ui.carFilter=el.dataset.cf;App.save();renderVehicle()},
+  'car-open':el=>carExpenseEdit(el.dataset.ce),
+  'car-vedit':()=>vehicleEdit(App.car().id),
+  'car-vimg':()=>carPhoto(),
+  'lecture-edit':el=>lectureEdit(el.dataset.ev),
+  'go-cal-day':el=>{App.D.ui.calDate=el.dataset.date;App.D.ui.calMonth=(el.dataset.date||'').slice(0,7);App.save();App.go('calendar')},
+  'ics':()=>openIcs(),
+  'food-open':el=>{App.go('food');setTimeout(()=>foodDetail(el.dataset.food),120)}
+};
+document.addEventListener('click',function(e){
+  const el=e.target.closest('[data-action]');
+  if(!el)return;
+  const fn=App.ACT[el.dataset.action];
+  if(!fn)return;
+  if(el.tagName==='BUTTON'||el.tagName==='A')e.preventDefault();
+  try{fn(el)}catch(err){console.error('[action]',el.dataset.action,err)}
+});
+
+/* ── 설치·연동 안내 ── */
+App.standalone=function(){
+  return (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;
+};
+App.installGuide=function(){
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  App.sheet({title:'홈 화면에 추가',body:`
+    <div class="iguide">
+      <div class="ig-row"><b>안드로이드 · Chrome</b><span>오른쪽 위 ⋮ 메뉴 → <b>앱 설치</b> (또는 홈 화면에 추가)를 누르면 바탕화면에 아이콘이 생깁니다.</span></div>
+      <div class="ig-row"><b>아이폰 · 아이패드 · Safari</b><span>아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> → 추가. 아이콘을 누르면 앱처럼 열립니다.</span></div>
+      <div class="ig-row"><b>태블릿 · 갤럭시 · PC</b><span>Chrome 주소창의 <b>설치</b> 아이콘을 누르거나 메뉴에서 앱 설치를 고릅니다.</span></div>
+      <p class="muted" style="margin:10px 0 0">같은 주소를 열면 폰·태블릿·PC 어디서나 같은 일지를 씁니다.</p>
+    </div>`,footer:`<button class="btn primary" data-action="sheet-close">확인</button>`});
+};
+
 /* ── boot ── */
 App.init=function(){
   App.load();
-  document.getElementById('tabs').innerHTML=App.TABS.map(t=>
-    `<button class="tab" data-tab="${t.id}">${App.ICON[App.TABICON[t.id]||t.id]}<span>${t.name}</span><i class="dotb"></i></button>`).join('');
-  App.$$('.tab').forEach(b=>b.onclick=()=>App.go(b.dataset.tab));
-  App.go(D.ui.tab);
+  App._scroll={};App._tab=null;
+  buildTabs();
+  App.go('home');            // 앱을 열면 언제나 메인 화면부터
   const d=new Date();
   document.getElementById('barDate').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 ${App.DW[d.getDay()]}요일`;
   document.getElementById('btnExport').onclick=App.exportAll;
   document.getElementById('btnImport').onclick=()=>document.getElementById('fileImport').click();
   document.getElementById('fileImport').onchange=e=>{const f=e.target.files[0];if(f)App.importAll(f);e.target.value=''};
   document.addEventListener('keydown',e=>{if(e.key==='Escape')App.closeSheet()});
+  document.addEventListener('change',e=>{
+    const t=e.target.closest&&e.target.closest('[data-action="ev-note"]');
+    if(!t)return;
+    const ev=App.D.events.find(x=>x.id===t.dataset.ev);
+    if(ev){ev.note=t.value;App.save();App.toast('메모를 저장했습니다')}
+  });
+  if(window.GCal)window.GCal.sync();          // 구글 캘린더 자동 연동
+  document.documentElement.classList.add('ready');
 };
 document.addEventListener('DOMContentLoaded',App.init);
 })();

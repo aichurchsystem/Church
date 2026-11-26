@@ -45,8 +45,8 @@ function renderVehicle(){
       <div class="car-top">
         <span class="car-badge">${App.ICON.check} MY VEHICLE</span>
         <span class="car-tools">
-          <button class="car-btn" data-vimg title="사진 교체">사진 교체</button>
-          <button class="car-btn" data-vedit>정보 수정</button>
+          <button class="car-btn" type="button" data-action="car-vimg" title="사진 교체">사진 교체</button>
+          <button class="car-btn" type="button" data-action="car-vedit">정보 수정</button>
         </span>
       </div>
       <div class="car-info">
@@ -80,6 +80,14 @@ function renderVehicle(){
     </div>
   </div>
 
+  <div class="car-quick">
+    <div class="cq-h">빠른 기록 <span>누르면 바로 입력창이 열립니다</span></div>
+    <div class="cq-row">
+      ${[['fuel','⛽','주유'],['repair','🛠','정비·수리'],['wash','🧼','세차'],['park','🅿','주차·통행료'],['tax','🛡','보험·세금'],['insp','🔍','검사'],['etc','⋯','기타']].map(([id,ic,nm])=>
+        `<button class="cq" type="button" data-action="car-add" data-type="${id}" style="--c:${App.CTYPE(id).color}"><i>${ic}</i><b>${nm}</b><span>＋ 기록</span></button>`).join('')}
+    </div>
+  </div>
+
   <div class="car-grid">
     <div class="card">
       <div class="card-h"><span class="hic">${App.ICON.calendar}</span><h2>만기 · 정비 일정</h2><span class="hint">30일 이내는 빨간색</span></div>
@@ -88,10 +96,10 @@ function renderVehicle(){
           ${dues.map(d=>`<div class="due">
             <span class="dn">${d.n}</span>
             <span class="dd">${d.d?App.fmtDate(d.d,true):'미입력'}</span>
-            ${d.d==null?'<span class="dbadge none">＋</span>':`<span class="dbadge ${d.dday<0?'over':d.dday<=30?'soon':'ok'}">${d.dday<0?'만료':'D-'+(d.dday===0?'day':d.dday)}</span>`}
+            ${!d.d?'<span class="dbadge none">＋</span>':`<span class="dbadge ${d.dday<0?'over':d.dday<=30?'soon':'ok'}">${d.dday<0?'만료':(d.dday===0?'오늘':'D-'+d.dday)}</span>`}
           </div>`).join('')}
         </div>
-        <button class="btn sm ghost mt12" style="width:100%" data-vedit>만기일 입력·수정</button>
+        <button class="btn sm ghost mt12" style="width:100%" data-action="car-vedit">만기일 입력·수정</button>
       </div>
     </div>
     <div class="card">
@@ -105,20 +113,20 @@ function renderVehicle(){
             <span class="cmv">${App.money(e.amount)}</span>
           </div>`}).join('')}</div>`
         :`<div class="hempty">아직 차량 기록이 없습니다.<span>주유·정비 내역을 추가해 보세요.</span></div>`}
-        <button class="btn primary mt12" style="width:100%" data-eadd>${App.ICON.plus} 차량 기록 추가</button>
+        <button class="btn primary mt12" style="width:100%" data-action="car-add">${App.ICON.plus} 차량 기록 추가</button>
       </div>
     </div>
   </div>
 
   <div class="sec-title">지출 기록 <span class="count">${month.replace('-','년 ')}월 ${App.money(mSum)}원</span></div>
   <div class="chips scroll mb10">
-    <button class="chip ${!D.ui.carFilter?'sel':''}" data-cf="">전체</button>
-    ${App.CTYPES.map(t=>`<button class="chip ${D.ui.carFilter===t.id?'sel':''}" data-cf="${t.id}" style="${D.ui.carFilter===t.id?'':'color:'+t.color}"><span class="pt"></span>${t.name}</button>`).join('')}
+    <button class="chip ${!D.ui.carFilter?'sel':''}" type="button" data-action="car-filter" data-cf="">전체 보기</button>
+    ${App.CTYPES.map(t=>`<button class="chip ${D.ui.carFilter===t.id?'sel':''}" type="button" data-action="car-filter" data-cf="${t.id}" style="${D.ui.carFilter===t.id?'':'color:'+t.color}"><span class="pt"></span>${t.name}</button>`).join('')}
   </div>
   <div class="cexps">
     ${exps.filter(e=>!D.ui.carFilter||e.type===D.ui.carFilter).length?exps.filter(e=>!D.ui.carFilter||e.type===D.ui.carFilter).map(e=>{
       const t=App.CTYPE(e.type);
-      return `<article class="cexp" data-ce="${e.id}" style="--c:${t.color}">
+      return `<article class="cexp" type="button" data-action="car-open" data-ce="${e.id}" style="--c:${t.color}">
         <div class="cexp-l">
           <span class="ctype">${t.name}</span>
           <span class="cdate">${App.fmtDate(e.date)} ${week[App.dow(e.date)]}</span>
@@ -132,20 +140,20 @@ function renderVehicle(){
     :App.empty('기록이 없습니다','주유·정비·세차·검사 내역을 추가하면 여기에 쌓입니다.')}
   </div>`;
 
-  el.querySelectorAll('[data-vedit]').forEach(b=>b.onclick=()=>vehicleEdit(v.id));
-  el.querySelector('[data-vimg]').onclick=()=>{
-    const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
-    inp.onchange=()=>{
-      const f=inp.files[0];if(!f)return;
-      if(f.size>2.2*1024*1024){App.toast('2MB 이하 사진을 써 주세요');return}
-      const r=new FileReader();r.onload=()=>{v.image=r.result;App.save();renderVehicle();App.toast('차량 사진을 바꿨습니다')};
-      r.readAsDataURL(f);
-    };
-    inp.click();
+  // 버튼 동작은 core.js의 문서 단위 위임 리스너가 처리한다(data-action)
+}
+
+/* 차량 사진 교체 */
+function carPhoto(){
+  const v=App.car();
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.onchange=()=>{
+    const f=inp.files[0];if(!f)return;
+    if(f.size>2.2*1024*1024){App.toast('2MB 이하 사진을 써 주세요');return}
+    const r=new FileReader();r.onload=()=>{v.image=r.result;App.save();renderVehicle();App.toast('차량 사진을 바꿨습니다')};
+    r.readAsDataURL(f);
   };
-  el.querySelectorAll('[data-eadd]').forEach(b=>b.onclick=()=>carExpenseEdit(null));
-  el.querySelectorAll('[data-cf]').forEach(b=>b.onclick=()=>{D.ui.carFilter=b.dataset.cf;App.save();renderVehicle()});
-  el.querySelectorAll('[data-ce]').forEach(n=>n.onclick=()=>carExpenseEdit(n.dataset.ce));
+  inp.click();
 }
 
 function vehicleEdit(id){
@@ -188,9 +196,9 @@ function vehicleEdit(id){
   };
 }
 
-function carExpenseEdit(id){
+function carExpenseEdit(id,defType){
   const D=App.D, v=App.car();
-  const e=id?D.carExpenses.find(x=>x.id===id):{id:'',vehicleId:v.id,date:App.todayKey(),type:'fuel',amount:'',mileage:'',place:'',liters:'',unit:'',note:''};
+  const e=id?D.carExpenses.find(x=>x.id===id):{id:'',vehicleId:v.id,date:App.todayKey(),type:defType||'fuel',amount:'',mileage:'',place:'',liters:'',unit:'',note:''};
   if(!e)return;
   App.sheet({
     title:id?'차량 기록 수정':'차량 기록 추가',

@@ -1,0 +1,1048 @@
+{
+"app": "박재용 목사 목회 일지",
+"source": "google-calendar",
+"calendar": "pjy53283683@gmail.com",
+"generated": "2026-11-26T13:29:56+09:00",
+"range": {
+"from": "2026-10-12",
+"to": "2027-08-23"
+},
+"count": 115,
+"events": [
+{
+"uid": "mo7btor9u4rkbfca50eh2bip1k_20261016",
+"start": "2026-10-16",
+"end": "2026-10-17",
+"summary": "안경희(갈래24동창)님의 생일",
+"location": "",
+"desc": "",
+"allDay": true
+},
+{
+"uid": "3obv1tpuvniong3nlhvr7mkcpk",
+"start": "2026-10-20T13:00:00",
+"end": "2026-10-20T14:25:00",
+"summary": "Flight to 다롄 (KE 873)",
+"location": "서울 ICN",
+"desc": "이처럼 자동으로 생성된 일정의 세부정보를 확인하려면 공식 Google Calendar 앱을 사용하세요. https://g.co/calendar\n\nGmail에서 수신한 이메일에서 생성된 일정입니다. https://mail.google.com/mail?extsrc=cal&plid=ACUX6DM8MTfulsuEKMobs7enLZ_5fohNo2_8G4c",
+"allDay": false
+},
+{
+"uid": "sjsepjlgdr1cvdivm668vf83pc",
+"start": "2026-10-23T21:00:00",
+"end": "2026-10-23T22:20:00",
+"summary": "Flight to 서울 (KE 876)",
+"location": "대련 DLC",
+"desc": "이처럼 자동으로 생성된 일정의 세부정보를 확인하려면 공식 Google Calendar 앱을 사용하세요. https://g.co/calendar\n\nGmail에서 수신한 이메일에서 생성된 일정입니다. https://mail.google.com/mail?extsrc=cal&plid=ACUX6DM8MTfulsuEKMobs7enLZ_5fohNo2_8G4c",
+"allDay": false
+},
+{
+"uid": "i5le3mvcad74482ggjvgtcs78o",
+"start": "2026-11-16T06:30:00",
+"end": "2026-11-16T07:45:00",
+"summary": "Flight to 제주 (LJ 6325)",
+"location": "김포 GMP",
+"desc": "이처럼 자동으로 생성된 일정의 세부정보를 확인하려면 공식 Google Calendar 앱을 사용하세요. https://g.co/calendar\n\nGmail에서 수신한 이메일에서 생성된 일정입니다. https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNnbGazJRD01NIEhXJmR0nmBXlSstBAcfc",
+"allDay": false
+},
+{
+"uid": "v1mlsqcu9droggkvdlts8itj1s",
+"start": "2026-11-17T20:30:00",
+"end": "2026-11-17T21:45:00",
+"summary": "Flight to 김포 (KE 5158)",
+"location": "제주 CJU",
+"desc": "이처럼 자동으로 생성된 일정의 세부정보를 확인하려면 공식 Google Calendar 앱을 사용하세요. https://g.co/calendar\n\nGmail에서 수신한 이메일에서 생성된 일정입니다. https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNnbGazJRD01NIEhXJmR0nmBXlSstBAcfc",
+"allDay": false
+},
+{
+"uid": "nbfhatgndht12qdb77r7rk18ng",
+"start": "2026-11-17T20:30:00",
+"end": "2026-11-17T21:45:00",
+"summary": "Flight to 김포 (LJ 6452)",
+"location": "제주 CJU",
+"desc": "이처럼 자동으로 생성된 일정의 세부정보를 확인하려면 공식 Google Calendar 앱을 사용하세요. https://g.co/calendar\n\nGmail에서 수신한 이메일에서 생성된 일정입니다. https://mail.google.com/mail?extsrc=cal&plid=ACUX6DNnbGazJRD01NIEhXJmR0nmBXlSstBAcfc",
+"allDay": false
+},
+{
+"uid": "bdl4uvbmtc9r3mqedh0cf8cem0",
+"start": "2026-11-20T11:00:00",
+"end": "2026-11-20T12:00:00",
+"summary": "NGO 전문위원회 강의",
+"location": "충청남도 아산시 삼동로2번길 55-6 광혜교회",
+"desc": "서울 광진구 구의강변로3가길 기준 TMAP 예상 소요시간 약 2시간 6분 (106km), 08:40경 출발 권장.",
+"allDay": false
+},
+{
+"uid": "ol81nancm4idf870j6q8ogmamo",
+"start": "2026-11-21T10:00:00",
+"end": "2026-11-21T14:00:00",
+"summary": "포천 교회 김장",
+"location": "포천",
+"desc": "포천에서 교회 김장. 오전 10시 시작.",
+"allDay": false
+},
+{
+"uid": "t6fnha3cg9fefd8idrtt4e0arc",
+"start": "2026-11-23T19:00:00",
+"end": "2026-11-23T20:30:00",
+"summary": "하늘정원교회 예배",
+"location": "하늘정원교회",
+"desc": "하늘정원교회 예배 (저녁 7시).",
+"allDay": false
+},
+{
+"uid": "2qp21v8judg1h5kc5ak51thup8",
+"start": "2026-11-24T10:00:00",
+"end": "2026-11-24T15:00:00",
+"summary": "백석총회 지도자 고대도 탐방",
+"location": "충남 보령시 머드로 63",
+"desc": "박재용 목사님 초청 참석. 사진·영상 촬영 담당 — 장비 준비 필요.\n\n[Web발신]\n[대구동일교회] 백석총회 지도자 고대도 탐방 안내\n귀한 발걸음 하시는 백석총회 지도자 여러분을 진심으로 환영하고 축복합니다. \n고대도 탐방 모임 시간과 집결지를 확인하시고 상황에 맞게 출발하시기 바랍니다. \n아울러 은혜롭고 깊이 있는 탐방을 위해, 오시기 전 아래 귀츨라프 선교사 다큐멘터리를 \n꼭 시청해 주시기 바랍니다.\n주일 저녁 평안히 보내시고, 기쁨으로 뵙겠습니다. 감사합니다.\n\n■ 탐방 모임 안내\n일자: 2026.11.24(화) \n시간: 오전 10:00 [식사 장소: 더드림육해공 삼합(신흑동1792), \n             주차: 머드엑스포광장 제1주차장(신흑동2286)]\n         오전 11:30 [집결…",
+"allDay": false
+},
+{
+"uid": "4indq0opbul4dkmlj8np65kn8k",
+"start": "2026-11-25T15:30:00",
+"end": "2026-11-25T16:30:00",
+"summary": "예약 — 제오헤어 강변역점",
+"location": "서울특별시 광진구 구의강변로 64, 103호 (제오헤어 강변역점, 대림 아크로리버 1층)",
+"desc": "네이버 예약 확정 · 예약번호 1417012877\n메뉴: 남자컷 (22,000원) · 담당: 주희 실장\n예약자: 박재용 (010-5328-3683)\n매장 02-456-8864 · 강변역 4번 출구 280m, 구남초등학교 맞은편 GS편의점 옆\n주차: 대림 아크로리버 건물 뒷편 무료(-1층 만차 시 입구 벨)\n안내: 1:1 시술로 대기 발생 가능, 매장 상황에 따라 시간 변동 가능. 변경 시 기존 예약 취소 후 재예약",
+"allDay": false
+},
+{
+"uid": "t9982obc85kng4lhh7ct42dgf0",
+"start": "2026-11-26",
+"end": "2026-11-27",
+"summary": "컴퓨터 수리 — 외장하드 라인 외부로 빼기 (토탈티엠)",
+"location": "서울 광진구 광나루로56길 85 테크노마트 7층 C 003~006 (토탈티엠)",
+"desc": "단골 컴퓨터 수리점: 토탈티엠 / 안기호 실장 / 02-3424-7450 / ahnko2@naver.com",
+"allDay": true
+},
+{
+"uid": "3israbu56q4kc0kovqajobjtf8",
+"start": "2026-11-26T17:00:00",
+"end": "2026-11-26T18:30:00",
+"summary": "저녁 식사 — 대학로 (연극 전)",
+"location": "서울 종로구 대학로 일대",
+"desc": "19:30 R&J씨어터 관람 전 식사. 장소는 아직 미정.",
+"allDay": false
+},
+{
+"uid": "2te52409ac2803n95jhgo4lj8k",
+"start": "2026-11-26T19:30:00",
+"end": "2026-11-26T21:20:00",
+"summary": "연극 「의원님, 자수할래요!」 — R&J시어터",
+"location": "서울 종로구 낙산길 14 R&J씨어터 (02-747-1912)",
+"desc": "주차 1순위: 낙산공원 공영주차장(동숭동 50-129, 지상 개방형·29~32면, 10분 300원, 운영 09~23시) — 극장까지 도보 4분 200m, 입구 언덕길 좁음.\n2순위: 방송대 공공주차장(대학로 86, 24시간, 5분 400원=1시간 4,800원, 대학로 문화시설 이용자 30% 할인) — 높이 2.1m 제한이나 목사님 차량은 루프캐리어 포함 2m 미만이라 진입 가능. 극장까지 도보 8분 500m.",
+"allDay": false
+},
+{
+"uid": "ir9ajg5oi29ieoro0u7gb7bv38",
+"start": "2026-11-27T10:10:00",
+"end": "2026-11-27T12:00:00",
+"summary": "정명고등학교 흡연 예방 교육 (고3 대상)",
+"location": "정명고등학교, 경기 부천시 소사구 심곡로 100",
+"desc": "고3 학생 대상 흡연 예방 교육 강의.\n이전에 이 학생들에게 흡연 예방 교육을 했던 아이들이라, 예비 성인에게 필요한 내용으로 진행.\n담당자 연락처: 010-9180-1938.",
+"allDay": false
+},
+{
+"uid": "66u8rsbaslfnm3kv7q00b9ae80",
+"start": "2026-11-29T13:00:00",
+"end": "2026-11-29T15:00:00",
+"summary": "송우교회 청년 특강 설교",
+"location": "송우교회, 경기 포천시 소흘읍 호국로 511-20",
+"desc": "청년 대상 특강·설교. 오후 1시~3시. 담당자: 정예찬 강도사(성함 표기 확인 필요).",
+"allDay": false
+},
+{
+"uid": "3frkk4k9tf6p7i7qlop79vf2cs_20261129T050000Z",
+"start": "2026-11-29T14:00:00",
+"end": "2026-11-29T15:30:00",
+"summary": "가정 주일 예배 (매월 마지막 주일)",
+"location": "",
+"desc": "글로벌비전교회 매월 마지막 주일 가정 주일 예배",
+"allDay": false
+},
+{
+"uid": "83vafhl1ldbj7i2bcec6oudoqg_20261129T050000Z",
+"start": "2026-11-29T14:00:00",
+"end": "2026-11-29T15:30:00",
+"summary": "현천식품 교육원 설립을 위한 예배",
+"location": "현천식품",
+"desc": "매월 마지막 주일 오후 2시, 현천식품에서 교육원 설립을 위한 예배",
+"allDay": false
+},
+{
+"uid": "v2mfv600eoe0c31s68j7eqdte0",
+"start": "2026-11-29T17:00:00",
+"end": "2026-11-29T19:20:00",
+"summary": "목회자 영성대회 선발대 출발 (평창)",
+"location": "평창 알펜시아 리조트 (강원특별자치도 평창군 대관령면 솔봉로 325)",
+"desc": "총회 목회자 영성대회(11/30~12/2) 선발대 출발. 송우교회 특강(13:00~15:00) 후 오후 5시 출발. 이동: 포천 송우교회 → 평창 알펜시아. (주행 시간은 조회값 기준 예상)",
+"allDay": false
+},
+{
+"uid": "183k1h2dj270l7teoi0tsp43dk",
+"start": "2026-11-30",
+"end": "2026-12-03",
+"summary": "제49회 총회 목회자 영성대회",
+"location": "평창 알펜시아 리조트 (강원특별자치도 평창군 대관령면 솔봉로 325)",
+"desc": "제49회 총회 목회자 영성대회 참석. 2박 3일(11/30~12/2). 영상팀장으로 촬영 담당 — 짐벌, 카메라, 드론 준비 필요. 선발대로 11/29 오후 5시 평창 선출발.",
+"allDay": true
+},
+{
+"uid": "6fn5nt9l9ndtl6ft6anh1t5sts_20261129T203000Z",
+"start": "2026-11-30T05:30:00",
+"end": "2026-11-30T06:30:00",
+"summary": "줌 새벽 예배 (12월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "6fn5nt9l9ndtl6ft6anh1t5sts_20261130T203000Z",
+"start": "2026-12-01T05:30:00",
+"end": "2026-12-01T06:30:00",
+"summary": "줌 새벽 예배 (12월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "6fn5nt9l9ndtl6ft6anh1t5sts_20261201T203000Z",
+"start": "2026-12-02T05:30:00",
+"end": "2026-12-02T06:30:00",
+"summary": "줌 새벽 예배 (12월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "6fn5nt9l9ndtl6ft6anh1t5sts_20261202T203000Z",
+"start": "2026-12-03T05:30:00",
+"end": "2026-12-03T06:30:00",
+"summary": "줌 새벽 예배 (12월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "6fn5nt9l9ndtl6ft6anh1t5sts_20261203T203000Z",
+"start": "2026-12-04T05:30:00",
+"end": "2026-12-04T06:30:00",
+"summary": "줌 새벽 예배 (12월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "aijanbm2tomtk5faaqqgnosdn8_20261204T080000Z",
+"start": "2026-12-04T17:00:00",
+"end": "2026-12-04T18:30:00",
+"summary": "현천식품 사업장 예배 (매월 첫째 주 금요일)",
+"location": "현천식품 (포천)",
+"desc": "매월 첫째 주 금요일 오후 5시, 포천 현천식품 사업장 예배",
+"allDay": false
+},
+{
+"uid": "6fn5nt9l9ndtl6ft6anh1t5sts_20261204T203000Z",
+"start": "2026-12-05T05:30:00",
+"end": "2026-12-05T06:30:00",
+"summary": "줌 새벽 예배 (12월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "shfnhdncd9esktfh338e2qspd8",
+"start": "2026-12-06T15:00:00",
+"end": "2026-12-06T16:30:00",
+"summary": "행복한 동상교회 장로 취임 예배",
+"location": "행복한 동상교회 본당",
+"desc": "참석 4명: 노회장 이용동 목사, 부노회장 이진철 목사, 서기 박재영 목사, 시찰장 김관중 목사.\n함께 취임: 장로 2명, 시무 권사 4명, 명예 권사 5명.",
+"allDay": false
+},
+{
+"uid": "d0fcsc372onv7t7a7p04ikubb8",
+"start": "2026-12-09",
+"end": "2026-12-10",
+"summary": "이하빈 권찰 자녀 카테터 시술",
+"location": "아산병원",
+"desc": "우리 교회 성도 이하빈 권찰의 자녀 카테터 시술. 시술 시간 미정 — 확인 필요. 문병·심방 준비.",
+"allDay": true
+},
+{
+"uid": "klu2ta5iftmivmo7car9eb91ro",
+"start": "2026-12-13T15:00:00",
+"end": "2026-12-13T16:30:00",
+"summary": "민복중앙교회 임직 예배",
+"location": "민복중앙교회, 경기도 의정부시 시민로387번길 8",
+"desc": "담임: 한기남 목사.\n임직 대상: 장로 2명, 권사 1명 (이금수 권사님 취임 예배 함께).\n참석 7명: 노회장 이용동 목사, 부노회장 이진철 목사, 서기 박재영 목사, 회계 이민진 목사, 회의록 서기 정호정 목사, 남부 시찰장 조용할 목사, 은퇴 원로 김창덕 목사.",
+"allDay": false
+},
+{
+"uid": "hh9gse8outcn041v3iisn4213s_20261214",
+"start": "2026-12-14",
+"end": "2026-12-15",
+"summary": "남정화(갈래24동창)님의 생일",
+"location": "",
+"desc": "",
+"allDay": true
+},
+{
+"uid": "7udbbb5v9gbl5gism2qgl40fck",
+"start": "2026-12-15T10:30:00",
+"end": "2026-12-15T12:00:00",
+"summary": "전도 박람회 준비 (백석총회 회관)",
+"location": "백석총회 회관, 서울 서초구 남부순환로 2221",
+"desc": "전도 박람회 준비. 백석총회 회관, 오전 10시 30분.",
+"allDay": false
+},
+{
+"uid": "vua0jtc99a2btof7jo33uiames",
+"start": "2026-12-21T19:00:00",
+"end": "2026-12-21T21:00:00",
+"summary": "2027년도 강도사고시 대비 조직신학 교육",
+"location": "",
+"desc": "2027년도 강도사고시 예배자들을 위한 조직신학 교육 프로그램. 오후 7시~9시.",
+"allDay": false
+},
+{
+"uid": "3frkk4k9tf6p7i7qlop79vf2cs_20261227T050000Z",
+"start": "2026-12-27T14:00:00",
+"end": "2026-12-27T15:30:00",
+"summary": "가정 주일 예배 (매월 마지막 주일)",
+"location": "",
+"desc": "글로벌비전교회 매월 마지막 주일 가정 주일 예배",
+"allDay": false
+},
+{
+"uid": "83vafhl1ldbj7i2bcec6oudoqg_20261227T050000Z",
+"start": "2026-12-27T14:00:00",
+"end": "2026-12-27T15:30:00",
+"summary": "현천식품 교육원 설립을 위한 예배",
+"location": "현천식품",
+"desc": "매월 마지막 주일 오후 2시, 현천식품에서 교육원 설립을 위한 예배",
+"allDay": false
+},
+{
+"uid": "5896noe5trobm7jire095kfcjk",
+"start": "2026-12-28T19:00:00",
+"end": "2026-12-28T21:00:00",
+"summary": "2027년도 강도사고시 대비 조직신학 교육",
+"location": "",
+"desc": "2027년도 강도사고시 예배자들을 위한 조직신학 교육 프로그램. 오후 7시~9시.",
+"allDay": false
+},
+{
+"uid": "aijanbm2tomtk5faaqqgnosdn8_20270101T080000Z",
+"start": "2027-01-01T17:00:00",
+"end": "2027-01-01T18:30:00",
+"summary": "현천식품 사업장 예배 (매월 첫째 주 금요일)",
+"location": "현천식품 (포천)",
+"desc": "매월 첫째 주 금요일 오후 5시, 포천 현천식품 사업장 예배",
+"allDay": false
+},
+{
+"uid": "jd1v216nnbmeu8i7jehtcr9ovg_20270103T203000Z",
+"start": "2027-01-04T05:30:00",
+"end": "2027-01-04T06:30:00",
+"summary": "줌 새벽 예배 (1월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "jd1v216nnbmeu8i7jehtcr9ovg_20270104T203000Z",
+"start": "2027-01-05T05:30:00",
+"end": "2027-01-05T06:30:00",
+"summary": "줌 새벽 예배 (1월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "jd1v216nnbmeu8i7jehtcr9ovg_20270105T203000Z",
+"start": "2027-01-06T05:30:00",
+"end": "2027-01-06T06:30:00",
+"summary": "줌 새벽 예배 (1월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "jd1v216nnbmeu8i7jehtcr9ovg_20270106T203000Z",
+"start": "2027-01-07T05:30:00",
+"end": "2027-01-07T06:30:00",
+"summary": "줌 새벽 예배 (1월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "rst2puc0ki7u4pi7hfsu7720a0",
+"start": "2027-01-07T19:00:00",
+"end": "2027-01-07T21:00:00",
+"summary": "2027년도 강도사고시 대비 조직신학 교육",
+"location": "",
+"desc": "2027년도 강도사고시 대비 조직신학 교육 프로그램(1/7·1/14). 12월 회차와 동일 프로그램.",
+"allDay": false
+},
+{
+"uid": "jd1v216nnbmeu8i7jehtcr9ovg_20270107T203000Z",
+"start": "2027-01-08T05:30:00",
+"end": "2027-01-08T06:30:00",
+"summary": "줌 새벽 예배 (1월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "jd1v216nnbmeu8i7jehtcr9ovg_20270108T203000Z",
+"start": "2027-01-09T05:30:00",
+"end": "2027-01-09T06:30:00",
+"summary": "줌 새벽 예배 (1월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "6q9r5g1529mnkcnga0se1uqm0k",
+"start": "2027-01-11T11:00:00",
+"end": "2027-01-11T12:30:00",
+"summary": "신년 하례 예배",
+"location": "큰은혜교회",
+"desc": "신년 하례 예배. 담임: 이자음 목사(성함 표기 확인 필요).",
+"allDay": false
+},
+{
+"uid": "tv55fji1dmk66sgifv84ptuqqk",
+"start": "2027-01-14",
+"end": "2027-01-17",
+"summary": "제46차 청소년 바이블컨퍼런스",
+"location": "승동기도원 (경기도 가평군 가평읍 경반안로 261)",
+"desc": "주제: THE CHRISTIAN · 참된 그리스인 (갈라디아서 2:20 / More Like Jesus - 말씀으로 발견하는 정체성, 삶으로 이어가는 믿음)\n회비: 90,000원\n프로그램: 지도자세미나 / 말씀 집회 / 팀미션 / 사명자 결의식 / CELEBRATE\n전문강사: 박재용 목사, 이우제 교수, 서태근 목사, 안관숙 목사, 정현진 목사, 황우성 목사, 양재영 목사, A-MEN(3인조 보컬 그룹)\n주최: GV청소년선교회 (02-429-1318)\n담당자: 전자옥 전도사 (010-6491-3683)",
+"allDay": true
+},
+{
+"uid": "np5oljmkmsh6auuaqvruutn5bo_20270120",
+"start": "2027-01-20",
+"end": "2027-01-21",
+"summary": "생일 축하합니다!",
+"location": "",
+"desc": "",
+"allDay": true
+},
+{
+"uid": "mvkrvpignddd78t8dag95s6e0g",
+"start": "2027-01-25",
+"end": "2027-01-26",
+"summary": "백석총회 2027년 강도사고시",
+"location": "",
+"desc": "백석총회 2027년도 강도사고시 날짜. 시각 미정.",
+"allDay": true
+},
+{
+"uid": "3frkk4k9tf6p7i7qlop79vf2cs_20270131T050000Z",
+"start": "2027-01-31T14:00:00",
+"end": "2027-01-31T15:30:00",
+"summary": "가정 주일 예배 (매월 마지막 주일)",
+"location": "",
+"desc": "글로벌비전교회 매월 마지막 주일 가정 주일 예배",
+"allDay": false
+},
+{
+"uid": "83vafhl1ldbj7i2bcec6oudoqg_20270131T050000Z",
+"start": "2027-01-31T14:00:00",
+"end": "2027-01-31T15:30:00",
+"summary": "현천식품 교육원 설립을 위한 예배",
+"location": "현천식품",
+"desc": "매월 마지막 주일 오후 2시, 현천식품에서 교육원 설립을 위한 예배",
+"allDay": false
+},
+{
+"uid": "re8n4907hnb1r3da4vep4b5vns_20270131T203000Z",
+"start": "2027-02-01T05:30:00",
+"end": "2027-02-01T06:30:00",
+"summary": "줌 새벽 예배 (2월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "re8n4907hnb1r3da4vep4b5vns_20270201T203000Z",
+"start": "2027-02-02T05:30:00",
+"end": "2027-02-02T06:30:00",
+"summary": "줌 새벽 예배 (2월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "re8n4907hnb1r3da4vep4b5vns_20270202T203000Z",
+"start": "2027-02-03T05:30:00",
+"end": "2027-02-03T06:30:00",
+"summary": "줌 새벽 예배 (2월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "re8n4907hnb1r3da4vep4b5vns_20270203T203000Z",
+"start": "2027-02-04T05:30:00",
+"end": "2027-02-04T06:30:00",
+"summary": "줌 새벽 예배 (2월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "re8n4907hnb1r3da4vep4b5vns_20270204T203000Z",
+"start": "2027-02-05T05:30:00",
+"end": "2027-02-05T06:30:00",
+"summary": "줌 새벽 예배 (2월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "aijanbm2tomtk5faaqqgnosdn8_20270205T080000Z",
+"start": "2027-02-05T17:00:00",
+"end": "2027-02-05T18:30:00",
+"summary": "현천식품 사업장 예배 (매월 첫째 주 금요일)",
+"location": "현천식품 (포천)",
+"desc": "매월 첫째 주 금요일 오후 5시, 포천 현천식품 사업장 예배",
+"allDay": false
+},
+{
+"uid": "re8n4907hnb1r3da4vep4b5vns_20270205T203000Z",
+"start": "2027-02-06T05:30:00",
+"end": "2027-02-06T06:30:00",
+"summary": "줌 새벽 예배 (2월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "10fhf2gvpnbpsfhht15pe4isds_20270208",
+"start": "2027-02-08",
+"end": "2027-02-09",
+"summary": "오의순(갈래24동창)님의 생일",
+"location": "",
+"desc": "",
+"allDay": true
+},
+{
+"uid": "3frkk4k9tf6p7i7qlop79vf2cs_20270228T050000Z",
+"start": "2027-02-28T14:00:00",
+"end": "2027-02-28T15:30:00",
+"summary": "가정 주일 예배 (매월 마지막 주일)",
+"location": "",
+"desc": "글로벌비전교회 매월 마지막 주일 가정 주일 예배",
+"allDay": false
+},
+{
+"uid": "83vafhl1ldbj7i2bcec6oudoqg_20270228T050000Z",
+"start": "2027-02-28T14:00:00",
+"end": "2027-02-28T15:30:00",
+"summary": "현천식품 교육원 설립을 위한 예배",
+"location": "현천식품",
+"desc": "매월 마지막 주일 오후 2시, 현천식품에서 교육원 설립을 위한 예배",
+"allDay": false
+},
+{
+"uid": "f0u35k42qqs71h5tuq6hlp3vjg_20270301",
+"start": "2027-03-01",
+"end": "2027-03-02",
+"summary": "김종태(갈래24동창)님의 생일",
+"location": "",
+"desc": "",
+"allDay": true
+},
+{
+"uid": "0svhsl16q7dacrjl4fvgqf85ss_20270228T203000Z",
+"start": "2027-03-01T05:30:00",
+"end": "2027-03-01T06:30:00",
+"summary": "줌 새벽 예배 (3월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "0svhsl16q7dacrjl4fvgqf85ss_20270301T203000Z",
+"start": "2027-03-02T05:30:00",
+"end": "2027-03-02T06:30:00",
+"summary": "줌 새벽 예배 (3월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "0svhsl16q7dacrjl4fvgqf85ss_20270302T203000Z",
+"start": "2027-03-03T05:30:00",
+"end": "2027-03-03T06:30:00",
+"summary": "줌 새벽 예배 (3월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "0svhsl16q7dacrjl4fvgqf85ss_20270303T203000Z",
+"start": "2027-03-04T05:30:00",
+"end": "2027-03-04T06:30:00",
+"summary": "줌 새벽 예배 (3월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "0svhsl16q7dacrjl4fvgqf85ss_20270304T203000Z",
+"start": "2027-03-05T05:30:00",
+"end": "2027-03-05T06:30:00",
+"summary": "줌 새벽 예배 (3월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "aijanbm2tomtk5faaqqgnosdn8_20270305T080000Z",
+"start": "2027-03-05T17:00:00",
+"end": "2027-03-05T18:30:00",
+"summary": "현천식품 사업장 예배 (매월 첫째 주 금요일)",
+"location": "현천식품 (포천)",
+"desc": "매월 첫째 주 금요일 오후 5시, 포천 현천식품 사업장 예배",
+"allDay": false
+},
+{
+"uid": "0svhsl16q7dacrjl4fvgqf85ss_20270305T203000Z",
+"start": "2027-03-06T05:30:00",
+"end": "2027-03-06T06:30:00",
+"summary": "줌 새벽 예배 (3월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "3frkk4k9tf6p7i7qlop79vf2cs_20270328T050000Z",
+"start": "2027-03-28T14:00:00",
+"end": "2027-03-28T15:30:00",
+"summary": "가정 주일 예배 (매월 마지막 주일)",
+"location": "",
+"desc": "글로벌비전교회 매월 마지막 주일 가정 주일 예배",
+"allDay": false
+},
+{
+"uid": "83vafhl1ldbj7i2bcec6oudoqg_20270328T050000Z",
+"start": "2027-03-28T14:00:00",
+"end": "2027-03-28T15:30:00",
+"summary": "현천식품 교육원 설립을 위한 예배",
+"location": "현천식품",
+"desc": "매월 마지막 주일 오후 2시, 현천식품에서 교육원 설립을 위한 예배",
+"allDay": false
+},
+{
+"uid": "aijanbm2tomtk5faaqqgnosdn8_20270402T080000Z",
+"start": "2027-04-02T17:00:00",
+"end": "2027-04-02T18:30:00",
+"summary": "현천식품 사업장 예배 (매월 첫째 주 금요일)",
+"location": "현천식품 (포천)",
+"desc": "매월 첫째 주 금요일 오후 5시, 포천 현천식품 사업장 예배",
+"allDay": false
+},
+{
+"uid": "ol6aam929ndk144ar5l5fo913s_20270404T203000Z",
+"start": "2027-04-05T05:30:00",
+"end": "2027-04-05T06:30:00",
+"summary": "줌 새벽 예배 (4월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "ol6aam929ndk144ar5l5fo913s_20270405T203000Z",
+"start": "2027-04-06T05:30:00",
+"end": "2027-04-06T06:30:00",
+"summary": "줌 새벽 예배 (4월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "ol6aam929ndk144ar5l5fo913s_20270406T203000Z",
+"start": "2027-04-07T05:30:00",
+"end": "2027-04-07T06:30:00",
+"summary": "줌 새벽 예배 (4월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "ol6aam929ndk144ar5l5fo913s_20270407T203000Z",
+"start": "2027-04-08T05:30:00",
+"end": "2027-04-08T06:30:00",
+"summary": "줌 새벽 예배 (4월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "ol6aam929ndk144ar5l5fo913s_20270408T203000Z",
+"start": "2027-04-09T05:30:00",
+"end": "2027-04-09T06:30:00",
+"summary": "줌 새벽 예배 (4월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "ol6aam929ndk144ar5l5fo913s_20270409T203000Z",
+"start": "2027-04-10T05:30:00",
+"end": "2027-04-10T06:30:00",
+"summary": "줌 새벽 예배 (4월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "3frkk4k9tf6p7i7qlop79vf2cs_20270425T050000Z",
+"start": "2027-04-25T14:00:00",
+"end": "2027-04-25T15:30:00",
+"summary": "가정 주일 예배 (매월 마지막 주일)",
+"location": "",
+"desc": "글로벌비전교회 매월 마지막 주일 가정 주일 예배",
+"allDay": false
+},
+{
+"uid": "83vafhl1ldbj7i2bcec6oudoqg_20270425T050000Z",
+"start": "2027-04-25T14:00:00",
+"end": "2027-04-25T15:30:00",
+"summary": "현천식품 교육원 설립을 위한 예배",
+"location": "현천식품",
+"desc": "매월 마지막 주일 오후 2시, 현천식품에서 교육원 설립을 위한 예배",
+"allDay": false
+},
+{
+"uid": "g8n3dvsagqhff5hq4d4gd350h4_20270502",
+"start": "2027-05-02",
+"end": "2027-05-03",
+"summary": "최종희(갈래24동창)님의 생일",
+"location": "",
+"desc": "",
+"allDay": true
+},
+{
+"uid": "8hrl40opvkt8c2hpgaub6jet30_20270502T203000Z",
+"start": "2027-05-03T05:30:00",
+"end": "2027-05-03T06:30:00",
+"summary": "줌 새벽 예배 (5월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "8hrl40opvkt8c2hpgaub6jet30_20270503T203000Z",
+"start": "2027-05-04T05:30:00",
+"end": "2027-05-04T06:30:00",
+"summary": "줌 새벽 예배 (5월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "8hrl40opvkt8c2hpgaub6jet30_20270504T203000Z",
+"start": "2027-05-05T05:30:00",
+"end": "2027-05-05T06:30:00",
+"summary": "줌 새벽 예배 (5월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "8hrl40opvkt8c2hpgaub6jet30_20270505T203000Z",
+"start": "2027-05-06T05:30:00",
+"end": "2027-05-06T06:30:00",
+"summary": "줌 새벽 예배 (5월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "8hrl40opvkt8c2hpgaub6jet30_20270506T203000Z",
+"start": "2027-05-07T05:30:00",
+"end": "2027-05-07T06:30:00",
+"summary": "줌 새벽 예배 (5월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "aijanbm2tomtk5faaqqgnosdn8_20270507T080000Z",
+"start": "2027-05-07T17:00:00",
+"end": "2027-05-07T18:30:00",
+"summary": "현천식품 사업장 예배 (매월 첫째 주 금요일)",
+"location": "현천식품 (포천)",
+"desc": "매월 첫째 주 금요일 오후 5시, 포천 현천식품 사업장 예배",
+"allDay": false
+},
+{
+"uid": "8hrl40opvkt8c2hpgaub6jet30_20270507T203000Z",
+"start": "2027-05-08T05:30:00",
+"end": "2027-05-08T06:30:00",
+"summary": "줌 새벽 예배 (5월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "serrkn68uf1hm3980gmgtpii70_20270515",
+"start": "2027-05-15",
+"end": "2027-05-16",
+"summary": "변선희(갈래24동창)님의 생일",
+"location": "",
+"desc": "",
+"allDay": true
+},
+{
+"uid": "3frkk4k9tf6p7i7qlop79vf2cs_20270530T050000Z",
+"start": "2027-05-30T14:00:00",
+"end": "2027-05-30T15:30:00",
+"summary": "가정 주일 예배 (매월 마지막 주일)",
+"location": "",
+"desc": "글로벌비전교회 매월 마지막 주일 가정 주일 예배",
+"allDay": false
+},
+{
+"uid": "83vafhl1ldbj7i2bcec6oudoqg_20270530T050000Z",
+"start": "2027-05-30T14:00:00",
+"end": "2027-05-30T15:30:00",
+"summary": "현천식품 교육원 설립을 위한 예배",
+"location": "현천식품",
+"desc": "매월 마지막 주일 오후 2시, 현천식품에서 교육원 설립을 위한 예배",
+"allDay": false
+},
+{
+"uid": "2jn0u7ld6k514c8fnc4o57vcg8_20270530T203000Z",
+"start": "2027-05-31T05:30:00",
+"end": "2027-05-31T06:30:00",
+"summary": "줌 새벽 예배 (6월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "2jn0u7ld6k514c8fnc4o57vcg8_20270531T203000Z",
+"start": "2027-06-01T05:30:00",
+"end": "2027-06-01T06:30:00",
+"summary": "줌 새벽 예배 (6월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "2jn0u7ld6k514c8fnc4o57vcg8_20270601T203000Z",
+"start": "2027-06-02T05:30:00",
+"end": "2027-06-02T06:30:00",
+"summary": "줌 새벽 예배 (6월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "2jn0u7ld6k514c8fnc4o57vcg8_20270602T203000Z",
+"start": "2027-06-03T05:30:00",
+"end": "2027-06-03T06:30:00",
+"summary": "줌 새벽 예배 (6월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "2jn0u7ld6k514c8fnc4o57vcg8_20270603T203000Z",
+"start": "2027-06-04T05:30:00",
+"end": "2027-06-04T06:30:00",
+"summary": "줌 새벽 예배 (6월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "aijanbm2tomtk5faaqqgnosdn8_20270604T080000Z",
+"start": "2027-06-04T17:00:00",
+"end": "2027-06-04T18:30:00",
+"summary": "현천식품 사업장 예배 (매월 첫째 주 금요일)",
+"location": "현천식품 (포천)",
+"desc": "매월 첫째 주 금요일 오후 5시, 포천 현천식품 사업장 예배",
+"allDay": false
+},
+{
+"uid": "2jn0u7ld6k514c8fnc4o57vcg8_20270604T203000Z",
+"start": "2027-06-05T05:30:00",
+"end": "2027-06-05T06:30:00",
+"summary": "줌 새벽 예배 (6월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "3frkk4k9tf6p7i7qlop79vf2cs_20270627T050000Z",
+"start": "2027-06-27T14:00:00",
+"end": "2027-06-27T15:30:00",
+"summary": "가정 주일 예배 (매월 마지막 주일)",
+"location": "",
+"desc": "글로벌비전교회 매월 마지막 주일 가정 주일 예배",
+"allDay": false
+},
+{
+"uid": "83vafhl1ldbj7i2bcec6oudoqg_20270627T050000Z",
+"start": "2027-06-27T14:00:00",
+"end": "2027-06-27T15:30:00",
+"summary": "현천식품 교육원 설립을 위한 예배",
+"location": "현천식품",
+"desc": "매월 마지막 주일 오후 2시, 현천식품에서 교육원 설립을 위한 예배",
+"allDay": false
+},
+{
+"uid": "aijanbm2tomtk5faaqqgnosdn8_20270702T080000Z",
+"start": "2027-07-02T17:00:00",
+"end": "2027-07-02T18:30:00",
+"summary": "현천식품 사업장 예배 (매월 첫째 주 금요일)",
+"location": "현천식품 (포천)",
+"desc": "매월 첫째 주 금요일 오후 5시, 포천 현천식품 사업장 예배",
+"allDay": false
+},
+{
+"uid": "mql87hhpui89is8ifig1nthmjk_20270704T203000Z",
+"start": "2027-07-05T05:30:00",
+"end": "2027-07-05T06:30:00",
+"summary": "줌 새벽 예배 (7월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "mql87hhpui89is8ifig1nthmjk_20270705T203000Z",
+"start": "2027-07-06T05:30:00",
+"end": "2027-07-06T06:30:00",
+"summary": "줌 새벽 예배 (7월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "mql87hhpui89is8ifig1nthmjk_20270706T203000Z",
+"start": "2027-07-07T05:30:00",
+"end": "2027-07-07T06:30:00",
+"summary": "줌 새벽 예배 (7월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "mql87hhpui89is8ifig1nthmjk_20270707T203000Z",
+"start": "2027-07-08T05:30:00",
+"end": "2027-07-08T06:30:00",
+"summary": "줌 새벽 예배 (7월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "mql87hhpui89is8ifig1nthmjk_20270708T203000Z",
+"start": "2027-07-09T05:30:00",
+"end": "2027-07-09T06:30:00",
+"summary": "줌 새벽 예배 (7월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "mql87hhpui89is8ifig1nthmjk_20270709T203000Z",
+"start": "2027-07-10T05:30:00",
+"end": "2027-07-10T06:30:00",
+"summary": "줌 새벽 예배 (7월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "3frkk4k9tf6p7i7qlop79vf2cs_20270725T050000Z",
+"start": "2027-07-25T14:00:00",
+"end": "2027-07-25T15:30:00",
+"summary": "가정 주일 예배 (매월 마지막 주일)",
+"location": "",
+"desc": "글로벌비전교회 매월 마지막 주일 가정 주일 예배",
+"allDay": false
+},
+{
+"uid": "83vafhl1ldbj7i2bcec6oudoqg_20270725T050000Z",
+"start": "2027-07-25T14:00:00",
+"end": "2027-07-25T15:30:00",
+"summary": "현천식품 교육원 설립을 위한 예배",
+"location": "현천식품",
+"desc": "매월 마지막 주일 오후 2시, 현천식품에서 교육원 설립을 위한 예배",
+"allDay": false
+},
+{
+"uid": "smfr3rv7r4cur4d88g7o3ejhek_20270801T203000Z",
+"start": "2027-08-02T05:30:00",
+"end": "2027-08-02T06:30:00",
+"summary": "줌 새벽 예배 (8월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "smfr3rv7r4cur4d88g7o3ejhek_20270802T203000Z",
+"start": "2027-08-03T05:30:00",
+"end": "2027-08-03T06:30:00",
+"summary": "줌 새벽 예배 (8월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "smfr3rv7r4cur4d88g7o3ejhek_20270803T203000Z",
+"start": "2027-08-04T05:30:00",
+"end": "2027-08-04T06:30:00",
+"summary": "줌 새벽 예배 (8월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "smfr3rv7r4cur4d88g7o3ejhek_20270804T203000Z",
+"start": "2027-08-05T05:30:00",
+"end": "2027-08-05T06:30:00",
+"summary": "줌 새벽 예배 (8월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "smfr3rv7r4cur4d88g7o3ejhek_20270805T203000Z",
+"start": "2027-08-06T05:30:00",
+"end": "2027-08-06T06:30:00",
+"summary": "줌 새벽 예배 (8월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+},
+{
+"uid": "aijanbm2tomtk5faaqqgnosdn8_20270806T080000Z",
+"start": "2027-08-06T17:00:00",
+"end": "2027-08-06T18:30:00",
+"summary": "현천식품 사업장 예배 (매월 첫째 주 금요일)",
+"location": "현천식품 (포천)",
+"desc": "매월 첫째 주 금요일 오후 5시, 포천 현천식품 사업장 예배",
+"allDay": false
+},
+{
+"uid": "smfr3rv7r4cur4d88g7o3ejhek_20270806T203000Z",
+"start": "2027-08-07T05:30:00",
+"end": "2027-08-07T06:30:00",
+"summary": "줌 새벽 예배 (8월 첫 주)",
+"location": "줌 (글로벌비전교회)",
+"desc": "매월 첫 주간 월~토 새벽 5시 30분, 줌 새벽 예배",
+"allDay": false
+}
+]
+}
