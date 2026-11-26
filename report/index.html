@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>에스더 보고 일지 | 박재용 목사</title>
+<meta name="theme-color" content="#12233f">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-180.png">
+<style>
+  :root{
+    --navy:#12233f; --navy2:#1d3a63; --gold:#c9a227; --paper:#f4f5f8;
+    --ink:#1a2233; --sub:#5c6678; --line:#dde1e9;
+    --c-order:#3d6fd1; --c-done:#2f8f63; --c-hold:#c0762a;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{margin:0; padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+    background:var(--paper); color:var(--ink); font-size:14px; line-height:1.5;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:760px; margin:0 auto}
+
+  header.top{
+    background:linear-gradient(160deg,var(--navy) 0%,var(--navy2) 100%);
+    color:#fff; padding:16px 16px 14px;
+  }
+  .brand{display:flex; align-items:center; gap:8px; margin-bottom:10px}
+  .brand .mark{
+    width:26px; height:26px; border-radius:7px; background:var(--gold);
+    color:var(--navy); font-weight:800; font-size:14px; display:flex;
+    align-items:center; justify-content:center; letter-spacing:-.5px;
+  }
+  .brand .name{font-size:11px; letter-spacing:.14em; text-transform:uppercase; opacity:.82}
+  h1{font-size:19px; margin:0 0 2px; font-weight:800; letter-spacing:-.4px}
+  .dateline{font-size:12px; opacity:.85}
+
+  .nums{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px}
+  .num{
+    background:rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.14);
+    border-radius:11px; padding:9px 6px; text-align:center;
+  }
+  .num b{display:block; font-size:20px; line-height:1.15}
+  .num span{font-size:11px; opacity:.86}
+  .num.o b{color:#a9c6ff} .num.d b{color:#8ee0b6} .num.h b{color:#f4c48b}
+
+  .summary{
+    margin:0; padding:11px 16px; background:#fff; border-bottom:1px solid var(--line);
+    font-size:13px; color:var(--sub);
+  }
+
+  .datebar{display:flex; gap:6px; overflow-x:auto; padding:10px 16px; background:#fff; border-bottom:1px solid var(--line)}
+  .datebar button{
+    flex:0 0 auto; min-height:34px; padding:6px 12px; border-radius:999px;
+    border:1px solid var(--line); background:#fff; color:var(--sub);
+    font-size:12px; font-weight:600; font-family:inherit; cursor:pointer;
+  }
+  .datebar button.on{background:var(--navy); border-color:var(--navy); color:#fff}
+
+  .tabs{display:flex; gap:6px; padding:12px 16px 4px; position:sticky; top:0; background:var(--paper); z-index:5}
+  .tabs button{
+    flex:1; min-height:46px; border:1px solid var(--line); border-radius:11px;
+    background:#fff; color:var(--sub); font-family:inherit; font-size:12.5px;
+    font-weight:700; cursor:pointer; padding:6px 4px; line-height:1.25;
+  }
+  .tabs button b{display:block; font-size:15px; color:var(--ink)}
+  .tabs button.on{background:#fff; border-color:var(--navy); box-shadow:0 1px 0 var(--navy) inset}
+  .tabs button.on.o{border-color:var(--c-order)} .tabs button.on.o b{color:var(--c-order)}
+  .tabs button.on.d{border-color:var(--c-done)} .tabs button.on.d b{color:var(--c-done)}
+  .tabs button.on.h{border-color:var(--c-hold)} .tabs button.on.h b{color:var(--c-hold)}
+
+  ul.list{list-style:none; margin:0; padding:10px 16px 20px}
+  ul.list li{
+    background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:11px 12px 11px 14px; margin-bottom:9px; position:relative;
+    box-shadow:0 1px 2px rgba(18,35,63,.04);
+  }
+  ul.list li::before{
+    content:""; position:absolute; left:0; top:10px; bottom:10px; width:3px;
+    border-radius:3px; background:var(--c-order);
+  }
+  ul.list.done li::before{background:var(--c-done)}
+  ul.list.hold li::before{background:var(--c-hold)}
+  .row{display:flex; align-items:baseline; gap:8px}
+  .t{font-size:13.5px; font-weight:700; letter-spacing:-.2px}
+  .time{font-size:11.5px; color:var(--sub); font-variant-numeric:tabular-nums; flex:0 0 auto}
+  .note{font-size:12px; color:var(--sub); margin-top:3px}
+  .kind{
+    display:inline-block; font-size:10.5px; font-weight:700; color:var(--navy);
+    background:#eef1f7; border-radius:5px; padding:2px 6px; margin-top:6px; margin-right:5px;
+  }
+  .owner{font-size:10.5px; font-weight:700; color:#fff; background:var(--c-hold); border-radius:5px; padding:2px 7px}
+  dl.detail{margin:8px 0 0; padding:8px 0 0; border-top:1px dashed var(--line); display:grid; grid-template-columns:auto 1fr; gap:4px 10px}
+  dl.detail dt{font-size:11.5px; color:var(--sub); font-weight:700; white-space:nowrap}
+  dl.detail dd{margin:0; font-size:12px; color:var(--ink)}
+  .owner.me{background:var(--navy2)}
+  a.link{ font-size:11.5px; color:#2456a8; word-break:break-all; text-decoration:none; display:inline-block; margin-top:6px}
+  .empty{padding:26px 16px; text-align:center; color:var(--sub); font-size:13px}
+
+  footer{padding:14px 16px 22px; text-align:center; font-size:11px; color:#8b93a3}
+  @media (min-width:768px){
+    h1{font-size:22px}
+    ul.list{display:grid; grid-template-columns:1fr 1fr; gap:9px}
+    ul.list li{margin-bottom:0}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="mark">에</div><div class="name">Ester · Report Diary</div></div>
+    <h1>에스더 보고 일지</h1>
+    <div class="dateline" id="dateline">불러오는 중…</div>
+    <div class="nums">
+      <div class="num o"><b id="n-order">0</b><span>명령한 일</span></div>
+      <div class="num d"><b id="n-done">0</b><span>수행한 일</span></div>
+      <div class="num h"><b id="n-hold">0</b><span>보류·대기</span></div>
+    </div>
+  </header>
+
+  <p class="summary" id="summary"></p>
+  <div class="datebar" id="datebar"></div>
+
+  <div class="tabs" id="tabs">
+    <button data-view="order" class="on o">명령한 일 <b id="tb-order">0</b></button>
+    <button data-view="done">수행한 일 <b id="tb-done">0</b></button>
+    <button data-view="hold">보류·대기 <b id="tb-hold">0</b></button>
+  </div>
+
+  <ul class="list" id="list"></ul>
+  <footer>박재용 목사 · 글로벌비전교회 · 에스더가 매일 저녁 정리합니다</footer>
+</div>
+
+<script>
+(function(){
+  var state = {date:null, view:'order', data:null};
+  var $ = function(id){return document.getElementById(id)};
+
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+  function fetchJSON(url){
+    return fetch(url + '?t=' + Date.now(), {cache:'no-store'}).then(function(r){
+      if(!r.ok) throw new Error(url + ' ' + r.status);
+      return r.json();
+    });
+  }
+
+  function renderDatebar(dates){
+    var bar = $('datebar');
+    bar.innerHTML = dates.map(function(d){
+      return '<button data-date="'+esc(d)+'" class="'+(d===state.date?'on':'')+'">'+esc(prettyDate(d))+'</button>';
+    }).join('');
+    bar.querySelectorAll('button').forEach(function(b){
+      b.addEventListener('click', function(){ load(b.getAttribute('data-date')); });
+    });
+  }
+
+  function prettyDate(d){
+    var p = d.split('-');
+    if(p.length!==3) return d;
+    return Number(p[1]) + '월 ' + Number(p[2]) + '일';
+  }
+
+  function render(){
+    var d = state.data;
+    if(!d) return;
+    $('dateline').textContent = d.label || prettyDate(d.date);
+    $('summary').textContent = d.summary || '';
+    var o = d.ordered||[], dn = d.done||[], pd = d.pending||[];
+    $('n-order').textContent = o.length; $('n-done').textContent = dn.length; $('n-hold').textContent = pd.length;
+    $('tb-order').textContent = o.length; $('tb-done').textContent = dn.length; $('tb-hold').textContent = pd.length;
+
+    var list = $('list');
+    list.className = 'list' + (state.view==='done' ? ' done' : state.view==='hold' ? ' hold' : '');
+    var html = '';
+
+    if(state.view === 'order'){
+      html = o.map(function(it){
+        return '<li><div class="row"><span class="time">'+esc(it.time||'')+'</span><span class="t">'+esc(it.title)+'</span></div>'
+          + (it.note ? '<div class="note">'+esc(it.note)+'</div>' : '') + '</li>';
+      }).join('');
+    } else if(state.view === 'done'){
+      html = dn.map(function(it){
+        var det = (it.detail && it.detail.length)
+          ? '<dl class="detail">' + it.detail.map(function(x){
+              return '<dt>'+esc(x.k)+'</dt><dd>'+esc(x.v)+'</dd>';
+            }).join('') + '</dl>'
+          : '';
+        return '<li><div class="row"><span class="t">'+esc(it.title)+'</span></div>'
+          + (it.result ? '<div class="note">'+esc(it.result)+'</div>' : '')
+          + (it.kind ? '<span class="kind">'+esc(it.kind)+'</span>' : '')
+          + det
+          + (it.link ? '<a class="link" href="'+esc(it.link)+'" target="_blank" rel="noopener">'+esc(it.link)+'</a>' : '')
+          + '</li>';
+      }).join('');
+    } else {
+      html = pd.map(function(it){
+        var mine = it.owner === '에스더';
+        return '<li><div class="row"><span class="t">'+esc(it.title)+'</span></div>'
+          + (it.note ? '<div class="note">'+esc(it.note)+'</div>' : '')
+          + (it.owner ? '<span class="owner'+(mine?' me':'')+'">'+esc(it.owner)+'</span>' : '')
+          + '</li>';
+      }).join('');
+    }
+    list.innerHTML = html || '<li class="empty">해당하는 항목이 없습니다.</li>';
+  }
+
+  function load(date){
+    state.date = date;
+    fetchJSON('./data/' + date + '.json').then(function(d){
+      state.data = d; render();
+      document.querySelectorAll('#datebar button').forEach(function(b){
+        b.classList.toggle('on', b.getAttribute('data-date') === date);
+      });
+    }).catch(function(){
+      $('dateline').textContent = '보고 일지를 불러오지 못했습니다.';
+    });
+  }
+
+  $('tabs').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    state.view = b.getAttribute('data-view');
+    document.querySelectorAll('#tabs button').forEach(function(x){
+      x.classList.remove('on','o','d','h');
+      if(x.getAttribute('data-view') === state.view) x.classList.add('on', state.view==='order'?'o':state.view==='done'?'d':'h');
+    });
+    render();
+  });
+
+  fetchJSON('./data/index.json').then(function(dates){
+    dates = (dates||[]).slice().sort().reverse();
+    if(!dates.length){ $('dateline').textContent='아직 정리된 보고가 없습니다.'; return; }
+    renderDatebar(dates);
+    load(dates[0]);
+  }).catch(function(){
+    $('dateline').textContent = '보고 일지를 불러오지 못했습니다.';
+  });
+})();
+</script>
+</body>
+</html>
