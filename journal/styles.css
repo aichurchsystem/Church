@@ -1977,7 +1977,7 @@ body:not(.is-cover) .nav-back{display:grid}
 .mini-cal .cal-wd{background:none;border-bottom:1px solid var(--line)}
 .mini-cal .cal-wd div{padding:4px 0;font-size:11px}
 .mini-cal .cal-grid{gap:1px;background:none}
-.mini-cal .cell{min-height:33px;padding:2px 1px 1px;background:rgba(255,255,255,.035);border-radius:7px;
+.mini-cal .cell{min-height:33px;padding:2px 1px 1px;background:rgba(255,255,255,.06);border-radius:7px;
   align-items:center;gap:0}
 .mini-cal .cell .dn{font-size:11.5px;justify-content:center}
 .mini-cal .cell.today .dn{width:19px;height:19px;border-radius:6px}
@@ -2008,7 +2008,9 @@ body:not(.is-cover) .nav-back{display:grid}
 .rp-chev svg{width:13px;height:13px;display:block;transition:transform .15s}
 .rp-day.on .rp-chev svg{transform:rotate(180deg)}
 .rp-cal .cell.no{opacity:.22}
-.rp-cal{max-width:440px;margin-left:auto;margin-right:auto}
+.rp-cal{max-width:440px;margin:6px auto 2px;padding:9px 11px 7px;border-radius:16px;
+  border:1px solid var(--line);background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.014))}
+.rp-cal .cell.no{background:transparent}
 .rp-canote{margin:6px 1px 0;font-size:10.5px;color:var(--ink-3);line-height:1.45}
 .rp-canote b{color:var(--amber-2);font-weight:800}
 
