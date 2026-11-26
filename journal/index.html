@@ -6,7 +6,7 @@
 <title>박재용 목사 목회 일지</title>
 <meta name="description" content="박재용 목사 목회 일지 — 구글 캘린더 자동 연동 · 일지·스케줄·상담·캘린더·목회 메모·설교 준비">
 <meta name="theme-color" content="#0a1017">
-<meta name="app-version" content="20261126e1">
+<meta name="app-version" content="20261126f1">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,8 +15,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-180.png">
-<link rel="stylesheet" href="styles.css?v=20261126e1">
-<script>window.APP_VERSION='20261126e1';</script>
+<link rel="stylesheet" href="styles.css?v=20261126f1">
+<script>window.APP_VERSION='20261126f1';</script>
 </head>
 <body>
 <header class="topbar">
@@ -33,6 +33,9 @@
     </div>
   </div>
   <div class="top-actions">
+    <button class="icon-btn cover-back" id="btnCover" data-action="cover" title="표지로" aria-label="표지로">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 6.5h15v11h-15z"/><path d="M8 10.5h8M8 13.5h5"/></svg>
+    </button>
     <button class="icon-btn" id="btnInstall" title="홈 화면에 추가" aria-label="홈 화면에 추가" hidden>
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v9M8.5 9l3.5 3.5L15.5 9"/><path d="M4.5 14.5v4a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-4"/></svg>
     </button>
@@ -42,11 +45,15 @@
     <button class="icon-btn" id="btnImport" title="JSON 가져오기" aria-label="JSON 가져오기">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5v-12M7.5 13 12 8.5l4.5 4.5M4.5 3.5h15"/></svg>
     </button>
+    <button class="icon-btn" id="btnAdmin" data-action="admin" title="관리자" aria-label="관리자 (앱 글자 고치기)">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M19.2 14.4a7.6 7.6 0 0 0 0-4.8l1.5-1.2-1.9-3.3-1.8.7a7.7 7.7 0 0 0-4.1-2.4L12.6 1h-1.2l-.3 2.4a7.7 7.7 0 0 0-4.1 2.4l-1.8-.7L3.3 8.4l1.5 1.2a7.6 7.6 0 0 0 0 4.8l-1.5 1.2 1.9 3.3 1.8-.7a7.7 7.7 0 0 0 4.1 2.4l.3 2.4h1.2l.3-2.4a7.7 7.7 0 0 0 4.1-2.4l1.8.7 1.9-3.3z"/></svg>
+    </button>
   </div>
 </header>
 
 <main class="wrap" id="main">
-  <section class="screen on" id="sc-home"></section>
+  <section class="screen on" id="sc-cover"></section>
+  <section class="screen" id="sc-home"></section>
   <section class="screen" id="sc-journal"></section>
   <section class="screen" id="sc-schedule"></section>
   <section class="screen" id="sc-counsel"></section>
@@ -56,6 +63,7 @@
   <section class="screen" id="sc-vehicle"></section>
   <section class="screen" id="sc-food"></section>
   <section class="screen" id="sc-report"></section>
+  <section class="screen" id="sc-admin"></section>
 </main>
 
 <nav class="tabbar" id="tabs" aria-label="주요 화면"></nav>
@@ -63,21 +71,24 @@
 <div class="toast" id="toast"></div>
 <input type="file" id="fileImport" accept="application/json,.json" hidden>
 
-<script src="seed.js?v=20261126e1"></script>
-<script src="seed-restaurants.js?v=20261126e1"></script>
-<script src="core.js?v=20261126e1"></script>
-<script src="icons.js?v=20261126e1"></script>
-<script src="gcal.js?v=20261126e1"></script>
-<script src="view-home.js?v=20261126e1"></script>
-<script src="view-journal.js?v=20261126e1"></script>
-<script src="view-schedule.js?v=20261126e1"></script>
-<script src="view-counsel.js?v=20261126e1"></script>
-<script src="view-calendar.js?v=20261126e1"></script>
-<script src="view-notes.js?v=20261126e1"></script>
-<script src="view-sermons.js?v=20261126e1"></script>
-<script src="view-vehicle.js?v=20261126e1"></script>
-<script src="view-food.js?v=20261126e1"></script>
-<script src="view-report.js?v=20261126e1"></script>
+<script src="seed.js?v=20261126f1"></script>
+<script src="seed-restaurants.js?v=20261126f1"></script>
+<script src="core.js?v=20261126f1"></script>
+<script src="text.js?v=20261126f1"></script>
+<script src="icons.js?v=20261126f1"></script>
+<script src="gcal.js?v=20261126f1"></script>
+<script src="view-cover.js?v=20261126f1"></script>
+<script src="view-home.js?v=20261126f1"></script>
+<script src="view-journal.js?v=20261126f1"></script>
+<script src="view-schedule.js?v=20261126f1"></script>
+<script src="view-counsel.js?v=20261126f1"></script>
+<script src="view-calendar.js?v=20261126f1"></script>
+<script src="view-notes.js?v=20261126f1"></script>
+<script src="view-sermons.js?v=20261126f1"></script>
+<script src="view-vehicle.js?v=20261126f1"></script>
+<script src="view-food.js?v=20261126f1"></script>
+<script src="view-report.js?v=20261126f1"></script>
+<script src="view-admin.js?v=20261126f1"></script>
 <script>
 /* ── 서비스워커 ──────────────────────────────────────────────
    새 버전이 준비되면 한 번만 새로고침하고, sw.js 자체는 늘 새로 확인한다. */
@@ -88,7 +99,7 @@
     if(reloaded)return;reloaded=true;location.reload();
   });
   try{
-    navigator.serviceWorker.register('sw.js?v=20261126e1',{updateViaCache:'none'}).then(function(r){
+    navigator.serviceWorker.register('sw.js?v=20261126f1',{updateViaCache:'none'}).then(function(r){
       try{r.update()}catch(e){}
     }).catch(function(){});
   }catch(e){}

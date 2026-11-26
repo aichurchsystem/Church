@@ -4,7 +4,7 @@ const KEY='mj.v1';
 const App={};
 window.App=App;
 /* 빌드 표시 — index.html의 <meta name="app-version"> 값과 다르면 옛 화면이므로 한 번 새로 연다 */
-App.VERSION='20261126e1';
+App.VERSION='20261126f1';
 
 /* 일정 시간·남은 시간 — 메인과 캘린더가 함께 쓴다 */
 function mnTime(start){
@@ -186,25 +186,38 @@ App.TAB=id=>App.TABS.find(t=>t.id===id)||App.TABS[0];
 App.PRIMARY=['home','journal','schedule','calendar','counsel'];
 App.MORE=['notes','sermons','vehicle','food','report'];
 App.TABICON={home:'home',journal:'journal',schedule:'schedule',counsel:'counsel',calendar:'calendar',notes:'notes',sermons:'sermons',vehicle:'car',food:'food',report:'report'};
+/* 탭이 아닌 화면 — 표지(첫 화면)와 관리자 */
+App.EXTRA=['cover','admin'];
+App.isScreen=function(tab){return App.TABS.some(t=>t.id===tab)||App.EXTRA.indexOf(tab)>=0};
 App.go=function(tab){
-  if(!App.TABS.some(t=>t.id===tab))tab='home';
+  if(!App.isScreen(tab))tab='home';
   if(App._tab&&App._tab!==tab)App._scroll[App._tab]=window.scrollY||0;
   D.ui.tab=tab;App.save();
   App._tab=tab;
   App.syncTabs();
   document.body.classList.toggle('is-home',tab==='home');
+  document.body.classList.toggle('is-cover',tab==='cover');
+  document.body.classList.toggle('is-admin',tab==='admin');
   App.$$('.screen').forEach(s=>s.classList.toggle('on',s.id==='sc-'+tab));
   App.render();
-  if(tab==='home'){window.scrollTo({top:0,behavior:'instant'})}
+  if(tab==='home'||tab==='cover'){window.scrollTo({top:0,behavior:'instant'})}
   else{const y=App._scroll[tab]||0;window.scrollTo({top:y,behavior:'instant'});}
   if(tab==='calendar'&&window.GCal)window.GCal.maybeSync();
+  /* 폰의 뒤로 가기 버튼으로 표지까지 돌아올 수 있게 기록을 한 칸만 쌓아 둔다 */
+  try{
+    if(tab==='cover'){App._histIn=false}
+    else if(!App._histIn){history.pushState({mj:tab},'');App._histIn=true}
+  }catch(e){}
 };
+window.addEventListener('popstate',function(){
+  if(App._histIn){App._histIn=false;try{App.go('cover')}catch(e){}}
+});
 /* 화면 하나를 그린다. 실패해도 빈 화면을 남기지 않고 안내와 다시 그리기를 보여 준다 */
 App.render=function(){
   const t=D.ui.tab;
-  const names={home:'renderHome',journal:'renderJournal',schedule:'renderSchedule',counsel:'renderCounsel',
+  const names={cover:'renderCover',home:'renderHome',journal:'renderJournal',schedule:'renderSchedule',counsel:'renderCounsel',
     calendar:'renderCalendar',notes:'renderNotes',sermons:'renderSermons',vehicle:'renderVehicle',food:'renderFood',
-    report:'renderReport'};
+    report:'renderReport',admin:'renderAdmin'};
   let err=null;
   try{
     const fn=window[names[t]||''];
@@ -329,6 +342,8 @@ App.moreSheet=function(){
 /* ── 이벤트 위임 — 화면을 다시 그려도 핸들러가 사라지지 않는다 ── */
 App.ACT={
   tab:el=>{const id=el.dataset.tab;App.closeSheet();App.go(id)},
+  'enter':()=>App.go('home'),      /* 표지를 눌러 타일 메인으로 */
+  'cover':()=>App.go('cover'),     /* 메인에서 표지로 돌아가기 */
   more:()=>App.moreSheet(),
   'sheet-close':()=>App.closeSheet(),
   'reload':()=>location.reload(),
@@ -392,14 +407,14 @@ App.init=function(){
   App._scroll={};App._tab=null;
   step(buildTabs,'tabs');
   step(()=>{
-    /* 앱을 열면 언제나 메인 화면부터.
+    /* 앱을 열면 언제나 표지부터. 표지를 눌러 들어간 뒤에는 탭 이동은 지금처럼.
        다만 주소에 ?tab=report 처럼 화면을 지정하면(보고 일지 안내용) 그 화면으로 바로 간다. */
-    let want='home';
+    let want='cover';
     try{
       const q=/[?&]tab=([a-z]+)/.exec(location.search);
       const h=(location.hash||'').replace(/^#/,'');
       const t=(q&&q[1])||h;
-      if(t&&App.TABS.some(x=>x.id===t))want=t;
+      if(t&&App.isScreen(t))want=t;
     }catch(e){}
     App.go(want);
   },'home');
