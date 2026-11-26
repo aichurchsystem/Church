@@ -2,12 +2,12 @@
 "app": "박재용 목사 목회 일지",
 "source": "google-calendar",
 "calendar": "pjy53283683@gmail.com",
-"generated": "2026-11-26T13:29:56+09:00",
+"generated": "2026-11-26T19:43:21+09:00",
 "range": {
 "from": "2026-10-12",
 "to": "2027-08-23"
 },
-"count": 115,
+"count": 116,
 "events": [
 {
 "uid": "mo7btor9u4rkbfca50eh2bip1k_20261016",
@@ -332,6 +332,15 @@
 "location": "",
 "desc": "2027년도 강도사고시 예배자들을 위한 조직신학 교육 프로그램. 오후 7시~9시.",
 "allDay": false
+},
+{
+"uid": "c8o6cchjcdj32bb460p6ab9k6cq3gbb26co68bb5c8o66o9ncdgj6d1k60",
+"start": "2026-12-29",
+"end": "2026-12-30",
+"summary": "송년회",
+"location": "",
+"desc": "",
+"allDay": true
 },
 {
 "uid": "aijanbm2tomtk5faaqqgnosdn8_20270101T080000Z",
