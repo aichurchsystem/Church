@@ -1305,3 +1305,12 @@ label.fld > span{display:block;font-size:12.5px;font-weight:700;color:var(--ink-
   .cal .cell{min-height:44px}
   .tl{max-height:none}
 }
+
+/* 넓은 화면: 메인을 2단으로 (오늘 일정 | 이번 주) */
+@media(min-width:920px){
+  #sc-home{display:grid;grid-template-columns:1fr 1fr;gap:11px;align-items:start}
+  #sc-home .mn-hero,#sc-home .mn-quick{grid-column:1/-1;margin-bottom:0}
+  #sc-home .mn-block{margin-bottom:0}
+  #sc-home .mn-two{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:0}
+  #sc-home .mn-install,#sc-home .mn-foot{grid-column:1/-1;margin-bottom:0}
+}

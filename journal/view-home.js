@@ -133,13 +133,13 @@ function renderHome(){
       </div>
     </section>
     <section class="mn-block">
-      <div class="mn-bh"><h3>다녀온 곳</h3><span>${D.restaurants.length}곳</span>
+      <div class="mn-bh"><h3>다녀온 곳</h3><span>등록 ${D.restaurants.length}곳</span>
         <button class="mn-more" type="button" data-action="tab" data-tab="food">전체 ›</button></div>
       <div class="mn-notes">
         ${places.length?places.map(({r,v})=>`<button class="mn-note" type="button" data-action="food-open" data-food="${r.id}">
           <b>${App.esc(r.name)}</b><span>${App.esc([r.region,r.menu].filter(Boolean).join(' · '))} · ${App.fmtDate(v.date)}</span>
         </button>`).join('')
-        :`<div class="mn-none sm"><b>기록한 곳이 없습니다</b><span>방문한 식당·숙소를 남겨 보세요.</span></div>`}
+        :`<div class="mn-none sm"><b>방문 기록이 아직 없습니다</b><span>다녀온 식당·숙소를 남기면 여기에 쌓입니다.</span></div>`}
       </div>
     </section>
   </div>
