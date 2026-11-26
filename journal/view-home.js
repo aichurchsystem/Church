@@ -105,7 +105,7 @@ function renderHome(){
     </section>
 
     <section class="card hov" data-go="schedule">
-      <div class="card-h"><span class="hic">${App.ICON.book}</span><h2>새벽예배 본문</h2><span class="hint">이번 주 ${verses.length}</span></div>
+      <div class="card-h"><span class="hic">${App.ICON.book}</span><h2>새벽 본문</h2><span class="hint">이번 주</span></div>
       <div class="card-b">
         ${verses.length?`<div class="hrows tight">${verses.map(v=>`<div class="hrow">
             <span class="htime">${App.DW[App.dow(v.date)]}</span>
