@@ -1331,9 +1331,13 @@ body.is-home #btnExport,body.is-home #btnImport{display:none}
 body.is-home .wrap{padding:6px 13px 6px}
 body.is-home .topbar{padding:8px 13px 7px}
 
-/* 상세 화면에서 메인으로 돌아가는 길 — 상단 왼쪽 화살표 */
-.home-back{display:none;flex:0 0 auto}
-body:not(.is-home) .home-back{display:grid}
+/* 상세 화면에서 메인으로 돌아가는 집 모양 '홈' 버튼 — 늘 보이게 */
+.home-back{display:none;flex:0 0 auto;align-items:center;gap:3px;
+  width:auto;padding:5px 9px 5px 7px;border-radius:11px;
+  border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);
+  color:#e8eef7;font-size:12px;font-weight:700;letter-spacing:-.2px;line-height:1}
+body:not(.is-home) .home-back{display:inline-flex}
+.home-back span{transform:translateY(.5px)}
 .home-back:active{transform:scale(.94)}
 
 .mnhome{display:flex;flex-direction:column;gap:8px;
