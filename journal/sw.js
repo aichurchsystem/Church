@@ -1,13 +1,13 @@
 /* 목회 일지 서비스워커 — 앱 셸 캐시 + 새 버전 자동 반영
    2026-11-26: 네비게이션·앱 셸은 HTTP 캐시를 건너뛰고 늘 새로 받는다.
    (옛 화면이 남거나 304가 섞여 빈 화면이 되던 문제를 막는다) */
-const V='20261126d1';
-const CACHE='mj-v4';
+const V='20261126e1';
+const CACHE='mj-v5';
 const FILES=['./','./index.html','./styles.css?v='+V,'./core.js?v='+V,
   './icons.js?v='+V,'./gcal.js?v='+V,'./seed.js?v='+V,'./seed-restaurants.js?v='+V,
   './view-home.js?v='+V,'./view-journal.js?v='+V,'./view-schedule.js?v='+V,
   './view-counsel.js?v='+V,'./view-calendar.js?v='+V,'./view-notes.js?v='+V,
-  './view-sermons.js?v='+V,'./view-vehicle.js?v='+V,'./view-food.js?v='+V,
+  './view-sermons.js?v='+V,'./view-vehicle.js?v='+V,'./view-food.js?v='+V,'./view-report.js?v='+V,
   './manifest.json','./calendar.json',
   './assets/carnival.jpg',
   './icons/icon-192.png','./icons/icon-512.png','./icons/maskable-192.png','./icons/maskable-512.png',

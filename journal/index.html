@@ -6,7 +6,7 @@
 <title>박재용 목사 목회 일지</title>
 <meta name="description" content="박재용 목사 목회 일지 — 구글 캘린더 자동 연동 · 일지·스케줄·상담·캘린더·목회 메모·설교 준비">
 <meta name="theme-color" content="#0a1017">
-<meta name="app-version" content="20261126d1">
+<meta name="app-version" content="20261126e1">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,8 +15,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-180.png">
-<link rel="stylesheet" href="styles.css?v=20261126d1">
-<script>window.APP_VERSION='20261126d1';</script>
+<link rel="stylesheet" href="styles.css?v=20261126e1">
+<script>window.APP_VERSION='20261126e1';</script>
 </head>
 <body>
 <header class="topbar">
@@ -55,6 +55,7 @@
   <section class="screen" id="sc-sermons"></section>
   <section class="screen" id="sc-vehicle"></section>
   <section class="screen" id="sc-food"></section>
+  <section class="screen" id="sc-report"></section>
 </main>
 
 <nav class="tabbar" id="tabs" aria-label="주요 화면"></nav>
@@ -62,20 +63,21 @@
 <div class="toast" id="toast"></div>
 <input type="file" id="fileImport" accept="application/json,.json" hidden>
 
-<script src="seed.js?v=20261126d1"></script>
-<script src="seed-restaurants.js?v=20261126d1"></script>
-<script src="core.js?v=20261126d1"></script>
-<script src="icons.js?v=20261126d1"></script>
-<script src="gcal.js?v=20261126d1"></script>
-<script src="view-home.js?v=20261126d1"></script>
-<script src="view-journal.js?v=20261126d1"></script>
-<script src="view-schedule.js?v=20261126d1"></script>
-<script src="view-counsel.js?v=20261126d1"></script>
-<script src="view-calendar.js?v=20261126d1"></script>
-<script src="view-notes.js?v=20261126d1"></script>
-<script src="view-sermons.js?v=20261126d1"></script>
-<script src="view-vehicle.js?v=20261126d1"></script>
-<script src="view-food.js?v=20261126d1"></script>
+<script src="seed.js?v=20261126e1"></script>
+<script src="seed-restaurants.js?v=20261126e1"></script>
+<script src="core.js?v=20261126e1"></script>
+<script src="icons.js?v=20261126e1"></script>
+<script src="gcal.js?v=20261126e1"></script>
+<script src="view-home.js?v=20261126e1"></script>
+<script src="view-journal.js?v=20261126e1"></script>
+<script src="view-schedule.js?v=20261126e1"></script>
+<script src="view-counsel.js?v=20261126e1"></script>
+<script src="view-calendar.js?v=20261126e1"></script>
+<script src="view-notes.js?v=20261126e1"></script>
+<script src="view-sermons.js?v=20261126e1"></script>
+<script src="view-vehicle.js?v=20261126e1"></script>
+<script src="view-food.js?v=20261126e1"></script>
+<script src="view-report.js?v=20261126e1"></script>
 <script>
 /* ── 서비스워커 ──────────────────────────────────────────────
    새 버전이 준비되면 한 번만 새로고침하고, sw.js 자체는 늘 새로 확인한다. */
@@ -86,7 +88,7 @@
     if(reloaded)return;reloaded=true;location.reload();
   });
   try{
-    navigator.serviceWorker.register('sw.js?v=20261126d1',{updateViaCache:'none'}).then(function(r){
+    navigator.serviceWorker.register('sw.js?v=20261126e1',{updateViaCache:'none'}).then(function(r){
       try{r.update()}catch(e){}
     }).catch(function(){});
   }catch(e){}
@@ -96,7 +98,7 @@
    스크립트 하나가 늦거나 실패해 메인이 비어 있으면, 손으로 눌러 들어갈 수 있는
    타일 메뉴를 즉시 대신 그린다. (앱이 아무것도 안 보이는 일은 없게) */
 (function(){
-  var TILES=[['journal','오늘 일지'],['schedule','스케줄'],['calendar','캘린더'],['counsel','상담 일지'],
+  var TILES=[['report','에스더 보고'],['journal','오늘 일지'],['schedule','스케줄'],['calendar','캘린더'],['counsel','상담 일지'],
              ['sermons','설교 준비'],['vehicle','차량 관리'],['notes','목회 메모'],['food','다녀온 곳']];
   function drawFallback(){
     if(window.__mjBooted)return;

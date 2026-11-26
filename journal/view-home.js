@@ -68,6 +68,7 @@ function mnTileSub(tab,d){
     case 'vehicle': return d.car;
     case 'notes':   return d.notes+'개 메모';
     case 'food':    return d.food+'곳 등록';
+    case 'report':  return '명령·수행·보류 한눈에';
     default:        return '열기';
   }
 }
@@ -90,6 +91,24 @@ function mnTileHTML(t){
   +'</button>';
 }
 
+/* 에스더 보고 일지 — 8개 타일 위에 놓는 넓은 타일 (2026-11-26 목사님 지시로 앱 안에 합침) */
+function mnReportHTML(){
+  var icon=(App.ICON&&App.ICON.report)||'';
+  return '<button class="mtile mtile-feature" type="button" data-action="tab" data-tab="report"'
+    +' style="--c:#ecc970" aria-label="에스더 보고 일지">'
+    +'<span class="mt-ico">'+icon+'</span>'
+    +'<span class="mt-wm" aria-hidden="true">'+icon+'</span>'
+    +'<span class="mtf-t">'
+      +'<b>에스더 보고 일지</b>'
+      +'<span class="mt-sub" id="mtfSub">명령·수행·보류 한눈에</span>'
+    +'</span>'
+    +'<i class="mtf-badge" id="mtfBadge" hidden></i>'
+    +'<i class="mt-arrow" aria-hidden="true">'
+      +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 5.5 15 12l-6.5 6.5"/></svg>'
+    +'</i>'
+  +'</button>';
+}
+
 function mnHeroHTML(){
   return '<div class="mnh">'
     +'<div class="mnh-top">'
@@ -105,6 +124,7 @@ function mnShellHTML(){
   return '<div class="mnhome">'
     + mnHeroHTML()
     +'<div class="mntiles">'
+      + mnReportHTML()
       + MN_TILES.map(mnTileHTML).join('')
     +'</div>'
     +'<div class="mn-foot2">박재용 목사 · 글로벌비전교회 담임 · GV청소년선교회 대표</div>'
@@ -144,6 +164,16 @@ function mnRefresh(){
     if(!s||!s.last)return '연동';
     return s.err?'연동 확인':'연동됨';
   },'연동');
+  /* 보고 일지 타일 부제 — 오늘·어제 건수 (자료가 없으면 안내 문구 그대로) */
+  var fs=document.getElementById('mtfSub');
+  if(fs&&window.ReportPeek){
+    try{window.ReportPeek(function(txt,L){
+      var cur=document.getElementById('mtfSub');
+      if(cur&&txt)cur.textContent=txt;
+      var bg=document.getElementById('mtfBadge');
+      if(bg){ if(L&&L.mine>0){bg.textContent='결정 '+L.mine;bg.hidden=false}else bg.hidden=true }
+    })}catch(e){}
+  }
 }
 
 function renderHome(){

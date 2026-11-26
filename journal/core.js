@@ -4,7 +4,7 @@ const KEY='mj.v1';
 const App={};
 window.App=App;
 /* 빌드 표시 — index.html의 <meta name="app-version"> 값과 다르면 옛 화면이므로 한 번 새로 연다 */
-App.VERSION='20261126d1';
+App.VERSION='20261126e1';
 
 /* 일정 시간·남은 시간 — 메인과 캘린더가 함께 쓴다 */
 function mnTime(start){
@@ -178,13 +178,14 @@ App.ask=function(msg,okLabel){
 App.TABS=[
   {id:'home',name:'메인'},{id:'journal',name:'일지'},{id:'schedule',name:'스케줄'},
   {id:'counsel',name:'상담'},{id:'calendar',name:'캘린더'},{id:'notes',name:'메모'},
-  {id:'sermons',name:'설교'},{id:'vehicle',name:'차량'},{id:'food',name:'다녀온 곳'}
+  {id:'sermons',name:'설교'},{id:'vehicle',name:'차량'},{id:'food',name:'다녀온 곳'},
+  {id:'report',name:'보고'}
 ];
 App.TAB=id=>App.TABS.find(t=>t.id===id)||App.TABS[0];
 /* 하단 바에 늘 보이는 탭 — 나머지는 '더보기' 안에 */
 App.PRIMARY=['home','journal','schedule','calendar','counsel'];
-App.MORE=['notes','sermons','vehicle','food'];
-App.TABICON={home:'home',journal:'journal',schedule:'schedule',counsel:'counsel',calendar:'calendar',notes:'notes',sermons:'sermons',vehicle:'car',food:'food'};
+App.MORE=['notes','sermons','vehicle','food','report'];
+App.TABICON={home:'home',journal:'journal',schedule:'schedule',counsel:'counsel',calendar:'calendar',notes:'notes',sermons:'sermons',vehicle:'car',food:'food',report:'report'};
 App.go=function(tab){
   if(!App.TABS.some(t=>t.id===tab))tab='home';
   if(App._tab&&App._tab!==tab)App._scroll[App._tab]=window.scrollY||0;
@@ -202,7 +203,8 @@ App.go=function(tab){
 App.render=function(){
   const t=D.ui.tab;
   const names={home:'renderHome',journal:'renderJournal',schedule:'renderSchedule',counsel:'renderCounsel',
-    calendar:'renderCalendar',notes:'renderNotes',sermons:'renderSermons',vehicle:'renderVehicle',food:'renderFood'};
+    calendar:'renderCalendar',notes:'renderNotes',sermons:'renderSermons',vehicle:'renderVehicle',food:'renderFood',
+    report:'renderReport'};
   let err=null;
   try{
     const fn=window[names[t]||''];
@@ -221,7 +223,7 @@ App.homeFallback=function(){
   const el=document.getElementById('sc-home');
   if(!el)return;
   try{document.body.classList.add('is-home');if(App.D&&App.D.ui)App.D.ui.tab='home'}catch(e){}
-  const tiles=[['journal','오늘 일지'],['schedule','스케줄'],['calendar','캘린더'],['counsel','상담 일지'],
+  const tiles=[['report','에스더 보고'],['journal','오늘 일지'],['schedule','스케줄'],['calendar','캘린더'],['counsel','상담 일지'],
     ['sermons','설교 준비'],['vehicle','차량 관리'],['notes','목회 메모'],['food','다녀온 곳']];
   el.innerHTML=`<div class="mnhome"><div class="mntiles">${tiles.map(([id,name])=>
     `<button class="mtile" type="button" data-action="tab" data-tab="${id}" style="--c:#82a9e6">
@@ -317,7 +319,7 @@ App.moreSheet=function(){
     const t=App.TAB(id);
     return `<button class="more-i" type="button" data-action="tab" data-tab="${id}">
       <span class="mi">${App.icon(App.TABICON[id]||id)}</span><b>${t.name}</b>
-      <span class="mhint">${({notes:'목회 메모·아이디어',sermons:'설교 준비 노트',vehicle:'주유·정비·보험 기록',food:'다녀온 식당·숙소'})[id]||''}</span>
+      <span class="mhint">${({notes:'목회 메모·아이디어',sermons:'설교 준비 노트',vehicle:'주유·정비·보험 기록',food:'다녀온 식당·숙소',report:'에스더가 매일 정리한 보고'})[id]||''}</span>
     </button>`;
   }).join('');
   App.sheet({title:'더보기',body:`<div class="more-grid">${rows}</div>`,
@@ -389,7 +391,18 @@ App.init=function(){
   step(App.load,'load');
   App._scroll={};App._tab=null;
   step(buildTabs,'tabs');
-  step(()=>App.go('home'),'home');       // 앱을 열면 언제나 메인 화면부터
+  step(()=>{
+    /* 앱을 열면 언제나 메인 화면부터.
+       다만 주소에 ?tab=report 처럼 화면을 지정하면(보고 일지 안내용) 그 화면으로 바로 간다. */
+    let want='home';
+    try{
+      const q=/[?&]tab=([a-z]+)/.exec(location.search);
+      const h=(location.hash||'').replace(/^#/,'');
+      const t=(q&&q[1])||h;
+      if(t&&App.TABS.some(x=>x.id===t))want=t;
+    }catch(e){}
+    App.go(want);
+  },'home');
   step(()=>{
     const d=new Date();
     document.getElementById('barDate').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 ${App.DW[d.getDay()]}요일`;

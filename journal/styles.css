@@ -1372,9 +1372,9 @@ body:not(.is-home) .home-back{display:grid}
   color:#8fe0b6;background:rgba(87,206,147,.12);border:1px solid rgba(87,206,147,.32)}
 .mnh-sync i{width:6px;height:6px;border-radius:99px;background:#57ce93;box-shadow:0 0 8px rgba(87,206,147,.9)}
 
-/* ── 큰 타일 격자 ── */
+/* ── 큰 타일 격자 (2026-11-26: 에스더 보고 일지 넓은 타일이 맨 위 한 줄) ── */
 .mntiles{flex:1 1 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-  grid-auto-rows:minmax(128px,1fr);gap:9px;min-height:0}
+  grid-template-rows:minmax(72px,.6fr) repeat(4,minmax(0,1fr));gap:9px;min-height:0}
 .mtile{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
   gap:2px;padding:12px 13px 12px;border-radius:18px;text-align:left;overflow:hidden;
   border:1px solid color-mix(in srgb,var(--c) 34%,rgba(255,255,255,.09));
@@ -1405,6 +1405,29 @@ body:not(.is-home) .home-back{display:grid}
 .mt-arrow svg{width:16px;height:16px;display:block}
 .mtile b,.mt-sub{padding-right:16px}
 
+/* ── 에스더 보고 일지: 8개 위에 놓는 넓은 타일 ── */
+.mtile-feature{grid-column:1/-1;flex-direction:row;align-items:center;gap:11px;
+  padding:9px 13px;border-radius:16px;
+  border:1px solid rgba(232,176,75,.44);
+  background:
+    radial-gradient(150% 210% at 100% -20%, rgba(232,176,75,.22), transparent 60%),
+    linear-gradient(158deg,#1e2b3a,#111a26 84%);
+  box-shadow:0 12px 26px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.06)}
+.mtile-feature:active{transform:scale(.985)}
+.mtile-feature .mt-ico{flex:0 0 auto;width:38px;height:38px;border-radius:12px;margin-bottom:0;
+  color:#f7d189;background:linear-gradient(150deg,rgba(243,201,118,.30),rgba(217,154,47,.15));
+  border-color:rgba(232,176,75,.52)}
+.mtile-feature .mt-ico svg{width:20px;height:20px}
+.mtile-feature .mt-wm{right:-10px;bottom:-50px;width:110px;height:110px;opacity:.045}
+.mtf-badge{flex:0 0 auto;font-style:normal;font-size:11.5px;font-weight:800;color:#0f1722;
+  background:linear-gradient(150deg,#f7d189,#e0a63c);border-radius:999px;padding:3px 9px;white-space:nowrap;
+  box-shadow:0 4px 10px rgba(224,166,60,.32)}
+.mtf-t{display:block;min-width:0;flex:1}
+.mtile-feature b{display:block;font-size:17px;letter-spacing:-.04em}
+.mtile-feature .mt-sub{display:block;font-size:12.5px;font-weight:650;color:#d6c39a}
+.mtile-feature b,.mtile-feature .mt-sub{padding-right:0}
+.mtile-feature .mt-arrow{position:static;flex:0 0 auto;margin-left:auto;width:17px;height:17px;opacity:.8}
+
 .mn-foot2{margin-top:auto;text-align:center;font-size:11.5px;color:var(--ink-3);
   font-weight:600;letter-spacing:-.01em;padding:2px 0 1px}
 
@@ -1425,11 +1448,15 @@ body:not(.is-home) .home-back{display:grid}
   .mt-ico{width:50px;height:50px;border-radius:15px}
   .mt-ico svg{width:26px;height:26px}
   .mnh-hello{font-size:21px}
+  .mtile-feature .mt-ico{width:46px;height:46px;border-radius:14px}
+  .mtile-feature .mt-ico svg{width:24px;height:24px}
+  .mtile-feature b{font-size:19px}
+  .mtile-feature .mt-sub{font-size:13.5px}
 }
 /* ── 넓은 화면은 4열로 ── */
 @media(min-width:1000px){
   .mnhome{max-width:1040px}
-  .mntiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;
+  .mntiles{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:minmax(84px,.55fr) minmax(0,1fr) minmax(0,1fr);gap:12px;
     max-height:min(620px,calc(100svh - 250px));align-self:center;width:100%}
 }
 /* 가로로 눕힌 화면: 높이가 짧으니 타일을 낮추고 글자를 줄인다 */
@@ -1440,12 +1467,101 @@ body:not(.is-home) .home-back{display:grid}
   .mnh-kicker{font-size:11.5px}
   .mnh-hello{font-size:16.5px}
   .mnh-now{margin-top:4px;font-size:12px}
-  .mntiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;grid-auto-rows:minmax(94px,1fr)}
+  .mntiles{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:auto minmax(0,1fr) minmax(0,1fr);
+    gap:7px}
   .mtile{padding:9px 10px;border-radius:14px}
-  .mt-ico{width:34px;height:34px;border-radius:11px;margin-bottom:6px}
-  .mt-ico svg{width:18px;height:18px}
+  .mt-ico{width:30px;height:30px;border-radius:10px;margin-bottom:5px}
+  .mt-ico svg{width:17px;height:17px}
   .mtile b{font-size:15px}
-  .mt-sub{font-size:12px}
+  .mntiles .mt-sub{display:none}
+  .mtile-feature{padding:5px 10px;gap:9px;border-radius:13px}
+  .mtile-feature .mt-ico{width:26px;height:26px;border-radius:9px}
+  .mtile-feature .mt-ico svg{width:15px;height:15px}
+  .mtile-feature b{font-size:14.5px}
+  .mtile-feature .mt-sub{display:block;font-size:11px}
   .mt-arrow{display:none}
+  .mnh-sync{height:21px;font-size:11px}
   .mn-foot2{display:none}
+}
+
+/* ══════════════════════════════════════════════════════════
+   2026-11-26 에스더 보고 일지 — 목회 일지 앱 안 화면
+   (숫자 탭 + 접힌 목록으로 스크롤을 최대한 짧게)
+   ══════════════════════════════════════════════════════════ */
+.rp{display:flex;flex-direction:column;gap:8px}
+.rp-h{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:14px;
+  border:1px solid rgba(232,176,75,.26);
+  background:
+    radial-gradient(320px 130px at 0% -40%, rgba(232,176,75,.20), transparent 70%),
+    linear-gradient(155deg,#18232f,#101925 78%);
+  box-shadow:0 8px 20px rgba(0,0,0,.28)}
+.rp-kicker{display:flex;align-items:center;gap:6px;min-width:0;font-size:11.5px;font-weight:800;
+  color:#c9a25a;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rp-kicker svg{width:14px;height:14px;flex:0 0 auto}
+.rp-day{margin-left:auto;flex:0 0 auto;font-size:13px;font-weight:700;color:var(--ink-2);white-space:nowrap}
+.rp-day b{display:inline-block;font-size:11.5px;font-weight:800;color:#0f1722;
+  background:linear-gradient(150deg,#f3c976,#dc9f33);border-radius:5px;padding:1px 6px;margin-right:4px}
+.rp-tabs{display:flex;gap:6px}
+.rp-tab{flex:1;min-height:42px;display:flex;align-items:center;justify-content:center;gap:6px;
+  border-radius:11px;border:1px solid var(--line-2);background:rgba(255,255,255,.03);
+  color:var(--ink-2);font-size:12px;font-weight:700;padding:4px 2px;white-space:nowrap}
+.rp-tab b{font-size:16px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.rp-tab.on.done{background:rgba(87,206,147,.13);border-color:rgba(87,206,147,.55);color:#8fe0b6}
+.rp-tab.on.done b{color:#8fe0b6}
+.rp-tab.on.order{background:rgba(130,169,230,.13);border-color:rgba(130,169,230,.55);color:#a9c6ff}
+.rp-tab.on.order b{color:#a9c6ff}
+.rp-tab.on.hold{background:rgba(240,168,107,.13);border-color:rgba(240,168,107,.55);color:#f4bd8b}
+.rp-tab.on.hold b{color:#f4bd8b}
+.rp-dates{display:flex;gap:6px;overflow-x:auto;padding:1px 1px 2px;scrollbar-width:none}
+.rp-dates::-webkit-scrollbar{display:none}
+.rp-chip{flex:0 0 auto;min-height:29px;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:700;
+  border:1px solid var(--line-2);background:rgba(255,255,255,.03);color:var(--ink-3)}
+.rp-chip.on{background:rgba(232,176,75,.16);border-color:rgba(232,176,75,.5);color:var(--amber-2)}
+.rp-sum{margin:0;font-size:12.5px;line-height:1.5;color:var(--ink-2);padding:1px 2px 0}
+.rp-cau{margin:0;font-size:11.5px;color:var(--amber-2);padding:0 2px}
+.rp-tools{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink-3);padding:1px 2px}
+.rp-tools b{color:var(--ink-2);font-weight:800}
+.rp-tools button{margin-left:auto;min-height:28px;padding:3px 10px;border-radius:999px;
+  font-size:11.5px;font-weight:700;color:var(--amber-2);
+  border:1px solid rgba(232,176,75,.36);background:rgba(232,176,75,.09)}
+.rp-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.rp-li{--c:#e8b04b;position:relative;border-radius:11px;overflow:hidden;
+  border:1px solid var(--line);border-left:3px solid var(--c);
+  background:linear-gradient(160deg,var(--panel-2),var(--panel))}
+.rp-li.done{--c:#57ce93}
+.rp-li.order{--c:#82a9e6}
+.rp-li.hold{--c:#f0a86b}
+.rp-li.on{background:linear-gradient(160deg,#1b2736,#121b27)}
+.rp-row{display:flex;align-items:flex-start;gap:9px;width:100%;padding:8px 10px;text-align:left}
+.rp-row.static{cursor:default}
+.rp-rt{flex:1;min-width:0;display:block}
+.rp-rt b{display:block;font-size:13.5px;line-height:1.35;font-weight:750;color:#fff;letter-spacing:-.02em}
+.rp-res{display:block;margin-top:2px;font-size:12px;line-height:1.42;color:var(--ink-2)}
+.rp-kind{display:inline-block;margin-right:5px;padding:1px 5px;border-radius:5px;
+  font-size:10px;font-weight:800;color:var(--c);
+  background:color-mix(in srgb,var(--c) 16%,transparent);
+  border:1px solid color-mix(in srgb,var(--c) 34%,transparent);vertical-align:1px}
+.rp-ch{flex:0 0 auto;width:16px;height:16px;margin-top:3px;color:var(--ink-3);transition:transform .15s}
+.rp-ch svg{width:16px;height:16px;display:block}
+.rp-li.on .rp-ch{transform:rotate(180deg);color:var(--c)}
+.rp-time{flex:0 0 auto;min-width:36px;font-size:11.5px;font-weight:800;color:#a9c6ff;
+  font-variant-numeric:tabular-nums;padding-top:1px}
+.rp-owner{flex:0 0 auto;align-self:center;font-size:10.5px;font-weight:800;border-radius:5px;padding:2px 6px;
+  color:var(--amber-2);background:rgba(232,176,75,.14);border:1px solid rgba(232,176,75,.34)}
+.rp-owner.me{color:#a9c6ff;background:rgba(130,169,230,.14);border-color:rgba(130,169,230,.34)}
+.rp-det{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 9px;margin:0;
+  padding:7px 11px 9px;border-top:1px dashed var(--line-2);background:rgba(0,0,0,.17)}
+.rp-det dt{font-size:11px;font-weight:700;color:var(--ink-3);white-space:nowrap;padding-top:1px}
+.rp-det dd{margin:0;font-size:12px;line-height:1.45;color:var(--ink);word-break:break-word}
+.rp-det dd a{font-size:11.5px;word-break:break-all}
+.rp-none{padding:22px 14px;text-align:center;font-size:13px;color:var(--ink-2);line-height:1.6;
+  border:1px dashed var(--line-2);border-radius:12px}
+.rp-none span{font-size:12px;color:var(--ink-3)}
+.rp-foot{text-align:center;font-size:11px;color:var(--ink-3);padding:2px 0 4px}
+@media(min-width:760px){
+  .rp-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}
+  .rp-h{padding:10px 14px}
+  .rp-day{font-size:13.5px}
+  .rp-tab{min-height:46px;font-size:12.5px}
+  .rp-tab b{font-size:17px}
 }
