@@ -1,0 +1,171 @@
+/* ==========================================================================
+   제46차 청소년 바이블컨퍼런스 — 상세 안내 (bible-conference.html)
+   --------------------------------------------------------------------------
+   웹 브로셔(brochure-46.css)와 같은 톤을 그대로 쓰고, 이 페이지에서만 쓰는
+   부품만 더합니다. 두 파일을 함께 불러옵니다.
+     · 히어로 아래 한 줄 정보 띠 (.d-strip)
+     · 주제 패널의 세 동사 카드 (.d-flow)
+     · 사진이 붙은 프로그램 카드 (.d-prog)
+     · 가로형 강사 카드 (.d-spk)
+     · 다음 컨퍼런스 두 칸 (.d-next)
+   ========================================================================== */
+
+/* ---------- 상단 바: 이 페이지 표시 ---------- */
+.wb-bar__title em {
+  font-style: normal; font-size: 11px; font-weight: 700; letter-spacing: 0.02em;
+  color: var(--lime); border: 1px solid rgba(200, 230, 0, 0.5);
+  border-radius: 5px; padding: 1px 5px; margin-left: 7px; vertical-align: 1px;
+}
+
+/* ---------- 히어로 아래 정보 띠 ---------- */
+.d-strip {
+  position: relative; z-index: 1;
+  background: rgba(6, 18, 43, 0.62);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(4px);
+  color: #c6d1e8;
+}
+.d-strip__in {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 0;
+  padding: 9px 0;
+}
+.d-strip__in > span { display: flex; align-items: baseline; gap: 6px; font-size: 12px; padding-right: 16px; }
+.d-strip__in > span + span { border-left: 1px solid rgba(255, 255, 255, 0.18); padding-left: 18px; }
+.d-strip__in b { color: #fff; font-weight: 700; }
+.d-strip__in i {
+  font-style: normal; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em;
+  color: var(--lime); text-transform: uppercase;
+}
+.d-strip__copy {
+  margin-left: auto; display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11.5px; font-weight: 700; color: var(--lime);
+}
+.d-strip__copy:hover { color: #d6f214; }
+
+/* ---------- 01 주제: 세 동사 ---------- */
+.d-flow { margin-top: 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.d-flow article {
+  position: relative; padding: 14px 16px 15px; border-radius: 14px;
+  background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow-s);
+}
+.d-flow article:nth-child(3) { background: var(--navy); border-color: var(--navy); }
+.d-flow article:nth-child(3) p, .d-flow article:nth-child(3) span { color: #b7c4de; }
+.d-flow article:nth-child(3) b { color: #fff; }
+.d-flow i {
+  font-style: normal; font-size: 9.5px; font-weight: 800; letter-spacing: 0.12em;
+  color: var(--lime-deep); text-transform: uppercase;
+}
+.d-flow article:nth-child(3) i { color: var(--lime); }
+.d-flow b { display: block; margin: 3px 0 4px; font-size: 15px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
+.d-flow p { font-size: 12.4px; line-height: 1.55; color: var(--body); }
+.d-flow span { display: block; margin-top: 5px; font-size: 11.5px; color: var(--slate); }
+
+/* ---------- 02 프로그램 (사진 붙은 카드) ---------- */
+.d-prog { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.d-prog .prog__item { grid-template-columns: 74px minmax(0, 1fr); gap: 11px; padding: 11px 12px; align-items: start; }
+.d-prog .prog__pic {
+  width: 74px; height: 74px; border-radius: 9px; overflow: hidden; background: var(--navy);
+  position: relative; margin: 0;
+}
+.d-prog .prog__pic img { width: 100%; height: 100%; object-fit: cover; }
+.d-prog .prog__pic::after {
+  content: attr(data-no); position: absolute; left: 0; top: 0;
+  font-size: 9.5px; font-weight: 800; letter-spacing: 0.04em;
+  color: var(--navy); background: var(--lime); padding: 1px 4px; border-bottom-right-radius: 7px;
+}
+.d-prog .prog__title h3 { font-size: 14.2px; }
+.d-prog .prog__ds { font-size: 12.2px; line-height: 1.5; }
+.d-prog .prog__when { margin: 3px 0 3px; }
+
+/* ---------- 03 강사 (가로형) ---------- */
+.d-spk { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+.d-spk__card {
+  display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 12px; align-items: center;
+  padding: 10px 13px 10px 10px; background: var(--paper); border: 1px solid var(--line);
+  border-radius: 13px; box-shadow: var(--shadow-s);
+}
+.d-spk__ph { position: relative; width: 78px; height: 96px; border-radius: 9px; overflow: hidden; background: var(--navy); margin: 0; }
+.d-spk__ph img { width: 100%; height: 100%; object-fit: cover; }
+.d-spk__ph span {
+  position: absolute; left: 0; top: 0; font-size: 8.5px; font-weight: 800; letter-spacing: 0.06em;
+  color: var(--navy); background: var(--lime); padding: 1px 4px; border-bottom-right-radius: 6px;
+}
+.d-spk__tx b { display: block; font-size: 14.5px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
+.d-spk__tx em {
+  display: block; font-style: normal; font-size: 11.4px; color: var(--slate);
+  line-height: 1.45; margin-top: 2px;
+}
+.d-spk__role {
+  display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;
+  font-size: 10.8px; font-weight: 700; color: #4c5a2a; background: #f1f4e2;
+  border-radius: 5px; padding: 2px 6px;
+}
+.d-spk__role i { font-style: normal; color: var(--lime-deep); }
+
+.d-amen {
+  grid-column: 1 / -1; display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 14px;
+  align-items: center; padding: 11px 14px 11px 11px; border-radius: 13px;
+  background: var(--navy); border: 1px solid var(--navy); color: #b7c4de;
+}
+.d-amen img { width: 150px; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 9px; margin: 0; }
+.d-amen b { display: block; font-size: 15px; font-weight: 800; color: #fff; }
+.d-amen p { font-size: 12.2px; line-height: 1.55; }
+.d-amen .k { font-size: 9.5px; font-weight: 800; letter-spacing: 0.12em; color: var(--lime); margin-bottom: 2px; }
+.d-amen strong { color: var(--lime); }
+
+/* ---------- 06 다음 컨퍼런스 ---------- */
+.d-next { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+.d-next a {
+  display: block; padding: 15px 17px; border-radius: 14px; background: var(--paper);
+  border: 1px solid var(--line); box-shadow: var(--shadow-s);
+  transition: border-color 0.15s, transform 0.15s;
+}
+.d-next a:hover { border-color: var(--navy); transform: translateY(-1px); }
+.d-next b { display: block; font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em; color: var(--lime-deep); text-transform: uppercase; }
+.d-next strong { display: block; margin-top: 3px; font-size: 16px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
+.d-next span { display: block; margin-top: 3px; font-size: 12px; color: var(--slate); line-height: 1.5; }
+.d-next em { display: block; margin-top: 7px; font-style: normal; font-size: 11.5px; font-weight: 700; color: var(--navy-mid); }
+.d-next a.is-current { background: var(--navy); border-color: var(--navy); }
+.d-next a.is-current b { color: var(--lime); }
+.d-next a.is-current strong { color: #fff; }
+.d-next a.is-current span { color: #a9b8d5; }
+.d-next a.is-current em { color: var(--lime); }
+
+/* ---------- 푸터 확장 ---------- */
+.wb-foot__meta { margin-top: 10px; font-size: 11px; color: #7d8cab; line-height: 1.6; }
+.wb-foot__sns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.wb-foot__sns a {
+  border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 7px; padding: 4px 8px;
+  font-size: 10.5px; font-weight: 600; color: #c6d1e8;
+}
+.wb-foot__sns a:hover { background: rgba(255, 255, 255, 0.08); }
+
+/* ---------- 반응형 ---------- */
+@media (max-width: 1000px) {
+  .d-prog { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 900px) {
+  .d-spk { grid-template-columns: 1fr; }
+  .d-flow { grid-template-columns: 1fr; }
+  .d-strip__copy { display: none; }
+}
+
+@media (max-width: 760px) {
+  .d-strip__in { gap: 4px 0; padding: 8px 0; }
+  .d-strip__in > span { font-size: 11.2px; padding-right: 10px; }
+  .d-strip__in > span + span { padding-left: 12px; }
+  .d-strip__in > span:nth-child(n + 3) { display: none; }
+  .wb-hero__cta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .wb-hero__cta .btn { width: 100%; padding: 0 8px; font-size: 13.2px; }
+  .wb-hero__cta .btn:first-child { grid-column: 1 / -1; }
+  .wb-hero__cta .btn:last-child { grid-column: 1 / -1; }
+  .d-prog .prog__item { grid-template-columns: 64px minmax(0, 1fr); }
+  .d-prog .prog__pic { width: 64px; height: 64px; }
+  .d-spk__card { grid-template-columns: 70px minmax(0, 1fr); }
+  .d-spk__ph { width: 70px; height: 88px; }
+  .d-amen { grid-template-columns: 104px minmax(0, 1fr); gap: 11px; }
+  .d-amen img { width: 104px; }
+  .d-next { grid-template-columns: 1fr; }
+  .wb-bar__title em { display: none; }
+}

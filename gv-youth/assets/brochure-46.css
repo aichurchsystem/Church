@@ -107,6 +107,21 @@ ul, ol { padding: 0; list-style: none; }
 .wb-bar__link--cta:hover { background: #d6f214; color: var(--navy); }
 .wb-bar__link--icon { padding: 0 10px; }
 
+/* 신청서 바로 내려받기 — 상단 바에서 한 번에 (2026-11-26 지시) */
+.wb-bar__dl {
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 34px; padding: 0 12px; border-radius: 9px;
+  font-size: 12.5px; font-weight: 700; letter-spacing: -0.01em; white-space: nowrap;
+  background: var(--lime); border: 1px solid var(--lime); color: var(--navy);
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+}
+.wb-bar__dl:hover { background: #d6f214; border-color: #d6f214; transform: translateY(-1px); }
+.wb-bar__dl--staff { background: transparent; border-color: rgba(200, 230, 0, 0.62); color: var(--lime); }
+.wb-bar__dl--staff:hover { background: rgba(200, 230, 0, 0.16); border-color: var(--lime); color: var(--lime); }
+.wb-bar__dl svg { flex: none; }
+.wb-bar__dl .dl-short { display: none; }
+.wb-bar__back { display: inline-flex; align-items: center; gap: 5px; }
+
 /* ============================ 표지 (히어로) ============================ */
 .wb-hero {
   position: relative; overflow: hidden;
@@ -607,15 +622,30 @@ ul, ol { padding: 0; list-style: none; }
 
 @media (max-width: 760px) {
   .wrap { padding: 0 18px; }
-  .wb-bar__logo img { width: 112px; }
+  .wb-bar__in { gap: 8px; }
+  .wb-bar__logo img { width: 96px; }
   .wb-bar__nav { gap: 6px; }
   .wb-bar__link span { display: none; }
   .wb-bar__link { padding: 0 10px; }
+  /* 신청서 버튼은 폰에서도 글자를 그대로 보이게 (가장 눌러야 하는 자리) */
+  .wb-bar__dl { height: 38px; padding: 0 10px; font-size: 11.8px; gap: 4px; }
+  .wb-bar__link--back { padding: 0 8px; }
   .wb-hero__in { grid-template-columns: 1fr; }
+  /* 폰에서는 포스터를 뒤에 크게 깔아 표지처럼 — 2026-11-26 "더 진하게" 지시로
+     불투명도 0.30 → 0.95, 흐림 11px → 5px. 글씨는 위아래 어두운 그라데이션으로 눌러 준다. */
   .wb-hero::before {
-    content: ""; position: absolute; inset: -20px; z-index: 0;
-    background: url("images/conf46/poster-46.jpg?v=20261126") 50% 58% / 190% no-repeat;
-    opacity: 0.3; filter: blur(11px) brightness(0.55) saturate(1.25);
+    content: ""; position: absolute; inset: -14px; z-index: 0;
+    background: url("images/conf46/poster-46.jpg?v=20261126") 50% 62% / 205% no-repeat;
+    opacity: 0.95; filter: blur(5px) brightness(0.74) saturate(1.22);
+  }
+  .wb-hero::after {
+    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: linear-gradient(180deg,
+      rgba(6, 18, 43, 0.9) 0%,
+      rgba(6, 18, 43, 0.52) 22%,
+      rgba(6, 18, 43, 0.4) 50%,
+      rgba(6, 18, 43, 0.74) 78%,
+      rgba(6, 18, 43, 0.94) 100%);
   }
   .wb-hero__in { position: relative; z-index: 1; }
   .wb-hero__poster { display: none; }
@@ -634,6 +664,21 @@ ul, ol { padding: 0; list-style: none; }
   .sch__scroll { overflow-x: auto; }
   .tbl { min-width: 540px; }
   .wb-tabs button { min-width: 104px; padding: 9px 12px 10px; }
+  .wb-bar__dl svg { display: none; }
+}
+
+@media (max-width: 420px) {
+  .wb-bar__in { gap: 5px; }
+  .wb-bar__logo img { width: 82px; }
+  .wb-bar__nav { gap: 4px; }
+  .wb-bar__link--icon { display: none; }
+  .wb-bar__dl { padding: 0 9px; font-size: 11.4px; }
+}
+
+/* 아주 좁은 화면(갤럭시 폴드 바깥 등)에서는 버튼 글자를 짧게 */
+@media (max-width: 380px) {
+  .wb-bar__dl .dl-long { display: none; }
+  .wb-bar__dl .dl-short { display: inline; }
   .wb-tabs span { font-size: 13px; }
   .wb-tabs em { display: none; }
   .wb-foot__in { flex-direction: column; gap: 14px; }

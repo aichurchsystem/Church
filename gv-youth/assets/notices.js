@@ -28,7 +28,7 @@ window.GV_NOTICES = [
       '참가 신청서(한글 파일)는 준비 중입니다. 파일이 올라오면 바이블컨퍼런스 안내 페이지의 ‘신청서 내려받기’에서 받으실 수 있고, 작성한 신청서를 aichurchsystem@gmail.com 으로 보내 주시면 담당자 확인 후 접수 안내를 드립니다.',
       '문의 — 02-429-1318'
     ],
-    link: { href: 'bible-conference.html', label: '바이블컨퍼런스 안내·신청 보기' }
+    link: { href: 'bible-conference-detail.html', label: '바이블컨퍼런스 안내·신청 보기' }
   },
   {
     id: 'vision-conference-prep',
