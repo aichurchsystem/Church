@@ -1967,3 +1967,60 @@ body:not(.is-cover) .nav-back{display:grid}
   .rp-rlist{grid-template-columns:1fr 1fr 1fr}
   .rp-rlist span{-webkit-line-clamp:1}
 }
+
+/* ══════════════════════════════════════════════════════════
+   2026-11-27 날짜 이동·날짜별 보기 — 일지·보고·메인
+   (작은 월간 달력 하나를 일지·보고가 함께 쓴다. 스케줄 달력과 같은 모양)
+   ══════════════════════════════════════════════════════════ */
+.mini-cal{margin-top:9px}
+.mini-cal .cal{border:0;background:none;border-radius:0}
+.mini-cal .cal-wd{background:none;border-bottom:1px solid var(--line)}
+.mini-cal .cal-wd div{padding:4px 0;font-size:11px}
+.mini-cal .cal-grid{gap:1px;background:none}
+.mini-cal .cell{min-height:33px;padding:2px 1px 1px;background:rgba(255,255,255,.035);border-radius:7px;
+  align-items:center;gap:0}
+.mini-cal .cell .dn{font-size:11.5px;justify-content:center}
+.mini-cal .cell.today .dn{width:19px;height:19px;border-radius:6px}
+.mini-cal .cell.sel{box-shadow:inset 0 0 0 1.5px rgba(232,176,75,.6)}
+.mini-cal .cell .dots{margin-top:1px}
+.mini-cal .cell .cdot{width:5px;height:5px}
+.mini-cal .cal-h{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:12.5px;font-weight:700}
+.mini-cal .cal-h b{flex:1;text-align:center;letter-spacing:-.01em}
+.mini-cal .cal-h .nav{width:28px;height:26px;border-radius:8px;display:grid;place-items:center;
+  color:var(--ink-3);font-size:15px;line-height:1}
+.mini-cal .cal-h .nav:hover{background:rgba(255,255,255,.07);color:var(--amber-2)}
+
+/* 일지 — 날짜 달력 단추가 붙은 머리줄 */
+.jh-head{flex-wrap:wrap;gap:6px}
+.jh-head .jh-calbtn{margin-left:auto;height:29px;padding:0 9px;font-size:12px}
+.jh-head .jh-calbtn.on{color:var(--amber-2);border-color:rgba(232,176,75,.45);background:rgba(232,176,75,.12)}
+.jh-head .today-btn{margin-left:0;height:29px;padding:0 9px;font-size:12px}
+
+/* 보고 — 날짜 고르기 (‹ 날짜 ›) */
+.rp-dnav{margin-left:auto;display:flex;align-items:center;gap:1px;flex:0 0 auto}
+.rp-nav{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
+  color:var(--ink-3);font-size:15px;line-height:1}
+.rp-nav:hover{background:rgba(255,255,255,.08);color:var(--amber-2)}
+.rp-dnav .rp-day{margin-left:0;display:inline-flex;align-items:center;gap:4px;
+  padding:3px 8px;border-radius:9px;border:1px solid var(--line);background:rgba(255,255,255,.05)}
+.rp-dnav .rp-day.on{border-color:rgba(232,176,75,.5);background:rgba(232,176,75,.13);color:var(--amber-2)}
+.rp-chev{display:inline-flex;width:13px;height:13px;color:var(--ink-3)}
+.rp-chev svg{width:13px;height:13px;display:block;transition:transform .15s}
+.rp-day.on .rp-chev svg{transform:rotate(180deg)}
+.rp-cal .cell.no{opacity:.22}
+.rp-canote{margin:6px 1px 0;font-size:10.5px;color:var(--ink-3);line-height:1.45}
+.rp-canote b{color:var(--amber-2);font-weight:800}
+
+/* 메인 — 지난 목회일지 한 줄 (타일을 늘리지 않는다) */
+.mn-past{flex:0 0 auto;display:flex;align-items:center;gap:8px;width:100%;margin-top:1px;
+  padding:9px 12px;border-radius:13px;border:1px solid rgba(87,206,147,.3);
+  background:linear-gradient(150deg,rgba(87,206,147,.12),rgba(255,255,255,.03));
+  color:var(--ink);font-size:12.5px;font-weight:750;letter-spacing:-.01em}
+.mn-past:active{transform:scale(.985)}
+.mn-past .mp-ico{display:grid;place-items:center;width:17px;height:17px;flex:0 0 auto;color:#57ce93}
+.mn-past .mp-ico svg{width:17px;height:17px;display:block}
+.mn-past span{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mn-past .mp-ar{flex:0 0 auto;font-style:normal;color:#8fe0b6;font-size:15px;line-height:1}
+@media(max-height:520px){
+  .mn-past{margin-top:6px;padding:6px 10px;font-size:11.5px;border-radius:11px}
+}

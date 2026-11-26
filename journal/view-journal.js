@@ -22,6 +22,8 @@ function renderJournal(){
   const carSum=App.D.carExpenses.filter(e=>e.date.slice(0,7)===month).reduce((a,e)=>a+(+e.amount||0),0);
   const wdName=['월','화','수','목','금','토','일'];
   const days=[0,1,2,3,4,5,6].map(i=>App.addDays(wk,i));
+  const jcal=!!D.ui.jCal;                 /* 날짜 달력 펼침 (2026-11-27) */
+  const gm=D.ui.jMonth||month;
   const dd=App.dateObj(dk);
   const info=App.autoInfo?App.autoInfo(dk):{n:0,by:{},sum:0};
   const wo=App.woSummary?App.woSummary(dk):{sets:0,exs:[]};
@@ -53,10 +55,12 @@ function renderJournal(){
   <div class="split">
     <div class="sticky">
       <div class="card pad">
-        <div class="week-head">
+        <div class="week-head jh-head">
           <span class="m">${App.dateObj(wk).getFullYear()}년 ${App.dateObj(wk).getMonth()+1}월</span>
+          <button class="btn sm ghost jh-calbtn ${jcal?'on':''}" type="button" data-jcal aria-expanded="${jcal?'true':'false'}">${jcal?'달력 접기':'날짜 달력'}</button>
           <button class="btn sm ghost today-btn" data-today>오늘</button>
         </div>
+        ${jcal?`<div class="mini-cal j-mini">${jMonthGrid(gm)}</div>`:''}
         <div class="week">
           <button class="nav" data-nav="-7">‹</button>
           ${days.map((k,i)=>{
@@ -131,9 +135,21 @@ function renderJournal(){
     </div>
   </div>`;
 
-  el.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>{D.ui.journalDate=App.addDays(dk,+b.dataset.nav);App.save();renderJournal()});
-  el.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{D.ui.journalDate=b.dataset.d;App.save();renderJournal()});
-  el.querySelector('[data-today]').onclick=()=>{D.ui.journalDate=today;App.save();renderJournal()};
+  el.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>{D.ui.journalDate=App.addDays(dk,+b.dataset.nav);D.ui.jMonth=D.ui.journalDate.slice(0,7);App.save();renderJournal()});
+  el.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{D.ui.journalDate=b.dataset.d;D.ui.jMonth=b.dataset.d.slice(0,7);App.save();renderJournal()});
+  el.querySelector('[data-today]').onclick=()=>{D.ui.journalDate=today;D.ui.jMonth=today.slice(0,7);App.save();renderJournal()};
+  /* 날짜 달력 — 펼치기, 달 넘기기, 날짜 한 번에 고르기 */
+  el.querySelectorAll('[data-jcal]').forEach(b=>b.onclick=()=>{D.ui.jCal=!D.ui.jCal;App.save();renderJournal()});
+  el.querySelectorAll('[data-jm]').forEach(b=>b.onclick=()=>{
+    const [y,mm]=gm.split('-').map(Number);
+    const d=new Date(y,mm-1+(+b.dataset.jm),1);
+    D.ui.jMonth=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    App.save();renderJournal();
+  });
+  el.querySelectorAll('[data-jday]').forEach(b=>b.onclick=()=>{
+    D.ui.journalDate=b.dataset.jday;D.ui.jMonth=b.dataset.jday.slice(0,7);D.ui.jCal=false;
+    App.save();renderJournal();
+  });
   el.querySelector('[data-add]').onclick=()=>journalEdit(null,dk);
   el.querySelector('[data-batch]').onclick=()=>journalBatch(dk);
   const clr=el.querySelector('[data-autoclear]');
@@ -146,6 +162,37 @@ function renderJournal(){
   });
   el.querySelectorAll('.jitem').forEach(n=>n.onclick=()=>journalEdit(n.dataset.id,dk));
   el.querySelectorAll('.jrow').forEach(n=>n.onclick=()=>journalEdit(n.dataset.id,dk));
+}
+
+/* ── 날짜 고르기 달력 (2026-11-27 목사님 지시: 일지 맨 위에서 아무 날짜나 한 번에) ──
+   스케줄 달력과 같은 모양이지만 상태는 D.ui.journalDate만 움직인다(서로 섞이지 않게 따로 둔다).
+   점: 금색 = 일지 기록이 있는 날, 파랑 = 일정이 있는 날 */
+function jMonthGrid(m){
+  const D=App.D;
+  const y=+m.slice(0,4), mo=+m.slice(5,7);
+  const start=App.mondayOf(`${m}-01`);
+  const today=App.todayKey(), sel=D.ui.journalDate||today;
+  const jd={}, evd={};
+  (D.journal||[]).forEach(j=>{jd[j.date]=(jd[j.date]||0)+1});
+  (D.events||[]).forEach(e=>{const k=App.evDate(e);if(k)evd[k]=(evd[k]||0)+1});
+  let cells='';
+  for(let i=0;i<42;i++){
+    const k=App.addDays(start,i);
+    const nj=jd[k]||0, ne=evd[k]||0, dow=App.dow(k);
+    cells+=`<button class="cell ${App.inMonth(k,m)?'':'out'} ${dow===0?'sun':''} ${dow===6?'sat':''} ${k===today?'today':''} ${k===sel?'sel':''}" type="button" data-jday="${k}" aria-label="${App.fmtDate(k)} 기록 ${nj}건 일정 ${ne}건">
+      <span class="dn">${App.dateObj(k).getDate()}</span>
+      ${(nj||ne)?`<span class="dots">${nj?`<i class="cdot" style="background:#e8b04b"></i>`:''}${ne?`<i class="cdot" style="background:#82a9e6"></i>`:''}</span>`:''}
+    </button>`;
+  }
+  return `<div class="cal-h">
+      <button class="nav" type="button" data-jm="-1" aria-label="지난 달">‹</button>
+      <b>${y}년 ${mo}월</b>
+      <button class="nav" type="button" data-jm="1" aria-label="다음 달">›</button>
+    </div>
+    <div class="cal">
+      <div class="cal-wd">${['월','화','수','목','금','토','일'].map((d,i)=>`<div class="${i===5?'sat':i===6?'sun':''}">${d}</div>`).join('')}</div>
+      <div class="cal-grid">${cells}</div>
+    </div>`;
 }
 
 /* 자동 항목 한 줄 */

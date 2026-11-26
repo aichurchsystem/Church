@@ -6,7 +6,8 @@
 var BASE='../report/data/';
 var LS_IDX='mj.rp.idx', LS_DAY='mj.rp.day.', LS_LAT='mj.rp.latest';
 var RP={dates:[],date:null,data:null,view:'done',filt:'',open:{},all:false,
-        booted:false,req:0,err:'',stale:false,latest:null};
+        booted:false,req:0,err:'',stale:false,latest:null,
+        cal:false,calM:null};
 window.RP=RP;
 
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}return null}
@@ -82,18 +83,36 @@ function boot(cb){
   }).catch(function(){
     RP.dates=cached.map(function(x){return x}).sort().reverse();
     RP.err=RP.dates.length?'':'index';
-  }).then(function(){
-    var today=App.todayKey();
-    /* index.json에 오늘 것이 아직 없어도 오늘 파일이 있으면 먼저 보여 준다 */
-    if(RP.dates.length&&RP.dates[0]!==today){
-      return fetchJSON(today).then(function(x){
-        if(x&&x.date){RP.dates.unshift(today);ls(LS_IDX,JSON.stringify(RP.dates));RP.data=x;RP.date=today;setLatest(x)}
-      }).catch(function(){});
-    }
-  }).then(function(){
+  }).then(fillGaps).then(function(){
     if(RP.data&&RP.date){renderReport();if(cb)cb();return}
-    if(!RP.dates.length){RP.err='empty';renderReport();if(cb)cb();return}
+    if(!RP.dates.length){RP.err=RP.err||'empty';renderReport();if(cb)cb();return}
     loadDay(RP.date||RP.dates[0],cb);
+  });
+}
+/* index.json에 아직 안 들어간 날(예약이 파일만 먼저 올린 경우)을 최근 31일 안에서 확인해 채운다.
+   2026-11-27 추가 — 파일이 실제로 있는 날만 더하고, 없는 날은 만들지 않는다. */
+function fillGaps(){
+  if(RP.err)return Promise.resolve();
+  var today=App.todayKey();
+  var newest=RP.dates.length?RP.dates[0]:'';
+  var probe=[];
+  for(var i=0;i<31;i++){
+    var k=App.addDays(today,-i);
+    if(newest&&k<=newest)break;
+    probe.push(k);
+  }
+  if(!probe.length)return Promise.resolve();
+  return Promise.all(probe.map(function(k){
+    return fetch(BASE+k+'.json?t='+Date.now(),{cache:'no-store'})
+      .then(function(r){return r.ok?r.json():null})
+      .then(function(x){return (x&&x.date===k)?k:null})
+      .catch(function(){return null});
+  })).then(function(found){
+    var add=found.filter(Boolean);
+    if(!add.length)return;
+    add.forEach(function(k){if(RP.dates.indexOf(k)<0)RP.dates.push(k)});
+    RP.dates.sort().reverse();
+    ls(LS_IDX,JSON.stringify(RP.dates));
   });
 }
 function loadDay(d,cb){
@@ -114,9 +133,9 @@ function loadDay(d,cb){
   });
 }
 function selectDate(d){
-  if(!d||d===RP.date)return;
+  if(!d||(d===RP.date&&RP.data))return;
   RP.req++;                       /* 늦게 도착한 응답은 무시 */
-  RP.date=d;RP.open={};RP.all=false;
+  RP.date=d;RP.open={};RP.all=false;RP.cal=false;RP.calM=d.slice(0,7);
   RP.data=jget(LS_DAY+d);RP.stale=!!RP.data;RP.err='';
   renderReport();
   window.scrollTo({top:0,behavior:'instant'});
@@ -172,24 +191,71 @@ function headHTML(){
   var day='불러오는 중';
   if(RP.date){
     var rel=relDay(RP.date);
-    day=(rel?'<b>'+rel+'</b>':'')+md(RP.date)+' '+dowOf(RP.date)+'요일';
+    day=(rel?'<b>'+rel+'</b> ':'')+md(RP.date)+' '+dowOf(RP.date)+'요일';
   }
   return '<div class="rp-h">'
     +'<div class="rp-kicker">'+ICON_REP+'<span>에스더 보고 일지</span></div>'
-    +'<div class="rp-day">'+day+'</div>'
+    +'<div class="rp-dnav">'
+      +'<button class="rp-nav" type="button" data-action="rp-step" data-dir="newer" aria-label="다음 날 보고">‹</button>'
+      +'<button class="rp-day'+(RP.cal?' on':'')+'" type="button" data-action="rp-cal" aria-expanded="'+(RP.cal?'true':'false')+'" aria-label="날짜를 골라 보고 보기">'
+        +day+'<i class="rp-chev">'+CHEV+'</i></button>'
+      +'<button class="rp-nav" type="button" data-action="rp-step" data-dir="older" aria-label="이전 날 보고">›</button>'
+    +'</div>'
   +'</div>'
+  +(RP.cal?rpCalHTML():'')
   +'<div class="rp-tabs">'
     +tabBtn('done',c.done,'수행한 일',RP.view==='done')
     +tabBtn('doing',c.doing+c.hold,'작업 진행 중',RP.view==='doing')
   +'</div>';
 }
+/* 날짜 골라 보기 — 보고 자료가 있는 날만 고를 수 있는 월간 달력 (2026-11-27 목사님 지시) */
+function rpCalHTML(){
+  var m=RP.calM||(RP.date||App.todayKey()).slice(0,7);
+  var have={};
+  (RP.dates||[]).forEach(function(d){have[d]=1});
+  var y=+m.slice(0,4), mo=+m.slice(5,7);
+  var start=App.mondayOf(m+'-01');
+  var today=App.todayKey();
+  var cells='';
+  for(var i=0;i<42;i++){
+    var k=App.addDays(start,i);
+    var ok=!!have[k], dow=App.dow(k);
+    var cls='cell'+(App.inMonth(k,m)?'':' out')+(dow===0?' sun':(dow===6?' sat':''))
+      +(k===today?' today':'')+(k===RP.date?' sel':'')+(ok?'':' no');
+    var inner='<span class="dn">'+App.dateObj(k).getDate()+'</span>'
+      +(ok?'<span class="dots"><i class="cdot" style="background:#ecc970"></i></span>':'');
+    cells+= ok
+      ? '<button class="'+cls+'" type="button" data-action="rp-date" data-date="'+k+'" aria-label="'+App.esc(App.fmtDate(k))+' 보고 보기">'+inner+'</button>'
+      : '<button class="'+cls+'" type="button" disabled aria-label="'+App.esc(App.fmtDate(k))+' 보고 없음">'+inner+'</button>';
+  }
+  var n=(RP.dates||[]).length;
+  var first=RP.dates&&RP.dates.length?RP.dates[RP.dates.length-1]:'';
+  return '<div class="mini-cal rp-cal">'
+    +'<div class="cal-h">'
+      +'<button class="nav" type="button" data-action="rp-m" data-step="-1" aria-label="지난 달">‹</button>'
+      +'<b>'+y+'년 '+mo+'월</b>'
+      +'<button class="nav" type="button" data-action="rp-m" data-step="1" aria-label="다음 달">›</button>'
+    +'</div>'
+    +'<div class="cal">'
+      +'<div class="cal-wd">'+['월','화','수','목','금','토','일'].map(function(d,i2){
+        return '<div class="'+(i2===5?'sat':i2===6?'sun':'')+'">'+d+'</div>'}).join('')+'</div>'
+      +'<div class="cal-grid">'+cells+'</div>'
+    +'</div>'
+    +'<p class="rp-canote">보고 자료가 있는 날 <b>'+n+'일</b>'
+      +(first?' · '+md(first)+'부터':'')+' · 노란 점이 있는 날만 고를 수 있습니다.</p>'
+  +'</div>';
+}
 function datesHTML(){
-  /* 날짜가 하나뿐이면 위쪽 날짜 표시와 겹치므로 생략한다(스크롤을 줄인다) */
-  if(!RP.dates||RP.dates.length<2)return '';
-  return '<div class="rp-dates">'+RP.dates.map(function(d){
+  /* 날짜가 하루뿐이어도 날짜는 고를 수 있어야 한다 — 칩은 최근 12일만 두고 나머지는 달력에서 고른다 */
+  if(!RP.dates||!RP.dates.length)return '';
+  var list=RP.dates.slice(0,12);
+  var rest=RP.dates.length-list.length;
+  return '<div class="rp-dates">'+list.map(function(d){
     return '<button class="rp-chip'+(d===RP.date?' on':'')+'" type="button" data-action="rp-date" data-date="'+App.esc(d)+'">'
       +App.esc(chipLabel(d))+'</button>';
-  }).join('')+'</div>';
+  }).join('')
+    +(rest>0?'<button class="rp-chip" type="button" data-action="rp-cal">＋'+rest+'일 더</button>':'')
+  +'</div>';
 }
 function detHTML(it){
   var rows=(it.detail||[]).slice();
@@ -245,6 +311,7 @@ function listHTML(){
   if(!d){
     if(RP.err==='empty')return '<div class="rp-none">아직 정리된 보고가 없습니다.<br><span>매일 아침 7시에 어제 하루를 정리해 올립니다.</span></div>';
     if(RP.err==='index')return '<div class="rp-none">보고 일지를 불러오지 못했습니다.<br><span>잠시 뒤 다시 열어 주세요.</span></div>';
+    if(RP.err==='day')return '<div class="rp-none">이 날 보고 자료가 없습니다.<br><span>위 날짜를 눌러 노란 점이 있는 날을 골라 주세요.</span></div>';
     return '<div class="rp-none">불러오는 중…</div>';
   }
   var html='';
@@ -309,6 +376,27 @@ App.ACT['rp-mark']=function(el){
   App.toast(m[key]==='done'?'확인함으로 표시했습니다':'되돌렸습니다');
 };
 App.ACT['rp-date']=function(el){selectDate(el.dataset.date)};
+App.ACT['rp-cal']=function(){
+  RP.cal=!RP.cal;
+  if(RP.cal)RP.calM=(RP.date||App.todayKey()).slice(0,7);
+  renderReport();
+};
+App.ACT['rp-m']=function(el){
+  var m=RP.calM||(RP.date||App.todayKey()).slice(0,7);
+  var y=+m.slice(0,4), mo=+m.slice(5,7);
+  var d=new Date(y,mo-1+(+el.dataset.step||0),1);
+  RP.calM=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  renderReport();
+};
+/* ‹ › — 보고가 있는 날 사이로만 움직인다(없는 날을 지나치지 않는다) */
+App.ACT['rp-step']=function(el){
+  var ds=RP.dates||[];
+  if(!ds.length||!RP.date)return;
+  var i=ds.indexOf(RP.date);if(i<0)i=0;
+  var j=i+(el.dataset.dir==='older'?1:-1);
+  if(j<0||j>=ds.length){App.toast(el.dataset.dir==='older'?'가장 오래된 보고입니다':'가장 최근 보고입니다');return}
+  selectDate(ds[j]);
+};
 App.ACT['rp-open']=function(el){
   var i=el.dataset.i;if(i==null)return;
   RP.open[i]=!RP.open[i];

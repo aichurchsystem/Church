@@ -4,7 +4,7 @@ const KEY='mj.v1';
 const App={};
 window.App=App;
 /* 빌드 표시 — index.html의 <meta name="app-version"> 값과 다르면 옛 화면이므로 한 번 새로 연다 */
-App.VERSION='20261126h2';
+App.VERSION='20261127a';
 
 /* 일정 시간·남은 시간 — 메인과 캘린더가 함께 쓴다 */
 function mnTime(start){
@@ -130,6 +130,7 @@ function blank(){
       plate:'',year:'',mileage:'',insurance:'',inspection:'',tire:'',image:''}],
     carExpenses:[], restaurants:[],
     ui:{tab:'home',journalDate:App.todayKey(),chapter:'dawn',counselId:null,
+        jMonth:App.todayKey().slice(0,7),jCal:false,
         calMonth:App.todayKey().slice(0,7),calDate:App.todayKey(),calFilter:'all',
         calTab:'month',schMonth:false,noteTheme:'',noteTag:'',noteQ:'',sermonTheme:'dawn',carFilter:'',
         foodQ:'',foodRegion:''}
@@ -477,6 +478,9 @@ App.init=function(){
   /* 한 단계가 실패해도 나머지는 계속 진행한다 — 메인이 비지 않게 */
   const step=function(fn,name){try{fn()}catch(e){console.error('[boot]',name||'',e)}};
   step(App.load,'load');
+  /* 앱을 새로 열면 스케줄은 오늘로 돌린다 — 며칠 전에 골라 둔 날짜가 남아
+     '일정이 없다'로 보이지 않게 (2026-11-27) */
+  step(()=>{App.D.ui.calDate=App.todayKey();App.D.ui.calMonth=App.todayKey().slice(0,7)},'date-reset');
   App._scroll={};App._tab=null;
   /* 메모 화면은 2026-11-26 내렸다. 남아 있던 자료는 지우지 않고 한 번 파일로 내려받게 한다 */
   step(()=>{

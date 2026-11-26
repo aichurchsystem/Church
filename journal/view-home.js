@@ -121,6 +121,17 @@ function mnReportHTML(){
   +'</button>';
 }
 
+/* 지난 목회일지 — 메인에서 한 줄로 붙이는 보조 입구 (2026-11-27 목사님 지시)
+   타일을 더 늘리면 메인이 길어지므로, 타일 아래 작은 줄 하나로 둔다. */
+function mnPastHTML(){
+  var icon=(App.ICON&&App.ICON.calendar)||'';
+  return '<button class="mn-past" type="button" data-action="journal-cal">'
+    +'<i class="mp-ico">'+icon+'</i>'
+    +'<span>지난 목회일지 — 날짜 골라 보기</span>'
+    +'<i class="mp-ar" aria-hidden="true">›</i>'
+  +'</button>';
+}
+
 function mnHeroHTML(){
   return '<div class="mnh">'
     +'<div class="mnh-top">'
@@ -139,6 +150,7 @@ function mnShellHTML(){
       + mnReportHTML()
       + MN_TILES.map(mnTileHTML).join('')
     +'</div>'
+    + mnPastHTML()
     +'<div class="mn-foot2">'+App.esc(App.tx('home.foot','박재용 목사 · 글로벌비전교회 담임 · GV청소년선교회 대표'))+'</div>'
   +'</div>';
 }
@@ -194,6 +206,18 @@ function renderHome(){
   el.innerHTML=mnShellHTML();   /* 1) 골격 먼저 — 무슨 일이 있어도 타일 8개가 그려진다 */
   try{mnRefresh()}catch(e){console.warn('[home] 숫자 채우기',e)}  /* 2) 숫자는 따로 */
 }
+
+/* 메인 → 일지: 날짜 달력을 펼친 상태로 연다 */
+App.ACT['journal-cal']=function(){
+  try{
+    var D=App.D;
+    D.ui.jCal=true;
+    D.ui.journalDate=D.ui.journalDate||App.todayKey();
+    D.ui.jMonth=D.ui.journalDate.slice(0,7);
+    App.save();
+  }catch(e){}
+  App.go('journal');
+};
 
 /* ── 관리자 화면에 올릴 메인 문구 등록 (2026-11-26: 타일 이름·부제도 고칠 수 있게) ── */
 (function(){

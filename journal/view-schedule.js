@@ -32,14 +32,19 @@ function renderSchedule(){
   const ch=(D.ui.chapter&&D.ui.chapter!=='dawn')?D.ui.chapter:'presby';
   const past=!!D.ui.schPast;
   const limit=D.ui.schLimit||12;
-  const from=past?App.addDays(today,-30):(dk>today?dk:today);
+  /* 날짜를 골랐으면 그날 하루만, 오늘이면 앞으로의 일정 (2026-11-27 목사님 지시) */
+  const dayView=dk!==today;
+  const from=past?App.addDays(today,-30):today;
+  const ddv=App.dateObj(dk);
+  const dayTitle=`${ddv.getMonth()+1}월 ${ddv.getDate()}일 (${App.DW[ddv.getDay()]}) 일정`;
 
   /* 앞으로의 일정 — 날짜별로 묶는다 */
   const all=(D.events||[]).filter(e=>{
     const d=App.evDate(e);
-    return d&&d>=from&&!schIsWorship(e)&&schPass(e);
+    if(!d||schIsWorship(e)||!schPass(e))return false;
+    return dayView?d===dk:d>=from;
   }).sort((a,b)=>(a.start||'').localeCompare(b.start||''));
-  const list=all.slice(0,limit);
+  const list=dayView?all:all.slice(0,limit);
   const rest=all.length-list.length;
   const byDate={};
   list.forEach(e=>{const d=App.evDate(e);(byDate[d]=byDate[d]||[]).push(e)});
@@ -73,11 +78,11 @@ function renderSchedule(){
     <div class="sch-right">
       <div class="sch-h">
         <div class="sh-l">
-          <b>앞으로의 일정</b>
-          <span>${past?'지난 30일 포함':'오늘부터'} · 예배 제외 · ${all.length}건</span>
+          <b>${dayView?dayTitle:'앞으로의 일정'}</b>
+          <span>${dayView?'이 날 하루':(past?'지난 30일 포함':'오늘부터')} · 예배 제외 · ${all.length}건</span>
         </div>
         <div class="sh-r">
-          <button class="btn sm ghost" type="button" data-sch="past">${past?'지난 일정 접기':'지난 일정'}</button>
+          ${dayView?'':`<button class="btn sm ghost" type="button" data-sch="past">${past?'지난 일정 접기':'지난 일정'}</button>`}
           <button class="btn sm primary" type="button" data-action="ev-add" data-date="${dk}">＋ 일정</button>
         </div>
       </div>
@@ -88,9 +93,14 @@ function renderSchedule(){
         <button class="chip ${schChapterFilter()==='other'?'sel':''}" type="button" data-sch="ch" data-ch="other">미분류</button>
       </div>
 
-      ${dates.length?dates.map(d=>schDayGroup(d,byDate[d])).join(''):`<div class="card"><div class="card-b">${App.empty('앞으로 잡힌 일정이 없습니다','구글 캘린더에 넣으면 자동으로 이곳에 들어옵니다.','')}</div></div>`}
+      ${dates.length?dates.map(d=>schDayGroup(d,byDate[d])).join('')
+        :`<div class="card"><div class="card-b">${dayView
+          ?App.empty('이 날은 잡힌 일정이 없습니다','다른 날짜를 눌러 보시거나 오른쪽 ＋ 일정으로 그날 일정을 넣을 수 있습니다.','')
+          :App.empty('앞으로 잡힌 일정이 없습니다','구글 캘린더에 넣으면 자동으로 이곳에 들어옵니다.','')}</div></div>`}
       ${rest>0?`<button class="btn ghost sch-more" type="button" data-sch="more">${rest}건 더 보기</button>`:''}
-      <p class="muted sch-foot">예배(새벽·주일·수요·금요·줌)는 스케줄표에서 뺐습니다. 그날 예배는 <b>일지</b>에 자동으로 남습니다.</p>
+      <p class="muted sch-foot">${dayView
+        ?'이 날 예배(새벽·주일·수요·금요·줌)도 스케줄표에서는 빼 두었습니다. 예배는 <b>일지</b>에 그대로 남아 있습니다.'
+        :'예배(새벽·주일·수요·금요·줌)는 스케줄표에서 뺐습니다. 그날 예배는 <b>일지</b>에 자동으로 남습니다.'}</p>
     </div>
 
     <div class="card sch-tasks">
