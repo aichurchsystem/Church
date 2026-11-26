@@ -54,8 +54,8 @@ function renderHome(){
     ? `목사님, 오늘 일정 <b>${evCount}건</b>입니다`
     : `목사님, 오늘은 일정이 없는 하루입니다`;
   const nextLine = next
-    ? `${mnLeft(next.start)} · <b>${esc(next.summary)}</b>`
-    : (evs.length?`오늘 일정은 모두 마쳤습니습니다`:`이번 주 일정은 <b>${later.length}건</b> 남아 있습니다`);
+    ? `<span class="nm">${esc(next.summary)}</span><span class="in">${mnLeft(next.start)}</span>`
+    : (evs.length?`오늘 일정은 모두 마쳤습니다`:`이번 주 일정은 <b>${later.length}건</b> 남아 있습니다`);
   const synced=window.GCal&&window.GCal.state?window.GCal.state:null;
   const syncTxt=synced&&synced.last
     ? `구글 캘린더 연동 · ${new Date(synced.last).getHours()}시 ${String(new Date(synced.last).getMinutes()).padStart(2,'0')}분`
@@ -72,7 +72,7 @@ function renderHome(){
       </div>
       <div class="mn-date">${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 ${App.DW[d.getDay()]}요일 · ${now.getHours()}시 ${String(now.getMinutes()).padStart(2,'0')}분</div>
       <h2 class="mn-greet">${greet}</h2>
-      <div class="mn-next"><span class="lb">${next?'다음 일정':'오늘'}</span><span class="tx">${nextLine}</span></div>
+      <div class="mn-next"><span class="lb">${next?'다음':'오늘'}</span><span class="tx">${nextLine}</span></div>
       <div class="mn-chips">
         <span><b>${evCount}</b> 오늘 일정</span>
         <span><b>${jitems.length}</b> 일지</span>
