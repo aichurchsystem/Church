@@ -933,3 +933,16 @@ label.fld > span{display:block;font-size:12.5px;font-weight:700;color:var(--ink-
   .stl{font-size:11px}
   .hero .hchip{height:25px;font-size:12px;padding:0 8px}
 }
+@media(max-width:600px){
+  .food{flex-direction:row}
+  .food-img{flex:0 0 100px;height:auto;min-height:104px;border-radius:0;background-position:center}
+  .food-b{padding:9px 11px 10px;gap:2px}
+  .food-img .fb:not(.pick){display:none}
+  .food-img .food-badges{top:6px;left:6px;right:6px}
+  .food-img .fb.pick{font-size:9.5px;padding:2px 5px}
+  .food-r1 b{font-size:14px}
+  .food-foot{padding-top:4px}
+  .ph-initial{font-size:32px}
+  .ph-label{display:none}
+  .food-menu{font-size:12px;margin-top:1px}
+}
