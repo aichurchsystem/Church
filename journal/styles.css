@@ -1659,7 +1659,7 @@ body.is-home .cover-back{display:grid}
 
 /* 태블릿·PC: 표지가 화면을 가득 채운다
    (2026-11-26 목사님 지시 "탭에서 보니 화면이 꽉 차지 않고 가운데 조그맣게 보인다. 화면 전체에 보이게") */
-@media (min-width:760px) and (min-height:620px){
+@media (min-width:700px) and (min-height:480px){
   body.is-cover{display:block;padding:0;min-height:100svh;--cv-pad:max(22px, calc((100vw - 900px) / 2));
     background:#070c12}
   body.is-cover .wrap{width:100%;max-width:none;padding:0}
@@ -1685,7 +1685,7 @@ body.is-home .cover-back{display:grid}
   .cv-foot{font-size:12px}
 }
 /* 태블릿을 옆으로 눕힌 넓은 화면: 사진과 표가 한 화면에 들어오도록 사진 높이만 줄인다 */
-@media (min-width:760px) and (min-height:620px) and (min-aspect-ratio:4/3){
+@media (min-width:700px) and (min-height:480px) and (min-aspect-ratio:4/3){
   .cv-photo{min-height:min(48svh,460px)}
   .cv-body{gap:10px}
   .cv-r dt,.cv-r dd{padding-top:8px;padding-bottom:8px}
