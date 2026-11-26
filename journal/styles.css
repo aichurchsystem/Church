@@ -2025,3 +2025,10 @@ body:not(.is-cover) .nav-back{display:grid}
 @media(max-height:520px){
   .mn-past{margin-top:6px;padding:6px 10px;font-size:11.5px;border-radius:11px}
 }
+/* 좁은 폰: 보고 화면 날짜 줄을 아래 한 줄로 넓게 (2026-11-27) */
+@media(max-width:600px){
+  .rp-h{flex-wrap:wrap;gap:5px}
+  .rp-dnav{margin-left:0;width:100%;gap:4px}
+  .rp-dnav .rp-day{flex:1;justify-content:center;min-height:34px}
+  .rp-nav{width:34px;height:34px;font-size:16px}
+}
