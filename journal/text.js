@@ -12,11 +12,14 @@
    4) 관리자 화면을 만들 때:  App.txAdminHTML() 로 목록을 그리고,
       저장 버튼에서 App.txAdminSave(화면요소) 를 부르면 된다.
    5) 묶음 설명은 App.txSection('표지','표지','첫 화면에 크게 들어가는 글자') 로 붙인다.
-   저장 위치는 이 앱의 localStorage 'mj.txt.v1' 하나뿐이라 다른 앱과 섞이지 않는다.
+   저장 위치는 이 앱의 localStorage 하나뿐이라 다른 앱과 섞이지 않는다.
+   같은 주소(origin)에 여러 앱을 두는 경우에는 앱마다 이름을 달리 준다:
+      <script>window.App=window.App||{};App.TXTS_KEY='앱이름.txt.v1';</script>
+   를 text.js보다 먼저 넣으면 그 이름으로 저장된다.
    값이 비어 있으면 언제나 기본 문구로 돌아간다. */
 (function(){
 const App=window.App||(window.App={});
-const KEY='mj.txt.v1';
+const KEY=(App.TXTS_KEY||'mj.txt.v1');
 const LIMIT=90;                 /* 한 줄 입력 길이 제한 — 레이아웃이 깨지지 않게 */
 
 App.TXTDEF=App.TXTDEF||{};      /* 기본 문구 */
