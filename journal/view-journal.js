@@ -94,7 +94,7 @@ function renderJournal(){
 
       <div class="jsum">
         <span class="js-l">한눈에</span>
-        <span class="js-t">${bits.length?bits.join(' · '):'오늘은 아직 모인 기록이 없습니다'}</span>
+        <span class="js-t">${bits.length?bits.join(' · '):'이 날은 아직 모인 기록이 없습니다'}</span>
         ${autoAll?`<button class="js-clr" type="button" data-autoclear>자동 ${autoAll}건 지우기</button>`:''}
       </div>
 

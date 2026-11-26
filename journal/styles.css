@@ -2008,6 +2008,7 @@ body:not(.is-cover) .nav-back{display:grid}
 .rp-chev svg{width:13px;height:13px;display:block;transition:transform .15s}
 .rp-day.on .rp-chev svg{transform:rotate(180deg)}
 .rp-cal .cell.no{opacity:.22}
+.rp-cal{max-width:440px;margin-left:auto;margin-right:auto}
 .rp-canote{margin:6px 1px 0;font-size:10.5px;color:var(--ink-3);line-height:1.45}
 .rp-canote b{color:var(--amber-2);font-weight:800}
 

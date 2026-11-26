@@ -9,18 +9,18 @@
 <meta property="og:description" content="구글 캘린더와 자동으로 맞춰지는 목회 일지 — 일지·스케줄·상담·캘린더·목회 메모·설교 준비">
 <meta property="og:site_name" content="목회일지">
 <meta name="theme-color" content="#0a1017">
-<meta name="app-version" content="20261127b">
+<meta name="app-version" content="20261127c">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="목회일지">
-<link rel="manifest" href="manifest.json?v=20261127b">
+<link rel="manifest" href="manifest.json?v=20261127c">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
 <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-180.png">
-<link rel="stylesheet" href="styles.css?v=20261127b">
-<link rel="stylesheet" href="workout.css?v=20261127b">
-<script>window.APP_VERSION='20261127b';</script>
+<link rel="stylesheet" href="styles.css?v=20261127c">
+<link rel="stylesheet" href="workout.css?v=20261127c">
+<script>window.APP_VERSION='20261127c';</script>
 </head>
 <body>
 <header class="topbar">
@@ -80,28 +80,28 @@
 <div class="toast" id="toast"></div>
 <input type="file" id="fileImport" accept="application/json,.json" hidden>
 
-<script src="seed.js?v=20261127b"></script>
-<script src="seed-restaurants.js?v=20261127b"></script>
-<script src="core.js?v=20261127b"></script>
-<script src="text.js?v=20261127b"></script>
-<script src="icons.js?v=20261127b"></script>
-<script src="gcal.js?v=20261127b"></script>
-<script src="view-cover.js?v=20261127b"></script>
-<script src="view-home.js?v=20261127b"></script>
-<script src="view-journal.js?v=20261127b"></script>
-<script src="view-schedule.js?v=20261127b"></script>
-<script src="view-counsel.js?v=20261127b"></script>
-<script src="view-calendar.js?v=20261127b"></script>
+<script src="seed.js?v=20261127c"></script>
+<script src="seed-restaurants.js?v=20261127c"></script>
+<script src="core.js?v=20261127c"></script>
+<script src="text.js?v=20261127c"></script>
+<script src="icons.js?v=20261127c"></script>
+<script src="gcal.js?v=20261127c"></script>
+<script src="view-cover.js?v=20261127c"></script>
+<script src="view-home.js?v=20261127c"></script>
+<script src="view-journal.js?v=20261127c"></script>
+<script src="view-schedule.js?v=20261127c"></script>
+<script src="view-counsel.js?v=20261127c"></script>
+<script src="view-calendar.js?v=20261127c"></script>
 <!-- 메모(2026-11-26 목사님 지시로 화면에서 내림 — 자료는 그대로 두고 화면만 띄우지 않는다)
-<script src="view-notes.js?v=20261127b"></script>
+<script src="view-notes.js?v=20261127c"></script>
 -->
-<script src="mjauto.js?v=20261127b"></script>
-<script src="view-sermons.js?v=20261127b"></script>
-<script src="view-vehicle.js?v=20261127b"></script>
-<script src="view-food.js?v=20261127b"></script>
-<script src="view-report.js?v=20261127b"></script>
-<script src="view-workout.js?v=20261127b"></script>
-<script src="view-admin.js?v=20261127b"></script>
+<script src="mjauto.js?v=20261127c"></script>
+<script src="view-sermons.js?v=20261127c"></script>
+<script src="view-vehicle.js?v=20261127c"></script>
+<script src="view-food.js?v=20261127c"></script>
+<script src="view-report.js?v=20261127c"></script>
+<script src="view-workout.js?v=20261127c"></script>
+<script src="view-admin.js?v=20261127c"></script>
 <script>
 /* ── 서비스워커 ──────────────────────────────────────────────
    새 버전이 준비되면 한 번만 새로고침하고, sw.js 자체는 늘 새로 확인한다. */
@@ -112,7 +112,7 @@
     if(reloaded)return;reloaded=true;location.reload();
   });
   try{
-    navigator.serviceWorker.register('sw.js?v=20261127b',{updateViaCache:'none'}).then(function(r){
+    navigator.serviceWorker.register('sw.js?v=20261127c',{updateViaCache:'none'}).then(function(r){
       try{r.update()}catch(e){}
     }).catch(function(){});
   }catch(e){}
