@@ -82,7 +82,7 @@
 
 <script src="seed.js?v=20261127k"></script>
 <script src="seed-restaurants.js?v=20261127k"></script>
-<script src="core.js?v=20261127k"></script>
+<script src="core.js?v=20261127L"></script>
 <script src="text.js?v=20261127k"></script>
 <script src="icons.js?v=20261127k"></script>
 <script src="gcal.js?v=20261127k"></script>
@@ -112,7 +112,7 @@
     if(reloaded)return;reloaded=true;location.reload();
   });
   try{
-    navigator.serviceWorker.register('sw.js?v=20261127k',{updateViaCache:'none'}).then(function(r){
+    navigator.serviceWorker.register('sw.js?v=20261127L',{updateViaCache:'none'}).then(function(r){
       try{r.update()}catch(e){}
     }).catch(function(){});
   }catch(e){}

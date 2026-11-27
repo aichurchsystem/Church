@@ -478,6 +478,50 @@ App.init=function(){
   /* 한 단계가 실패해도 나머지는 계속 진행한다 — 메인이 비지 않게 */
   const step=function(fn,name){try{fn()}catch(e){console.error('[boot]',name||'',e)}};
   step(App.load,'load');
+  /* 차량 정보(260두 1300 · 70,272km) 자동 1회 반영 및 ?car= 링크 반영 (2026-11-27) */
+  step(()=>{
+    const D=App.D;D.vehicles=D.vehicles||[];
+    if(!D.vehicles.length)D.vehicles.push({id:'v1',name:'카니발',model:'기아 카니발 4세대 하이브리드',color:'검은색',roof:true});
+    const v=D.vehicles[0];
+    let changed=false;
+    if(!localStorage.getItem('mj.car260du')) {
+      if(!v.plate)v.plate='260두 1300';
+      if(!v.mileage)v.mileage='70272';
+      if(!v.model)v.model='기아 카니발 4세대 하이브리드';
+      if(!v.color)v.color='검은색';
+      if(typeof v.roof!=='boolean')v.roof=true;
+      D.carExpenses=D.carExpenses||[];
+      if(!D.carExpenses.some(x=>x.date==='2026-11-27'&&String(x.mileage)==='70272')){
+        D.carExpenses.push({id:'ce20261127',vehicleId:v.id,date:'2026-11-27',type:'etc',
+          amount:'',mileage:'70272',place:'',liters:'',unit:'',
+          note:'계기판 확인 · 누적거리 70,272km · 운행시간 2,163h · 연비 13.6km/L'});
+      }
+      localStorage.setItem('mj.car260du','1');
+      changed=true;
+    }
+    const u=new URL(location.href);
+    const raw=u.searchParams.get('car');
+    if(raw){
+      let p=null;
+      try{p=JSON.parse(decodeURIComponent(escape(atob(raw.replace(/-/g,'+').replace(/_/g,'/')))))}catch(e){try{p=JSON.parse(atob(raw))}catch(e2){p=null}}
+      if(p&&typeof p==='object'){
+        ['name','model','color','plate','year','mileage','insurance','inspection','tire'].forEach(k=>{if(p[k])v[k]=String(p[k])});
+        if(typeof p.roof==='boolean')v.roof=p.roof;
+        if(p.record&&typeof p.record==='object'){
+          const r=p.record;D.carExpenses=D.carExpenses||[];
+          if(!D.carExpenses.some(x=>x.date===r.date&&String(x.mileage)===String(r.mileage))){
+            D.carExpenses.push({id:'ce'+Date.now(),vehicleId:v.id,date:r.date||App.todayKey(),
+              type:r.type||'etc',amount:r.amount||'',mileage:String(r.mileage||''),place:r.place||'',
+              liters:'',unit:'',note:r.note||''});
+          }
+        }
+        changed=true;
+      }
+      u.searchParams.delete('car');
+      history.replaceState(null,'',u.pathname+(u.search?'?'+u.searchParams.toString():'')+u.hash);
+    }
+    if(changed)App.save();
+  },'car-patch');
   /* 앱을 새로 열면 스케줄은 오늘로 돌린다 — 며칠 전에 골라 둔 날짜가 남아
      '일정이 없다'로 보이지 않게 (2026-11-27) */
   step(()=>{App.D.ui.calDate=App.todayKey();App.D.ui.calMonth=App.todayKey().slice(0,7);

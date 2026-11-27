@@ -1,9 +1,9 @@
 /* 목회 일지 서비스워커 — 앱 셸 캐시 + 새 버전 자동 반영
-   2026-11-27 12:24 심볼 3안(금장 표지와 십자) 반영: V=20261127k, CACHE=mj-v25
+   2026-11-27 13:2x 차량 정보 링크(?car=) 채우기 추가: V=20261127L, CACHE=mj-v26
    2026-11-26: 네비게이션·앱 셸은 HTTP 캐시를 건너뛰고 늘 새로 받는다.
    (옛 화면이 남거나 304가 섞여 빈 화면이 되던 문제를 막는다) */
-const V='20261127k';
-const CACHE='mj-v25';
+const V='20261127L';
+const CACHE='mj-v26';
 const FILES=['./','./index.html','./styles.css?v='+V,'./core.js?v='+V,
   './text.js?v='+V,
   './icons.js?v='+V,'./gcal.js?v='+V,'./seed.js?v='+V,'./seed-restaurants.js?v='+V,
