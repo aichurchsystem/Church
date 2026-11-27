@@ -1652,8 +1652,11 @@ body.is-home .cover-back{display:grid}
 .cv-go:active{transform:scale(.985)}
 .cv-go svg{width:17px;height:17px}
 .cv-hint{margin:-2px 0 0;text-align:center;font-size:11px;font-weight:600;color:#8a99ae}
-.cv-brand{display:flex;align-items:center;justify-content:center;padding-top:2px}
-.cv-brand img{width:154px;height:auto;display:block;opacity:.96;filter:drop-shadow(0 3px 10px rgba(0,0,0,.55))}
+.cv-brand{display:flex;align-items:center;justify-content:center;gap:9px;padding-top:2px}
+.cv-brand img{width:30px;height:auto;display:block;filter:drop-shadow(0 3px 10px rgba(0,0,0,.55))}
+.cv-brand-tx{display:flex;flex-direction:column;line-height:1.22;text-align:left}
+.cv-brand-tx b{font-size:12.5px;font-weight:750;letter-spacing:-.01em;color:#f1e7d1}
+.cv-brand-tx i{font-style:normal;font-size:8.5px;font-weight:700;letter-spacing:.14em;color:#c39a52;margin-top:2px}
 .cv-foot{margin:0;text-align:center;font-size:11px;font-weight:600;line-height:1.35;color:#8b9ab0;
   letter-spacing:-.01em;word-break:keep-all}
 
@@ -1681,7 +1684,9 @@ body.is-home .cover-back{display:grid}
   .cv-mut{font-size:13.5px}
   .cv-go{height:58px;font-size:17px}
   .cv-hint{font-size:12px}
-  .cv-brand img{width:190px}
+  .cv-brand img{width:36px}
+  .cv-brand-tx b{font-size:14px}
+  .cv-brand-tx i{font-size:9.5px}
   .cv-foot{font-size:12px}
 }
 /* 태블릿을 옆으로 눕힌 넓은 화면: 사진과 표가 한 화면에 들어오도록 사진 높이만 줄인다 */
@@ -1706,7 +1711,9 @@ body.is-home .cover-back{display:grid}
   .cv-r dd b{font-size:13px}
   .cv-go{height:38px;font-size:14px;border-radius:11px}
   .cv-hint{font-size:9.5px}
-  .cv-brand img{width:104px}
+  .cv-brand img{width:24px}
+  .cv-brand-tx b{font-size:11px}
+  .cv-brand-tx i{font-size:7.5px}
   .cv-foot{display:none}
   .cv-tbl{border-radius:11px}
 }
@@ -1727,7 +1734,7 @@ body.is-home .cover-back{display:grid}
   .cv-hint{font-size:9.5px}
   .cv-r dt,.cv-r dd{padding:3px 9px;font-size:11px}
   .cv-go{height:36px;font-size:13.5px}
-  .cv-brand img{width:96px}
+  .cv-brand img{width:22px}
 }
 
 /* ══════════════════════════════════════════════════════════
