@@ -91,7 +91,7 @@ function cvHTML(){
       +'<p class="cv-hint">'+cvEsc(cvT('cover.hint'))+'</p>'
       /* ── 목회일지 심볼 + 교회 이름 (2026-11-27 교회 로고 그림을 심볼로 교체) ── */
       +'<div class="cv-brand">'
-        +'<img src="assets/journal-mark.png" alt="" width="302" height="415">'
+        +'<img src="assets/journal-mark.png" alt="" width="292" height="464">'
         +'<span class="cv-brand-tx"><b>글로벌비전교회</b><i>대한예수교 장로회</i></span>'
       +'</div>'
       +'<p class="cv-foot">'+cvEsc(cvT('cover.foot'))+'</p>'

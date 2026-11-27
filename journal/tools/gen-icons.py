@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""목회일지 앱 아이콘 생성기 — 2026-11-27 교회 로고에서 목회일지 심볼로 교체하며 새로 작성.
-   심볼: 크림색 일지 페이지 + 금색 책등 + 금색 십자가 + 남색 글줄 (남색 바탕 위)
+"""목회일지 앱 아이콘 생성기 — 2026-11-27 3안(금장 표지와 십자)으로 교체.
+   심볼: 금장 표지 + 진한 금 책등 + 남색 십자 각인 + 크림 리본 (남색 바탕 위)
    100x100 좌표계로 그리고 4배 슈퍼샘플링한 뒤 줄여서 매끄럽게 만든다.
    사용: python3 tools/gen-icons.py [출력폴더]   (기본: journal/icons)
 """
@@ -9,8 +9,8 @@ from PIL import Image, ImageDraw, ImageFilter
 
 S = 4
 NAVY, NAVY2 = (10, 16, 23), (20, 31, 44)
-GOLD, GOLD_D = (232, 176, 75), (188, 133, 45)
-CREAM, INK = (247, 240, 226), (36, 49, 66)
+GOLD, GOLD_L, GOLD_D = (232, 176, 75), (246, 207, 130), (188, 133, 45)
+CREAM, INK = (247, 240, 226), (16, 24, 35)
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, '..', 'icons')
 ASSE = os.path.join(HERE, '..', 'assets')
@@ -23,16 +23,22 @@ class C:
     def rrect(self, box, r, fill):
         x0, y0, x1, y1 = box
         self.d.rounded_rectangle([x0*self.k, y0*self.k, x1*self.k, y1*self.k], radius=r*self.k, fill=fill)
+    def rline(self, box, r, w, fill):
+        x0, y0, x1, y1 = box
+        self.d.rounded_rectangle([x0*self.k, y0*self.k, x1*self.k, y1*self.k], radius=r*self.k,
+                                 outline=fill, width=max(1, int(round(w*self.k))))
+    def poly(self, pts, fill):
+        self.d.polygon([(x*self.k, y*self.k) for x, y in pts], fill=fill)
 
 def symbol(c):
-    c.rrect((22, 11, 78, 89), 9, CREAM)                     # 페이지
-    c.rrect((22, 11, 32.5, 89), 9, GOLD)                    # 책등
-    c.rrect((27.5, 11, 32.5, 89), 0, GOLD)
-    vw, hw, vt, ht, hh = 8.8, 29, 21.5, 34.6, 8.8           # 십자가
-    c.rrect((50-vw/2, vt, 50+vw/2, vt+37.5), 2.4, GOLD)
-    c.rrect((50-hw/2, ht, 50+hw/2, ht+hh), 2.4, GOLD)
-    for i, (x0, x1) in enumerate([(41, 69), (41, 63), (41, 54)]):   # 글줄
-        c.rrect((x0, 66.5+i*8.2, x1, 66.5+i*8.2+3.2), 1.6, INK)
+    c.rrect((23, 10, 77, 90), 10, GOLD)                     # 표지
+    c.rrect((23, 10, 32, 90), 10, GOLD_D)                   # 책등
+    c.rrect((27.5, 10, 32, 90), 0, GOLD_D)
+    c.rline((36.5, 16.5, 70.5, 83.5), 6.5, 1.4, GOLD_L)     # 금장 테두리
+    vw, hw, vt, ht, hh = 8.4, 27, 26, 36.6, 8.4             # 십자 각인
+    c.rrect((50-vw/2, vt, 50+vw/2, vt+36), 2.2, INK)
+    c.rrect((50-hw/2, ht, 50+hw/2, ht+hh), 2.2, INK)
+    c.poly([(56.5, 84), (67.5, 84), (67.5, 97.5), (62, 92.4), (56.5, 97.5)], CREAM)   # 리본
 
 def bg(size):
     w = size*S
